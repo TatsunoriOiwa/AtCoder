@@ -5,10 +5,11 @@ import oiwa.atcoder.util.Tester;
 
 public class TestX {
 	public static void main(String[] args) {
-		new Tester(Main::main, new Case[] {
-				new Case(false,
-						"",
-						""),
+		new Tester(Main.class, new Case[] {
+				
+				new Case(true,
+						"looooooooooooooing_loooooooooooooooooooooooooong_input",
+						"looooooooooooooing_loooooooooooooooooooooooooong_input\r\n"),
 				new Case(false,
 						"",
 						""),

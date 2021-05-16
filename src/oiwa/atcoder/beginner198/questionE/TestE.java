@@ -1,11 +1,11 @@
 package oiwa.atcoder.beginner198.questionE;
 
 import oiwa.atcoder.util.Case;
-import oiwa.atcoder.util.Tester;
+import oiwa.atcoder.util.TesterOld;
 
 public class TestE {
 	public static void main(String[] args) {
-		new Tester(Main::main, new Case[] {
+		new TesterOld(Main::main, new Case[] {
 				new Case("6\r\n"
 						+ "2 7 1 8 2 8\r\n"
 						+ "1 2\r\n"

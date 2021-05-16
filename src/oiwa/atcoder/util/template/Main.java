@@ -13,8 +13,9 @@ public class Main {
 	}
 	
 	
-	private void run(PrintWriter out) {
-//		FastScanner sc = new FastScanner();
+	public void run(PrintWriter out) {
+		@SuppressWarnings("unused")
+		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());

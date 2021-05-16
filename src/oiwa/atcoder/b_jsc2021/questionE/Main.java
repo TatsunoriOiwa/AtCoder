@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.NoSuchElementException;
 
-import oiwa.atcoder.util.AtLogger;
-
 public class Main {
 	public static void main(String[] args) {
 		new Main().run();
@@ -23,7 +21,7 @@ public class Main {
 	}
 	
 	private void recLevelOld(final int target, String str, int level, long count, long stepMul) {
-		AtLogger.println(level + " " + str);
+//		AtLogger.println(level + " " + str);
 		int c = palindromeStep(str);
 		if (level == target) {
 			if (str.length() == 0) {

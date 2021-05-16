@@ -1,16 +1,19 @@
 package oiwa.atcoder.util;
 
-import java.io.ByteArrayInputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.function.Consumer;
 
-public class Tester {
+@Deprecated
+public class TesterOld {
 	
-	public Tester(Class<?> clazz, Case[] cases) {
-		this.run(clazz, cases);
+	@Deprecated
+	public TesterOld(Consumer<String[]> clazz, Case[] cases) {
+//		this.run(clazz, cases);
 	}
 	
+	@SuppressWarnings("unused")
 	private void run(Class<?> clazz, Case[] cases) {
 		for (int i = 0; i < cases.length; i++) {
 			Case c = cases[i];
@@ -30,7 +33,6 @@ public class Tester {
 			Object sbj = clazz.getConstructor().newInstance();
 			Method method = clazz.getMethod("run", PrintWriter.class);
 			
-			System.setIn(new ByteArrayInputStream(c.getTest().getBytes()));
 			long timemillis = System.currentTimeMillis();
 			
 			PrintWriter out = new PrintWriter(peeker); // TODO: wrap with System out peeker.

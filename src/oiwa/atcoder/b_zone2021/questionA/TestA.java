@@ -1,11 +1,11 @@
 package oiwa.atcoder.b_zone2021.questionA;
 
 import oiwa.atcoder.util.Case;
-import oiwa.atcoder.util.Tester;
+import oiwa.atcoder.util.TesterOld;
 
 public class TestA {
 	public static void main(String[] args) {
-		new Tester(Main::main, new Case[] {
+		new TesterOld(Main::main, new Case[] {
 				new Case(true,
 						"abcdZONefghi\r\n"
 						+ "",

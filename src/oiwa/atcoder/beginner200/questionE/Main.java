@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.NoSuchElementException;
 
-import oiwa.atcoder.util.AtLogger;
-
 public class Main {
 	public static void main(String[] args) {
 		new Main().run();
@@ -21,7 +19,7 @@ public class Main {
 		for (int n = 1; n <= 3*N-2; n++) {
 			long minIndx = maxIndx;
 			maxIndx += tripleSet(n, N); // 和がn+2 以下であるような要素の数
-			AtLogger.println(tripleSet(n, N));
+//			AtLogger.println(tripleSet(n, N));
 			if (K <= maxIndx) {
 				maxIndx = minIndx;
 				for (int m = 1; m <= n; m++) { // i = mであるような要素の数

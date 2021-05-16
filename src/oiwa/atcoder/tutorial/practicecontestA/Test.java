@@ -1,7 +1,7 @@
 package oiwa.atcoder.tutorial.practicecontestA;
 
 import oiwa.atcoder.util.Case;
-import oiwa.atcoder.util.Tester;
+import oiwa.atcoder.util.TesterOld;
 
 public class Test {
 	
@@ -15,6 +15,6 @@ public class Test {
 	};
 	
 	public static void main(String[] args) {
-		new Tester(Main::main, cases);
+		new TesterOld(Main::main, cases);
 	}
 }

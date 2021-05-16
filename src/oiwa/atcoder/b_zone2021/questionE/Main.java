@@ -11,6 +11,7 @@ public class Main {
 	
 	
 	private void run() {
+		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int c = sc.nextInt();
 //		String s = sc.next();
