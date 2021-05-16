@@ -11,7 +11,7 @@ public class Main {
 	
 	
 	private void run() {
-		FastScanner sc = new FastScanner();
+//		FastScanner sc = new FastScanner();
 //		int c = sc.nextInt();
 //		String s = sc.next();
 //		System.out.println(s.substring(1) + s.substring(0, 1));

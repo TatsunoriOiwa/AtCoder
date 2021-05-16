@@ -14,10 +14,10 @@ public class Main {
 	
 	
 	private void run(PrintWriter out) {
-		FastScanner sc = new FastScanner();
+//		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
-		out.println(sc.next());
+//		out.println(sc.next());
 	}
 	
 	
