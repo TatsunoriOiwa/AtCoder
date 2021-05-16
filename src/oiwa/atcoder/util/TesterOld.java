@@ -1,14 +1,13 @@
 package oiwa.atcoder.util;
 
+
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.Consumer;
 
-@Deprecated
 public class TesterOld {
 	
-	@Deprecated
 	public TesterOld(Consumer<String[]> clazz, Case[] cases) {
 //		this.run(clazz, cases);
 	}

@@ -32,6 +32,7 @@ public class Main {
 			return;
 		}
 		
+		@SuppressWarnings("unused")
 		int remain = 4 - no;
 		long[] dp = new long[5];
 		dp[0] = 1;
