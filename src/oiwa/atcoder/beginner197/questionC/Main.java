@@ -13,12 +13,36 @@ public class Main {
 	}
 	
 	
-	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
+	public void run(PrintWriter out) { // 25 min.
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		final int N = sc.nextInt();
+		int[] A = sc.nextIntArray(N);
+		
+		int ret = Integer.MAX_VALUE;
+		for (int i = 0; i < (1 << (N-1)); i++) {
+			int xor = 0;
+			int por = 0;
+//			System.out.print(i + " ");
+			for (int n = N-1; n >= 0; n--) {
+				if ((i & (1 << n)) != 0) {
+					xor ^= por;
+					por = 0;
+//					System.out.print("|");
+				}
+//				System.out.print(n);
+				por |= A[n];
+			}
+//			System.out.println();
+			xor ^= por;
+			if (xor < ret) ret = xor;
+		}
+		out.println(ret);
+		
+		
 	}
 	
 	
