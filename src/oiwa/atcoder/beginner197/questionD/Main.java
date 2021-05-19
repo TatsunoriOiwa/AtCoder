@@ -5,6 +5,11 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.NoSuchElementException;
 
+/**
+ * 21/05/20 9 min AC
+ * @author T. Oiwa
+ *
+ */
 public class Main {
 	public static void main(String[] args) {
 		PrintWriter out = new PrintWriter(System.out);
@@ -14,11 +19,28 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		final int N = sc.nextInt();
+		final double x0 = sc.nextInt();
+		final double y0 = sc.nextInt();
+		final double xh = sc.nextInt();
+		final double yh = sc.nextInt();
+		
+		double cx = (x0 + xh) / 2.0d;
+		double cy = (y0 + yh) / 2.0d;
+		
+		double dx0 = x0 - cx;
+		double dy0 = y0 - cy;
+		double theta = 2*Math.PI / N;
+		
+		double x = dx0*Math.cos(theta) - dy0*Math.sin(theta) + cx;
+		double y = dx0*Math.sin(theta) + dy0*Math.cos(theta) + cy;
+		
+		System.out.println(x + " " + y);
+		
 	}
 	
 	
