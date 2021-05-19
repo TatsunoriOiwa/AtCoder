@@ -5,6 +5,11 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.NoSuchElementException;
 
+/**
+ * 2021/05/19 25 min.
+ * @author 17952
+ *
+ */
 public class Main {
 	public static void main(String[] args) {
 		PrintWriter out = new PrintWriter(System.out);
