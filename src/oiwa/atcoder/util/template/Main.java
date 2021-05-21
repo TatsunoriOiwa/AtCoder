@@ -100,4 +100,24 @@ public class Main {
 			return ret;
 		}
 	}
+	
+	public long power(long x, int n) {
+		return this.power(x, n, Long.MAX_VALUE);
+	}
+	
+	public long power(long x, int n, long mod) {
+		assert(n >= 0);
+		x %= mod;
+		long res = 1;
+		for (int i = 30; i >= 0; i--) {
+			res %= mod;
+			res *= res;
+			res %= mod;
+			if ((n & (1<<i)) != 0) {
+				res *= x;
+				res %= mod;
+			}
+		}
+		return res;
+	}
 }
