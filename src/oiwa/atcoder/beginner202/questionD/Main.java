@@ -3,6 +3,7 @@ package oiwa.atcoder.beginner202.questionD;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.util.NoSuchElementException;
 
 public class Main {
@@ -14,14 +15,61 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
-//		int i = sc.nextInt();
-//		String s = sc.next();
-//		out.println(sc.next());
+		int A = sc.nextInt();
+		int B = sc.nextInt();
+		final long K = sc.nextLong();
+		
+		StringBuilder sb = new StringBuilder();
+		
+		long indx = 0;
+		while(A+B > 0 && B > 0) {
+			long tmp = nCr(A+B-1, B);
+			if (indx + tmp >= K) { // 前半
+				sb.append("a");
+				A--;
+			} else { // 後半
+				sb.append("b");
+				B--;
+				indx += tmp;
+			}
+		}
+		while (A > 0) {
+			sb.append("a");
+			A--;
+		}
+		out.println(sb.toString());
 	}
 	
+	public long nCr(int n, int m) {
+		if (n < m) return 0;
+		BigInteger res = BigInteger.valueOf(1L);
+//		m = Math.min(m, n-m);
+//		System.out.println("n-m " + (n-m));
+		for (int i = n; i > n-m; i--) {
+			res = res.multiply(BigInteger.valueOf(i));
+//			res *= i;
+//			if (j >= 2) res /= j;
+//			System.out.println("res=" + res);
+		}
+		for (int i = 2; i <= m; i++) {
+//			res /= i;
+			res = res.divide(BigInteger.valueOf(i));
+		}
+		return res.longValue();
+	}
 	
+//	public long nCr(int n, int r) {
+//		System.out.println("factN=" + fact(n) + " fact(r)=" + (fact(r)) + " " + (fact(n) / fact(r)));
+//		return fact(n) / fact(r) / fact(n - r);
+//	}
+//
+//	// Returns factorial of n
+//	public long fact(int n) {
+//		long res = 1;
+//		for (int i = 2; i <= n; i++) res = res * i;
+//		return res;
+//	}
 	
 	// ==== Fast Util ====
 	

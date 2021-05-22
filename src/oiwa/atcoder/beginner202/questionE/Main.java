@@ -3,6 +3,11 @@ package oiwa.atcoder.beginner202.questionE;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 public class Main {
@@ -14,14 +19,65 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
-//		int i = sc.nextInt();
-//		String s = sc.next();
-//		out.println(sc.next());
+		final int N = sc.nextInt();
+		Map<Integer, List<Integer>> outmap = new HashMap<>();
+		for (int i = 1; i < N; i++) {
+			int p = sc.nextInt() - 1;
+			List<Integer> ot;
+			if (outmap.containsKey(p)) { ot = outmap.get(p); }
+			else outmap.put(p, ot = new ArrayList<>());
+			ot.add(i);
+		}
+		
+		final int Q = sc.nextInt();
+		for (int i = 0; i < Q; i++) {
+			this.processQuery(outmap, sc.nextInt(), sc.nextInt(), out);
+		}
 	}
 	
-	
+	private void processQuery(Map<Integer, List<Integer>> outmap, int U, int D, PrintWriter out) {
+		int cnt = 0;
+		// dfs
+		LinkedList<Integer> dfs = new LinkedList<>();
+		LinkedList<Integer> next = new LinkedList<>();
+		int depth = 0;
+		boolean effective = 0 == U;
+		
+		dfs.add(0);
+		next.add(0);
+		while(dfs.size() > 0) {
+			int pos = dfs.peek();
+			
+			List<Integer> ot = outmap.get(pos);
+			if (depth == D-1) { // 足して戻る
+				dfs.pop();
+				if(effective && ot != null) cnt += ot.size();
+				depth--;
+				continue;
+			}
+			int ni = next.pop();
+			if (ot == null || ni >= ot.size()) { // 次がない場合戻る
+				dfs.pop();
+//				next.pop();
+				depth--;
+				if (pos == U) break;
+				continue;
+			}
+			// 次へ行く
+			int np = ot.get(ni);
+			ni++;
+			dfs.push(np);
+			next.push(ni);
+			next.push(0);
+			depth++;
+			if (np == U) effective = true;
+			// TODO: 初めて訪れたときの処理
+			
+		}
+		
+		out.println(cnt);
+	}
 	
 	// ==== Fast Util ====
 	

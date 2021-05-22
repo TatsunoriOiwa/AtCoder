@@ -3,6 +3,10 @@ package oiwa.atcoder.beginner202.questionC;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 public class Main {
@@ -14,11 +18,49 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
-//		int i = sc.nextInt();
-//		String s = sc.next();
-//		out.println(sc.next());
+		
+		final int N = sc.nextInt();
+		int[] A = sc.nextIntArray(N);
+		int[] B = sc.nextIntArray(N);
+		int[] C = sc.nextIntArray(N);
+//		for (int i = 0; i < N; i++) { C[i]--;}
+		
+		// インデックスがAの値，その値を取る要素の数
+		int[] Acnt = new int[N];
+		for (int a : A) {
+			Acnt[a]++;
+		}
+		
+		// ある値 -> その値を取るBのインデックスのリスト
+		Map<Integer, List<Integer>> val2BIndx = new HashMap<>();
+		for (int bi = 0; bi < N; bi++) {
+			int b = B[bi];
+			List<Integer> list;
+			if (val2BIndx.containsKey(b)) {
+				list = val2BIndx.get(b);
+			} else {
+				val2BIndx.put(b, list = new LinkedList<>());
+			}
+			list.add(bi);
+		}
+		int[] Ccnt = new int[N];
+		for (int c : C) {
+			Ccnt[c]++;
+		}
+		
+		long res = 0;
+		for (int av = 0; av < N; av++) {
+			int ac = Acnt[av];
+			if (ac == 0) continue;
+			long tmp = 0;
+			if (!val2BIndx.containsKey(av)) continue;
+			for (int bi : val2BIndx.get(av)) {
+				tmp += Ccnt[bi];
+			}
+			res += tmp*ac;
+		}
+		out.println(res);
 	}
 	
 	
@@ -91,7 +133,7 @@ public class Main {
 		public double nextDouble() { return Double.parseDouble(next()); }
 		public int[] nextIntArray(final int N) {
 			int[] ret = new int[N];
-			for (int i = 0; i < N; i++) { ret[i] = this.nextInt(); }
+			for (int i = 0; i < N; i++) { ret[i] = this.nextInt()-1; }
 			return ret;
 		}
 		public long[] nextLongArray(final int N) {
