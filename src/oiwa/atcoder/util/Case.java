@@ -12,7 +12,7 @@ public class Case {
 	public Case(boolean enabled, String test, String ans) {
 		this.enabled = enabled;
 		this.test = test;
-		this.ans = ans;
+		this.ans = ans.endsWith("\r\n") ? ans : ans + "\r\n";
 	}
 	
 	public boolean isEnabled() { return this.enabled; }
