@@ -99,6 +99,24 @@ public class Main {
 			for (int i = 0; i < N; i++) { ret[i] = this.nextLong(); }
 			return ret;
 		}
+		/**
+		 *  each element will be A_i + offset<br>
+		 * O(N)
+		 */
+		public int[] nextIntArray(final int N, int offset) {
+			int[] ret = new int[N];
+			for (int i = 0; i < N; i++) { ret[i] = this.nextInt() + offset; }
+			return ret;
+		}
+		/**
+		 *  each element will be A_i + offset<br>
+		 *  O(N)
+		 */
+		public long[] nextLongArray(final int N, long offset) {
+			long[] ret = new long[N];
+			for (int i = 0; i < N; i++) { ret[i] = this.nextLong() + offset; }
+			return ret;
+		}
 	}
 	
 	public long power(long x, int n) {
