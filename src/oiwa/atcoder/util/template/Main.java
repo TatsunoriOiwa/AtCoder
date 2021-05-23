@@ -3,6 +3,7 @@ package oiwa.atcoder.util.template;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.util.NoSuchElementException;
 
 public class Main {
@@ -119,23 +120,65 @@ public class Main {
 		}
 	}
 	
-	public long power(long x, int n) {
-		return this.power(x, n, Long.MAX_VALUE);
-	}
-	
-	public long power(long x, int n, long mod) {
-		assert(n >= 0);
-		x %= mod;
-		long res = 1;
-		for (int i = 30; i >= 0; i--) {
-			res %= mod;
-			res *= res;
-			res %= mod;
-			if ((n & (1<<i)) != 0) {
-				res *= x;
-				res %= mod;
-			}
+	public static class AtMath {
+		/**
+		 * Returns 0 if n < r.<br>
+		 * When n > 20 product will be grater than long_max.<br>
+		 * O(n) or O(2min(r, n-r)) more precisely.
+		 * @param n
+		 * @param r
+		 * @return nCr
+		 */
+		public static long nCr(int n, int r) {
+			if (n < r) return 0;
+			r = Math.min(r, n-r);
+			if (r == 0) return 1;
+			BigInteger res = BigInteger.valueOf(1L);
+			final int d = n-r;
+			for (int i = n; i > d; i--) { res = res.multiply(BigInteger.valueOf(i)); }
+			for (int i = 2; i <= r; i++) { res = res.divide(BigInteger.valueOf(i)); }
+			return res.longValue();
 		}
-		return res;
+		/**
+		 * Use {@link Math#pow Math.pow} for double.
+		 * @param x
+		 * @param n
+		 * @return
+		 */
+		public static long power(long x, int n) {
+			assert(n >= 0);
+			if (n == 0) return 1;
+			if (n == 1) return x;
+			long res = 1;
+			for (int i = 31; i >= 0; i--) { // 31: number of bits of integer.
+				res *= res;
+				if ((n & (1<<i)) != 0) {res *= x;}
+			}
+			return res;
+		}
+		
+		/**
+		 * O(1) or strictly O(31).
+		 * @param x
+		 * @param n
+		 * @param mod
+		 * @return
+		 */
+		public static long power(long x, int n, long mod) {
+			assert(n >= 0);
+			if (n == 0) return 1;
+			if (n == 1) return x;
+			x %= mod;
+			long res = 1;
+			for (int i = 31; i >= 0; i--) { // 31: number of bits of integer.
+				res *= res;
+				res %= mod;
+				if ((n & (1<<i)) != 0) {
+					res *= x;
+					res %= mod;
+				}
+			}
+			return res;
+		}
 	}
 }
