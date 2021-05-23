@@ -41,6 +41,7 @@ public class Tester {
 			System.out.print(" took " + timemillis + " msec.");
 			
 			String result = peeker.convert();
+			if (!result.endsWith("\r\n")) result += "\r\n";
 			if (result.equals(c.getAns())) {
 				System.out.println(" Success!");
 			} else {
