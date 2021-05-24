@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -18,27 +19,83 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
-//		int i = sc.nextInt();
-//		String s = sc.next();
-//		out.println(sc.next());
 		
-		final int N = sc.nextInt();
-		final int M = sc.nextInt();
-		Map<Integer, Map<String, Set<Integer>>> outmap = new HashMap<>();
-		for (int i = 0; i < N; i++) { outmap.put(i, new HashMap<>()); }
+		final int N = sc.nextInt(); // vertex
+		final int M = sc.nextInt(); // edge
+		Map<Integer, Set<Edge>> rawoutmap2 = new HashMap<>();
+		for (int i = 0; i < N; i++) {
+			rawoutmap2.put(i, new HashSet<>());
+		}
 		for (int i = 0; i < M; i++) {
-			int a = sc.nextInt();
-			int b = sc.nextInt();
+			int a = sc.nextInt() - 1;
+			int b = sc.nextInt() - 1;
 			String c = sc.next();
-			addToSet(outmap.get(a), c, b);
-			addToSet(outmap.get(b), c, a);
+			rawoutmap2.get(a).add(new Edge(c, b));
+			rawoutmap2.get(b).add(new Edge(c, a));
+		}
+		
+		Map<BiSet, Set<BiSet>> outmap = new HashMap<>();
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				BiSet pos = new BiSet(i, j);
+				Set<BiSet> outs = new HashSet<>();
+				outmap.put(pos, outs);
+				for (Edge ie : rawoutmap2.get(i)) {
+					for (Edge je : rawoutmap2.get(j)) {
+						if (ie.colour.equals(je.colour)) {
+							outs.add(new BiSet(ie.to, je.to));
+						}
+					}
+				}
+			}
+		}
+		
+		// BFS
+		LinkedList<BfsNode> bfs = new LinkedList<>();
+		Set<BiSet> checked = new HashSet<>(N*N);
+		{
+			BiSet pos = new BiSet(0, N-1);
+			bfs.offer(new BfsNode(1, pos));
+			checked.add(pos);
+		}
+		while (!bfs.isEmpty()) {
+			BfsNode node = bfs.poll();
+			for (BiSet on : outmap.get(node.pos)) {
+				int flag = node.pos.swapOrEnd(on);
+				if (flag <= 0) {
+					out.println(node.depth*2 + flag);
+					return;
+				}
+				if (!checked.contains(on)) {
+					checked.add(on);
+					bfs.add(new BfsNode(node.depth+1, on));
+				}
+			}
+		}
+		out.println(-1);
+	}
+	
+	public static class Edge {
+		public final String colour;
+		public final int to;
+		public Edge(String colour, int to) {
+			super();
+			this.colour = colour;
+			this.to = to;
 		}
 		
 		
-		// TODO
+	}
+	
+	public static class BfsNode {
+		public final int depth;
+		public final BiSet pos;
 		
+		public BfsNode(int depth, BiSet pos) {
+			this.depth = depth;
+			this.pos = pos;
+		}
 	}
 	
 	public void addToSet(Map<String, Set<Integer>> outset, String c, int v) {
@@ -53,8 +110,14 @@ public class Main {
 		public final int b;
 		
 		public BiSet(int a, int b) {
-			if (a < b) { this.a = a; this.b = b; }
-			else { this.a = b; this.b = a; }
+			this.a = a;
+			this.b = b;
+		}
+		
+		public int swapOrEnd(BiSet next) {
+			if (next.a == next.b) return 0;
+			else if (this.a == next.b && this.b == next.a) return -1;
+			else return 1;
 		}
 		
 		@Override
