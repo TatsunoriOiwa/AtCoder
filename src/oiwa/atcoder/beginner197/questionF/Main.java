@@ -3,7 +3,11 @@ package oiwa.atcoder.beginner197.questionF;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class Main {
 	public static void main(String[] args) {
@@ -19,8 +23,56 @@ public class Main {
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		final int N = sc.nextInt();
+		final int M = sc.nextInt();
+		Map<Integer, Map<String, Set<Integer>>> outmap = new HashMap<>();
+		for (int i = 0; i < N; i++) { outmap.put(i, new HashMap<>()); }
+		for (int i = 0; i < M; i++) {
+			int a = sc.nextInt();
+			int b = sc.nextInt();
+			String c = sc.next();
+			addToSet(outmap.get(a), c, b);
+			addToSet(outmap.get(b), c, a);
+		}
+		
+		
+		// TODO
+		
 	}
 	
+	public void addToSet(Map<String, Set<Integer>> outset, String c, int v) {
+		Set<Integer> set;
+		if (outset.containsKey(c)) { set = outset.get(c); }
+		else { outset.put(c, set = new HashSet<>()); }
+		set.add(v);
+	}
+	
+	public static class BiSet {
+		public final int a;
+		public final int b;
+		
+		public BiSet(int a, int b) {
+			if (a < b) { this.a = a; this.b = b; }
+			else { this.a = b; this.b = a; }
+		}
+		
+		@Override
+		public int hashCode() {
+			return Integer.hashCode(a) * 17 + Integer.hashCode(b);
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (!(obj instanceof BiSet)) return false;
+			BiSet other = (BiSet) obj;
+			return this.a == other.a && this.b == other.b;
+		}
+		
+		@Override
+		public String toString() {
+			return "(" + this.a + "," + this.b + ")";
+		}
+	}
 	
 	
 	// ==== Fast Util ====
