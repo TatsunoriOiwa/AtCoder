@@ -1,4 +1,4 @@
-package oiwa.atcoder.beginner197.questionF;
+package oiwa.atcoder.beginner197.questionF2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,8 +6,10 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 public class Main {
@@ -21,78 +23,69 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		long nanos = System.nanoTime();
 		final int N = sc.nextInt(); // vertex
 		final int M = sc.nextInt(); // edge
 		@SuppressWarnings("unchecked")
-		Set<Edge>[] rawoutmap3 = new HashSet[N];
+		Map<String, List<Integer>>[] rawoutmap4 = new HashMap[N];
+//		@SuppressWarnings("unchecked")
+//		Set<Edge>[] rawoutmap3 = new HashSet[N];
 //		Map<Integer, Set<Edge>> rawoutmap2 = new HashMap<>();
-		for (int i = 0; i < N; i++) {
-//			rawoutmap2.put(i, new HashSet<>());
-			rawoutmap3[i] = new HashSet<>();
-		}
+//		for (int i = 0; i < N; i++) {
+////			rawoutmap2.put(i, new HashSet<>());
+//			rawoutmap3[i] = new HashSet<>();
+//		}
 		for (int i = 0; i < M; i++) {
 			int a = sc.nextInt() - 1;
 			int b = sc.nextInt() - 1;
 			String c = sc.next();
 //			rawoutmap2.get(a).add(new Edge(c, b));
 //			rawoutmap2.get(b).add(new Edge(c, a));
-			rawoutmap3[a].add(new Edge(c, b));
-			rawoutmap3[b].add(new Edge(c, a));
+//			rawoutmap3[a].add(new Edge(c, b));
+//			rawoutmap3[b].add(new Edge(c, a));
+			Map<String, List<Integer>> mapa = rawoutmap4[a] == null ? rawoutmap4[a] = new HashMap<>() : rawoutmap4[a];
+			Map<String, List<Integer>> mapb = rawoutmap4[b] == null ? rawoutmap4[b] = new HashMap<>() : rawoutmap4[b];
+			if (!mapa.containsKey(c)) mapa.put(c, new LinkedList<>());
+			if (!mapb.containsKey(c)) mapb.put(c, new LinkedList<>());
+			mapa.get(c).add(b);
+			mapb.get(c).add(a);
 		}
-		long nanos = System.nanoTime();
-//		BiSet.cache = new BiSet[N][N];
-		Map<BiSet, Set<BiSet>> outmap = new HashMap<>();
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				BiSet pos = BiSet.parse(i, j);
-				Set<BiSet> outs = new HashSet<>();
-				outmap.put(pos, outs);
-//				for (Edge ie : rawoutmap2.get(i)) {
-//					for (Edge je : rawoutmap2.get(j)) {
-//						if (ie.colour.equals(je.colour)) {
-//							outs.add(BiSet.parse(ie.to, je.to));
-//						}
-//					}
-//				}
-				for (Edge ie : rawoutmap3[i]) {
-					for (Edge je : rawoutmap3[j]) {
-						if (ie.colour.equals(je.colour)) {
-							outs.add(BiSet.parse(ie.to, je.to));
-						}
-					}
-				}
-			}
-		}
-		System.out.println(System.nanoTime() - nanos);
+//		System.out.println(System.nanoTime() - nanos);
 		nanos = System.nanoTime();
 		// BFS
-		LinkedList<BfsNode> bfs = new LinkedList<>();
+		PriorityQueue<BfsNode> bfs = new PriorityQueue<>((a,b) -> Integer.compare(a.depth, b.depth));
 		Set<BiSet> checked = new HashSet<>(N*N);
 		{
 			BiSet pos = BiSet.parse(0, N-1);
-			bfs.offer(new BfsNode(0, pos));
+			bfs.add(new BfsNode(0, pos, null));
 			checked.add(pos);
 		}
 		while (!bfs.isEmpty()) {
 			BfsNode node = bfs.poll();
-			for (BiSet on : outmap.get(node.pos)) {
-				if (on.a == on.b) {
-					out.println(node.depth + 2);
-					System.out.println(System.nanoTime() - nanos);
-					return;
-				} else if (node.pos.a == on.b && node.pos.b == on.a) {
-					out.println(node.depth + 1);
-					System.out.println(System.nanoTime() - nanos);
-					return;
-				}
-				if (!checked.contains(on)) {
-					checked.add(on);
-					bfs.offer(new BfsNode(node.depth+2, on));
+			for (String ci : rawoutmap4[node.pos.a].keySet()) {
+				Map<String, List<Integer>> mapj = rawoutmap4[node.pos.b];
+				if (!mapj.containsKey(ci)) continue;
+				for (int ni : rawoutmap4[node.pos.a].get(ci)) {
+					for (int nj : mapj.get(ci)) {
+						BiSet on = new BiSet(ni, nj);
+						if (checked.contains(on)) continue;
+						if (on.a == on.b) {
+							out.println(node.depth + 2);
+//							System.out.println(System.nanoTime() - nanos);
+							return;
+						} else if (node.pos.a == on.b && node.pos.b == on.a) {
+							out.println(node.depth + 1);
+//							System.out.println(System.nanoTime() - nanos);
+							return;
+						}
+						checked.add(on);
+						bfs.offer(new BfsNode(node.depth+2, on, node.pos));
+					}
 				}
 			}
 		}
 		out.println(-1);
-		System.out.println(System.nanoTime() - nanos);
+//		System.out.println(System.nanoTime() - nanos);
 	}
 	
 	public static class Edge {
@@ -110,10 +103,12 @@ public class Main {
 	public static class BfsNode {
 		public final int depth;
 		public final BiSet pos;
+		public final BiSet prev;
 		
-		public BfsNode(int depth, BiSet pos) {
+		public BfsNode(int depth, BiSet pos, BiSet prev) {
 			this.depth = depth;
 			this.pos = pos;
+			this.prev = prev;
 		}
 	}
 	
