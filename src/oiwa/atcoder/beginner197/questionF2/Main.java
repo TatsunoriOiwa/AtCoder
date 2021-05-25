@@ -57,11 +57,15 @@ public class Main {
 		Set<BiSet> checked = new HashSet<>(N*N);
 		{
 			BiSet pos = BiSet.parse(0, N-1);
-			bfs.add(new BfsNode(0, pos, null));
+			bfs.add(new BfsNode(0, pos));
 			checked.add(pos);
 		}
 		while (!bfs.isEmpty()) {
 			BfsNode node = bfs.poll();
+			if (node.pos == null) {
+				out.println(node.depth);
+				return;
+			}
 			for (String ci : rawoutmap4[node.pos.a].keySet()) {
 				Map<String, List<Integer>> mapj = rawoutmap4[node.pos.b];
 				if (!mapj.containsKey(ci)) continue;
@@ -69,17 +73,14 @@ public class Main {
 					for (int nj : mapj.get(ci)) {
 						BiSet on = new BiSet(ni, nj);
 						if (checked.contains(on)) continue;
-						if (on.a == on.b) {
-							out.println(node.depth + 2);
-//							System.out.println(System.nanoTime() - nanos);
-							return;
-						} else if (node.pos.a == on.b && node.pos.b == on.a) {
-							out.println(node.depth + 1);
-//							System.out.println(System.nanoTime() - nanos);
-							return;
-						}
 						checked.add(on);
-						bfs.offer(new BfsNode(node.depth+2, on, node.pos));
+						if (on.a == on.b) {
+							bfs.offer(new BfsNode(node.depth+2, null));
+						} else if (node.pos.a == on.b && node.pos.b == on.a) {
+							bfs.offer(new BfsNode(node.depth+1, null));
+						} else  {
+							bfs.offer(new BfsNode(node.depth+2, on));
+						}
 					}
 				}
 			}
@@ -103,12 +104,10 @@ public class Main {
 	public static class BfsNode {
 		public final int depth;
 		public final BiSet pos;
-		public final BiSet prev;
 		
-		public BfsNode(int depth, BiSet pos, BiSet prev) {
+		public BfsNode(int depth, BiSet pos) {
 			this.depth = depth;
 			this.pos = pos;
-			this.prev = prev;
 		}
 	}
 	
