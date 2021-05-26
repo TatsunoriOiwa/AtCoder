@@ -5,9 +5,9 @@ import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class Tester {
+public class TesterV2 {
 	
-	public Tester(Class<?> clazz, Case[] cases) {
+	public TesterV2(Class<?> clazz, Case[] cases) {
 		this.run(clazz, cases);
 	}
 	
@@ -33,7 +33,7 @@ public class Tester {
 			System.setIn(new ByteArrayInputStream(c.getTest().getBytes()));
 			long timemillis = System.currentTimeMillis();
 			
-			PrintWriter out = new PrintWriter(peeker); // TODO: wrap with System out peeker.
+			PrintWriter out = new PrintWriter(peeker);
 			method.invoke(sbj, out);
 			out.flush();
 			

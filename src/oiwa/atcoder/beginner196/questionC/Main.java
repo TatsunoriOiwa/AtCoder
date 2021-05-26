@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.util.NoSuchElementException;
 
 public class Main {
+	public static boolean DEBUG = false;
 	public static void main(String[] args) {
 		PrintWriter out = new PrintWriter(System.out);
 		new Main().run(out);
@@ -180,5 +181,9 @@ public class Main {
 			}
 			return res;
 		}
+	}
+	
+	public void debug(String str) {
+		if (DEBUG) System.out.println(str);
 	}
 }
