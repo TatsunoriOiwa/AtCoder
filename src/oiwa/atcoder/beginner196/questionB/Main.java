@@ -16,11 +16,19 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+//		int x = (int) sc.nextDouble();
+		String next = sc.next();
+//		debug(next);
+//		int pos = next.indexOf(".");
+//		if (pos < 0) out.println(next);
+//		else out.println(next.substring(0, pos));
+		
+		out.println(next.split("\\.")[0]);
 	}
 	
 	

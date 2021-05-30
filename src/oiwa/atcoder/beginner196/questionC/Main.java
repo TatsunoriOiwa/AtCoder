@@ -6,6 +6,11 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.NoSuchElementException;
 
+/**
+ * 2021/05/28 10 min.
+ * @author 17952
+ *
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -16,11 +21,19 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		long N = sc.nextLong();
+		long delim = 10;
+		long sum = 0;
+		for (int i = 1; i + i*delim <= N; i++) {
+			sum++;
+			if (i+1 >= delim) delim *= 10;
+		}
+		out.println(sum);
 	}
 	
 	
