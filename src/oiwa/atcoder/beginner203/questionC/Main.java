@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 public class Main {
@@ -16,13 +17,42 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		int N = sc.nextInt();
+		BigInteger budget = BigInteger.valueOf(sc.nextLong());
+		Friend[] friends = new Friend[N];
+		
+		for (int i = 0; i < N; i++) {
+			friends[i] = new Friend(sc.nextLong(), sc.nextLong());
+		}
+		Arrays.sort(friends, (e1, e2) -> Long.compare(e1.pos, e2.pos));
+		
+		long currentPos = 0;
+		for (Friend f : friends) {
+			long cost = f.pos - currentPos;
+			if (cost > budget.longValue()) {
+				// 終わり
+				break;
+			} else {
+				budget = budget.add(BigInteger.valueOf(f.amount - cost));
+				currentPos = f.pos;
+			}
+		}
+		out.println(currentPos + budget.longValue());
 	}
 	
+	public static class Friend {
+		public final long pos;
+		public final long amount;
+		public Friend(long pos, long amount) {
+			this.pos = pos;
+			this.amount = amount;
+		}
+	}
 	
 	
 	// ==== Fast Util ====

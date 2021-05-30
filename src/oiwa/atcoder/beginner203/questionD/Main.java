@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.NoSuchElementException;
+import java.util.PriorityQueue;
 
 public class Main {
 	public static boolean DEBUG = false;
@@ -21,8 +22,84 @@ public class Main {
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		final int N = sc.nextInt();
+		final int K = sc.nextInt();
+		final int[][] height = new int[N][];
+		for (int i = 0; i < N; i++) {
+			height[i] = sc.nextIntArray(N);
+		}
+		
+		BinList list = new BinList();
+		
+		int minMed = Integer.MAX_VALUE;
+
+		
+		for (int i0 = 0; i0 < N-K+1; i0++) {
+			for (int i = 0; i < K; i++) {
+				for (int j = 0; j < K-1; j++) {
+					list.add(height[i][j]);
+				}
+			}
+			for (int j0 = 0; j0 < N-K+1; j0++) {
+				int j = j0 + K - 1;
+				for (int i = 0; i < K; i++) {
+					list.add(height[i0 + i][j]);
+				}
+				int med = list.getMedian();
+				if (med < minMed) minMed = med;
+				for (int i = 0; i < K; i++) {
+					list.remove(height[i0+i][j0]);
+				}
+			}
+			list.clear();
+		}
+		out.println(minMed);
 	}
 	
+	public static class BinList {
+		private PriorityQueue<Integer> lower = new PriorityQueue<>((e1, e2) -> - Integer.compare(e1, e2)); // reverse order
+		private PriorityQueue<Integer> heigher = new PriorityQueue<>();
+		
+		public void add(int val) {
+			if (heigher.isEmpty() || val < heigher.peek()) {
+				lower.add(val);
+			} else {
+				heigher.add(val);
+			}
+			if (lower.size() < heigher.size()) {
+				lower.add(heigher.poll());
+			} else if (heigher.size() < lower.size() - 1) {
+				heigher.add(lower.poll());
+			}
+		}
+		
+		public void remove(int val) {
+			if (val > lower.peek()) {
+				heigher.remove(val);
+			} else {
+				lower.remove(val);
+			}
+			if (lower.size() < heigher.size()) {
+				lower.add(heigher.poll());
+			} else if (heigher.size() < lower.size() - 1) {
+				heigher.add(lower.poll());
+			}
+		}
+		
+		public int getMedian() {
+			return lower.peek();
+//			if (lower.size() == heigher.size()) {
+//				return heigher.peek();
+//			} else {
+//				return lower.peek();
+//			}
+		}
+		
+		public void clear() {
+			this.lower.clear();
+			this.heigher.clear();
+		}
+	}
 	
 	
 	// ==== Fast Util ====

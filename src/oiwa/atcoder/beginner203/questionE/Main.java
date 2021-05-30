@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class Main {
 	public static boolean DEBUG = false;
@@ -16,13 +19,52 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		int N = sc.nextInt();
+		int M = sc.nextInt();
+//		Pos[] blacks = new Pos[M];
+		int[][] blacks = new int[M][];
+		for (int i = 0; i < M; i++) {
+//			blacks[i] = new Pos(sc.nextInt(), sc.nextInt());
+			blacks[i] = new int[] { sc.nextInt(), sc.nextInt() };
+		}
+		Arrays.sort(blacks, (e1, e2) -> {
+			int f = Integer.compare(e1[0], e2[0]);
+			if (f != 0) return f;
+			return Integer.compare(e1[1], e2[1]);
+		});
+		
+		Set<Integer> possibleY = new HashSet<>();
+		Set<Integer> next = new HashSet<>();
+		Set<Integer> rem = new HashSet<>();
+		possibleY.add(N);
+		for (int[] p : blacks) {
+			int pj = p[1];
+			if (possibleY.contains(pj + 1) || possibleY.contains(pj - 1)) {
+				next.add(pj);
+			} else if (possibleY.contains(pj)) {
+				rem.add(pj);
+			}
+			possibleY.removeAll(rem);
+			possibleY.addAll(next);
+			next.clear();
+			rem.clear();
+		}
+		out.println(possibleY.size());
 	}
 	
+	static class Pos {
+		public final int i;
+		public final int j;
+		public Pos(int i, int j) {
+			this.i = i;
+			this.j = j;
+		}
+	}
 	
 	
 	// ==== Fast Util ====

@@ -7,12 +7,21 @@ public class TestE {
 	public static void main(String[] args) {
 		new TesterV3(Main.class, new Case[] {
 				
-				new Case(false,
-						"",
-						""),
-				new Case(false,
-						"",
-						""),
+				new Case(true,
+						"2 4\r\n"
+						+ "1 1\r\n"
+						+ "1 2\r\n"
+						+ "2 0\r\n"
+						+ "4 2\r\n"
+						+ "",
+						"3\r\n"
+						+ ""),
+				new Case(true,
+						"1 1\r\n"
+						+ "1 1\r\n"
+						+ "",
+						"0\r\n"
+						+ ""),
 				new Case(false,
 						"",
 						""),
