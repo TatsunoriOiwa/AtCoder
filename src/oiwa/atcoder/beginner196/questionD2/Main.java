@@ -1,4 +1,4 @@
-package oiwa.atcoder.beginner196.questionD;
+package oiwa.atcoder.beginner196.questionD2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,6 +6,13 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.NoSuchElementException;
 
+/**
+ * abc196D 愚直全探索版<br>
+ * 結局答えを見てしまった．<br>
+ * 実装に 12 min
+ * @author T.Oiwa
+ *
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -16,7 +23,6 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
@@ -25,31 +31,45 @@ public class Main {
 		int W = sc.nextInt();
 		final int A = sc.nextInt();
 		final int B = sc.nextInt();
-		if (H > W) {
-			int tmp = H;
-			H = W;
-			W = tmp;
-		} // これで常に H <= W
 		
-		int hbits = 1 << H;
-		long[] dp = new long[hbits]; // indexが半畳かどうかを表す 
-		boolean[] valid = new boolean[hbits];
+		out.println(this.dfs(0, 0, H, W, new boolean[H][W], A));
+	}
+	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param H
+	 * @param W
+	 * @param filled
+	 * @param A remaining 横長の畳
+	 * @return
+	 */
+	public int dfs(int x, int y, int H, int W, boolean[][] filled, int A) {
 		
-		for (int i = 0; i < hbits; i++) {
-			if (isValid(i, H)) {
-				dp[i] = 1;
-				valid[i] = true;
+		if (x == W) return this.dfs(0, y+1, H, W, filled, A);
+		if (y == H) return A == 0 ? 1 : 0;
+		
+		// 置かない場合
+		int res = 0;
+		res += this.dfs(x+1, y, H, W, filled, A);
+		if (!filled[y][x]) {
+			filled[y][x] = true;
+			// 横置き
+			if (x+1 < W && !filled[y][x+1]) {
+				filled[y][x+1] = true;
+				res += this.dfs(x+2, y, H, W, filled, A-1);
+				filled[y][x+1] = false;
 			}
-		}
-		
-		for (int w = 1; w < W; w++) {
-			long[] ndp = new long[hbits];
-			for (int i = 0; i < hbits; i++) {
-				if (!valid[i]) continue;
-				long sum = 0;
-				
+			// 縦置き
+			if (y+1 < H && !filled[y+1][x]) {
+				filled[y+1][x] = true;
+				res += this.dfs(x+1, y, H, W, filled, A-1);
+				filled[y+1][x] = false;
 			}
+			filled[y][x] = false;
 		}
+		return res;
 	}
 	
 	public boolean isValid(int index, int H) {

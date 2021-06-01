@@ -140,6 +140,21 @@ public class Main {
 			for (int i = 2; i <= r; i++) { res = res.divide(BigInteger.valueOf(i)); }
 			return res.longValue();
 		}
+		
+		public static long fraction(int n) {
+			long res = 1;
+			for (int i = 1; i <= n; i++) { res *= i; }
+			return res;
+		}
+		
+		public static long longFratction(long n) { return bigFraction(n).longValueExact(); }
+		
+		public static BigInteger bigFraction(long n) {
+			BigInteger res = BigInteger.ONE;
+			for (long i = 2; i < n; i++) { res = res.multiply(BigInteger.valueOf(i)); }
+			return res;
+		}
+		
 		/**
 		 * Use {@link Math#pow Math.pow} for double.
 		 * @param x
