@@ -23,7 +23,7 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
-		long nanos = System.nanoTime();
+//		long nanos = System.nanoTime();
 		final int N = sc.nextInt(); // vertex
 		final int M = sc.nextInt(); // edge
 		@SuppressWarnings("unchecked")
@@ -51,7 +51,7 @@ public class Main {
 			mapb.get(c).add(a);
 		}
 //		System.out.println(System.nanoTime() - nanos);
-		nanos = System.nanoTime();
+//		nanos = System.nanoTime();
 		// BFS
 		PriorityQueue<BfsNode> bfs = new PriorityQueue<>((a,b) -> Integer.compare(a.depth, b.depth));
 		Set<BiSet> checked = new HashSet<>(N*N);

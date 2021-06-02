@@ -1,4 +1,4 @@
-package oiwa.atcoder.beginner196.questionD;
+package oiwa.atcoder.beginner196.questionD3;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,6 +6,12 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.NoSuchElementException;
 
+/**
+ * abc196D DP
+ * 1時間程度
+ * @author T.Oiwa
+ *
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -14,57 +20,61 @@ public class Main {
 		out.flush();
 	}
 	
+	public int H;
+	public int W;
 	
-	@SuppressWarnings("unused")
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
-		int H = sc.nextInt();
-		int W = sc.nextInt();
+		H = sc.nextInt();
+		W = sc.nextInt();
 		final int A = sc.nextInt();
+		@SuppressWarnings("unused")
 		final int B = sc.nextInt();
-		if (H > W) {
-			int tmp = H;
-			H = W;
-			W = tmp;
-		} // これで常に H <= W
 		
-		int hbits = 1 << H;
-		long[] dp = new long[hbits]; // indexが半畳かどうかを表す 
-		boolean[] valid = new boolean[hbits];
+		long[] dp = new long[ 1 << (H*W) ];
+		dp[0] = 1;
+		// dp[状態] = その場合の数
 		
-		for (int i = 0; i < hbits; i++) {
-			if (isValid(i, H)) {
-				dp[i] = 1;
-				valid[i] = true;
+		long res = 0;
+		for (int s = 0; s < (1 << H*W); s++) { // 順序による重複が避けられる
+			if (dp[s] == 0) continue;
+			for (int i = 0; i < H; i++) {
+				for (int j= 0; j < W; j++) { // 全ての空き場所に対して
+					if ((encode(i, j) & s) != 0) continue;
+					// 横置き
+					int code = encode(i, j) | encode(i, j+1);
+					if (j+1 < W && ((encode(i, j+1) & s) == 0) && code > s) {
+						dp[s | code] += dp[s];
+					}
+					// 縦置き
+					code = encode(i, j) | encode(i+1, j);
+					if (i+1 < H && ((encode(i+1, j) & s) == 0) && code > s) {
+						dp[s | code] += dp[s];
+					}
+				}
+			}
+//			Log.debug(s + " " + dp[s] + " " + count(s, A*2));
+			if (count(s, A*2)) {
+				res += dp[s];
 			}
 		}
-		
-		for (int w = 1; w < W; w++) {
-			long[] ndp = new long[hbits];
-			for (int i = 0; i < hbits; i++) {
-				if (!valid[i]) continue;
-				long sum = 0;
-				
-			}
-		}
+		out.println(res);
 	}
 	
-	public boolean isValid(int index, int H) {
-		boolean flag = false;
-		for (int i = 0; i < H; i++) {
-			boolean bit = (index & (1 << i)) > 0;
-			if (bit) {
-				if (flag) return false;
-			} else {
-				flag = !flag;
-			}
+	public boolean count(int code, int A2) {
+		int cnt = 0;
+		for (int i = 0; i < H*W; i++) {
+			if (((1 << i) & code) != 0) cnt++;
 		}
-		return !flag;
+		return cnt == A2;
 	}
 	
+	public int encode(int i, int j) {
+		return 1 << (i*W + j);
+	}
 	
 	// ==== Fast Util ====
 	
@@ -235,5 +245,10 @@ public class Main {
 		}
 	}
 	
-	public void debug(String str) { if (DEBUG) System.out.println(str); }
+	public static class Log {
+		public static void debug(String str) { if (DEBUG) System.out.println(str); }
+		public static void debug(int x) { debug(String.valueOf(x)); }
+		public static void debug(long x) { debug(String.valueOf(x)); }
+	}
+	
 }

@@ -30,6 +30,7 @@ public class Main {
 		int H = sc.nextInt();
 		int W = sc.nextInt();
 		final int A = sc.nextInt();
+		@SuppressWarnings("unused")
 		final int B = sc.nextInt();
 		
 		out.println(this.dfs(0, 0, H, W, new boolean[H][W], A));
