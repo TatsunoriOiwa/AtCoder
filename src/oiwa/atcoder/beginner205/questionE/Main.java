@@ -16,11 +16,35 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		int N = sc.nextInt(); // 白
+		int M = sc.nextInt(); // 黒
+		int K = sc.nextInt();
+		final long MOD = 1000_000_000+7;
+		
+		if (N > M+K) {
+			out.println(0);
+			return;
+		}
+		
+		long[] dp = new long[N+1];
+		dp[0] = 1;
+		for (int i = 0; i < N+M; i++) {
+			for (int w = Math.min(N, i); w >= 0 && w >= i-M; w--) {
+//				long d = dp[w];
+				if (w+1 <= i-w-1 + K && w+1 < N+1) {
+					dp[w+1] = (dp[w+1] + dp[w]) % MOD;
+				}
+				if (!(w <= i-w + K)) {
+					dp[w] = 0;
+				}
+			}
+		}
+		out.println(dp[N]);
+		
 	}
 	
 	
