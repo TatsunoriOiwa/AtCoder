@@ -7,7 +7,7 @@ import java.math.BigInteger;
 import java.util.NoSuchElementException;
 
 /**
- * 2021/05/28 10 min.
+ * 2021/06/14 ŽÀ‘• 20 min.
  * @author 17952
  *
  */
@@ -25,42 +25,35 @@ public class Main {
 		
 		int N = sc.nextInt();
 		
-		long[] as = new long[N];
-		int[] ts = new int[N];
+		long max = Long.MIN_VALUE / 4;
+		long min = Long.MAX_VALUE / 4;
+		long as = 0;
 		
-		int prevt = 0;
-		int fmax = 0;
 		for (int i = 0; i < N; i++) {
 			long a = sc.nextLong();
 			int t = sc.nextInt();
 			
-			if (t == prevt) {
-				if (t == 1) {
-					as[fmax] += a;
-				} else if (t == 2) {
-					as[fmax] = Math.max(a, as[fmax]);
-				} else if (t == 3) {
-					as[fmax] = Math.min(a, as[fmax]);
-				} else {
-					assert(false);
-				}
+			if (t == 1) {
+				max += a;
+				min += a;
+				as += a;
+			} else if (t == 2) {
+				if (max < a) { max = a; }
+				if (min < a) { min = a; }
+			} else if (t == 3) {
+				if (min > a) { min = a; }
+				if (max > a) { max = a; }
 			} else {
-				as[fmax] = a;
-				ts[fmax] = t;
-				prevt = t;
-				fmax++;
+				assert(false);
 			}
 		}
-		
-		
 		
 		int Q = sc.nextInt();
 		for (int i = 0; i < Q; i++) {
 			long res = sc.nextLong();
-			for (int n = 0; n < fmax; n++) {
-				res = func(res, as[n], ts[n]);
-			}
-			out.println(res);
+			if (res < max - as) out.println(max);
+			else if (res > min - as) out.println(min);
+			else out.println(res + as);
 		}
 		
 	}
