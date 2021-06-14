@@ -6,6 +6,11 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.NoSuchElementException;
 
+/**
+ * 2021/05/28 10 min.
+ * @author 17952
+ *
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -16,13 +21,60 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
-//		int i = sc.nextInt();
-//		String s = sc.next();
-//		out.println(sc.next());
+		
+		int N = sc.nextInt();
+		
+		long[] as = new long[N];
+		int[] ts = new int[N];
+		
+		int prevt = 0;
+		int fmax = 0;
+		for (int i = 0; i < N; i++) {
+			long a = sc.nextLong();
+			int t = sc.nextInt();
+			
+			if (t == prevt) {
+				if (t == 1) {
+					as[fmax] += a;
+				} else if (t == 2) {
+					as[fmax] = Math.max(a, as[fmax]);
+				} else if (t == 3) {
+					as[fmax] = Math.min(a, as[fmax]);
+				} else {
+					assert(false);
+				}
+			} else {
+				as[fmax] = a;
+				ts[fmax] = t;
+				prevt = t;
+				fmax++;
+			}
+		}
+		
+		
+		
+		int Q = sc.nextInt();
+		for (int i = 0; i < Q; i++) {
+			long res = sc.nextLong();
+			for (int n = 0; n < fmax; n++) {
+				res = func(res, as[n], ts[n]);
+			}
+			out.println(res);
+		}
+		
 	}
 	
+	public long func(long x, long a, int t) {
+		switch (t) {
+		case 1: return x+a;
+		case 2: return Math.max(a, x);
+		case 3: return Math.min(a, x);
+		default: assert(false);
+		return 0;
+		}
+		
+	}
 	
 	
 	// ==== Fast Util ====
