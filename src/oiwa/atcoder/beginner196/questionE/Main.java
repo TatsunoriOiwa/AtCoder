@@ -7,7 +7,7 @@ import java.math.BigInteger;
 import java.util.NoSuchElementException;
 
 /**
- * 2021/06/14 ŽÀ‘• 20 min.
+ * 2021/06/14 ŽÀ‘• 15 min.
  * @author 17952
  *
  */
