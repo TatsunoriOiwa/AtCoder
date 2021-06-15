@@ -6,6 +6,11 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.NoSuchElementException;
 
+/**
+ * ABC 195 B 15 min
+ * @author T.Oiwa
+ *
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -16,14 +21,35 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		int A = sc.nextInt();
+		int B = sc.nextInt();
+		int W = sc.nextInt()*1000;
+		
+		final String UNSAT = "UNSATISFIABLE";
+		
+		int min = Integer.MAX_VALUE;
+		int max = 0;
+		for (int i = 1; i*A <= W; i++) {
+//			debug(i + " " + A*i + " " + B*i + " " + W);
+			if (satisfied(i, A, B, W)) {
+				if (min > i) min = i;
+				if (max < i) max = i;
+			}
+		}
+		if (max == 0) {
+			out.println(UNSAT);
+		} else {
+			out.println(min + " " + max);
+		}
 	}
 	
-	
+	private boolean satisfied(int i, int A, int B, int W) {
+		return i*A <= W && W <= i*B;
+	}
 	
 	// ==== Fast Util ====
 	
