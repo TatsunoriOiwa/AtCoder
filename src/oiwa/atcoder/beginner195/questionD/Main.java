@@ -4,8 +4,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
+/**
+ * abc195 D 28 min.
+ * @author T.Oiwa
+ *
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -21,9 +27,76 @@ public class Main {
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		int N = sc.nextInt();
+		int M = sc.nextInt();
+		int Q = sc.nextInt();
+		Cargo[] cargos = new Cargo[N];
+		for (int i = 0; i < N; i++) {
+			cargos[i] = new Cargo(sc.nextInt(), sc.nextInt());
+		}
+		Box[] boxes = new Box[M];
+		for (int i = 0; i < M; i++) {
+			boxes[i] = new Box(i, sc.nextInt());
+		}
+		
+		Arrays.sort(cargos, (c1, c2) -> -Integer.compare(c1.value, c2.value));
+		Arrays.sort(boxes, (b1, b2) -> Integer.compare(b1.size, b2.size));
+		
+		for (int q = 0; q < Q; q++) {
+			int L = sc.nextInt() - 1;
+			int R = sc.nextInt() - 1;
+			boolean[] used = new boolean[M];
+			int remaining = M - (R-L+1);
+			
+			long sum = 0;
+			for (Cargo c : cargos) { // ‰¿’l‚Ì‚‚¢‡‚É
+				int ceil = Arrays.binarySearch(boxes, new Box(c.size, 0), (b1, b2) -> Integer.compare(b1.size, b2.size));
+				if (ceil < 0) { ceil = -ceil - 1; }
+				while (ceil > 0 && boxes[ceil-1] == boxes[ceil]) ceil--;
+				while (ceil < M) {
+					Box b = boxes[ceil];
+					if (b.canContain(c, L, R, used)) {
+						used[b.index] = true;
+						sum += c.value;
+						remaining--;
+						break;
+					}
+					ceil++;
+				}
+				if (remaining <= 0) break;
+			}
+			out.println(sum);
+		}
+		
 	}
 	
+	public static class Cargo {
+		public final int size;
+		public final int value;
+		public Cargo(int size, int value) {
+			this.size = size;
+			this.value = value;
+		}
+	}
 	
+	public static class Box {
+		public final int index;
+		public final int size;
+		public Box(int index, int size) {
+			this.index = index;
+			this.size = size;
+		}
+		
+		public boolean canContain(Cargo cargo, int L, int R, boolean[] used) {
+			if (this.isUseable(L, R, used)) return cargo.size <= this.size;
+			return false;
+		}
+		
+		private boolean isUseable(int L, int R, boolean[] used) {
+			return (this.index < L || R < this.index) && (!used[this.index]);
+		}
+	}
 	
 	// ==== Fast Util ====
 	
