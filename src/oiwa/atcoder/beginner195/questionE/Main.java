@@ -6,6 +6,12 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.NoSuchElementException;
 
+/**
+ * abc 195 E 77 min
+ * バカみたいな実装ミスで時間を取った．具体的にはiを１と間違えていた
+ * @author T.Oiwa
+ *
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -14,16 +20,74 @@ public class Main {
 		out.flush();
 	}
 	
+	public static final String TAKAHASHI = "Takahashi";
+	public static final String AOKI = "Aoki";
+	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		int N = sc.nextInt();
+		String S = sc.next();
+		String X = sc.next();
+		
+		int[] prevmod = new int[7];
+		for (int i = 0; i < 7; i++) {
+			prevmod[(i*10)%7] = i;
+		}
+		
+		boolean[] reachable = new boolean[7];
+		reachable[0] = true;
+		for (int i = N-1; i >= 0; i--) {
+			boolean[] next = new boolean[7];
+			int cnt = 0;
+			if (X.charAt(i) == 'T') { // Takahashi
+				for (int m = 0; m < 7; m++) {
+					if (reachable[(m*10 + sval(S, i)) % 7] || reachable[(m*10)% 7]) {
+						next[m] = true;
+						cnt++;
+					}
+				}
+			} else { // Aoki
+				for (int m = 0; m < 7; m++) {
+//					debug("c="+ String.valueOf(S.charAt(i)) + " " + sval(S, i));
+//					if (reachable[(m*10 + sval(S, i)) % 7]) debug("ms=" + m + " " + (m*10 + sval(S, i)) % 7);
+//					if (reachable[(m*10) % 7]) debug("m0=" + m + " " + (m*10) % 7);
+					if (reachable[(m*10 + sval(S, i)) % 7] && reachable[(m*10) % 7]) {
+						next[m] = true;
+						cnt++;
+					}
+				}
+			}
+//			debug(next);
+			
+			if (cnt == 0) {
+				out.println(AOKI);
+				return;
+			}
+			reachable = next;
+		}
+		out.println(reachable[0] ? TAKAHASHI : AOKI);
 	}
 	
+	/**
+	 * 正の余りを返す
+	 * @param x
+	 * @param m
+	 * @return
+	 */
+	public int mod(int x) {
+		int m = 7;
+		int mod = x % m;
+		if (mod < 0) mod += m;
+		return m;
+	}
 	
+	public int sval(String S, int i) {
+		return Integer.parseInt(String.valueOf(S.charAt(i)));
+	}
 	
 	// ==== Fast Util ====
 	
@@ -200,5 +264,13 @@ public class Main {
 	
 	public void debug(String str) {
 		if (DEBUG) System.out.println(str);
+	}
+	
+	public void debug(boolean[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) System.out.print(arr[i] + ", ");
+			System.out.println("]");
+		}
 	}
 }
