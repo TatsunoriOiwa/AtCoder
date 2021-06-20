@@ -21,6 +21,17 @@ public class Main {
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		int N = sc.nextInt();
+		
+		int cand = (int) Math.sqrt(2*N) - 1;
+		if ((cand-1)*(cand) >= 2*N) assert(false);
+		for (int n = cand;; n++) {
+			if (n*(n+1) >= 2*N) {
+				out.println(n);
+				return;
+			}
+		}
+		
 	}
 	
 	

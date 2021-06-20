@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 public class Main {
@@ -16,11 +18,32 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		int N = sc.nextInt();
+		int[] as = sc.nextIntArray(N);
+		
+		Map<Integer, Integer> amap = new HashMap<>();
+		for (int i = 0; i < N; i++) {
+			int ai = as[i];
+//			Set<Integer> set;
+//			if (!amap.containsKey(ai)) {
+//				amap.put(ai, set = new HashSet<>());
+//			} else {
+//				set = amap.get(ai);
+//			}
+//			set.add(i);
+			amap.put(ai, amap.getOrDefault(ai, 0)+1);
+		}
+		long NL = N;
+		long cnt = NL * (NL - 1) / 2; // 15
+		for (Integer e : amap.values()) {
+			long l = e;
+			cnt -= l*(l-1) / 2;
+		}
+		out.println(cnt);
 	}
 	
 	

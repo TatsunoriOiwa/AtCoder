@@ -16,11 +16,17 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		int N = sc.nextInt();
+		
+		int price = (int) (N * 1.08);
+		int ref = 206;
+		if (price < ref) out.println("Yay!");
+		else if (price == ref) out.println("so-so");
+		else out.println(":(");
 	}
 	
 	

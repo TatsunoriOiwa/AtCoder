@@ -16,14 +16,63 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
-//		int i = sc.nextInt();
-//		String s = sc.next();
-//		out.println(sc.next());
+		
+		int N = sc.nextInt();
+		int[] as = sc.nextIntArray(N);
+		
+//		int[] repmap2 = new int[2_000_00+1];
+//		Map<Integer, Integer> repmap = new HashMap<>();
+//		Map<Integer, Set<Integer>> eqmap = new HashMap<>();
+		int[] sameto = new int[2_000_00 + 1];
+		for (int i = 0; i <= 2_000_00; i++) {
+			sameto[i] = i;
+		}
+		
+		long cnt = 0;
+		
+		int NH = N / 2;
+		for (int i = 0; i < NH; i++) {
+			int j = N - 1 - i;
+			int ai = as[i];
+			int aj = as[j];
+			if (ai != aj) {
+				int min = Math.min(sameto[ai], sameto[aj]);
+				if (min != sameto[ai]) sameto[sameto[ai]] = min;
+				if (min != sameto[aj]) sameto[sameto[aj]] = min;
+				sameto[ai] = min;
+				sameto[aj] = min;
+			}
+//			int aib = repmap2[ai] == 0 ? ai : repmap2[ai];//repmap.getOrDefault(ai, ai);
+//			int ajb = repmap2[aj] == 0 ? aj : repmap2[aj];//repmap.getOrDefault(aj, aj);
+//			if (aib == ajb) continue;
+//			Set<Integer> aibeq;
+//			if (!eqmap.containsKey(aib)) { // aib が自前のセットをまだ持っていない
+//				if (!eqmap.containsKey(ajb)) {
+//					eqmap.put(aib, aibeq = new HashSet<>());
+//				} else {
+//					eqmap.put(aib, aibeq = eqmap.get(ajb));
+//					for (int aa : aibeq) { repmap2[aa] = aib; /* repmap.put(aa, aib); */ }
+//				}
+//			} else {
+//				aibeq = eqmap.get(aib);
+//				if (eqmap.containsKey(ajb)) {
+//					Set<Integer> ajbeq = eqmap.get(ajb);
+//					aibeq.addAll(ajbeq);
+//					for (int aa : ajbeq) { repmap2[aa] = aib; /* repmap.put(aa, aib); */ }
+//				}
+//			}
+//			repmap2[ajb] = aib;
+////			repmap.put(ajb, aib);
+//			aibeq.add(ajb);
+//			cnt++;
+		}
+		
+		for (int i = 0; i <= 2_000_00; i++) {
+			if (sameto[i] != i) cnt++;
+		}
+		out.println(cnt);
 	}
-	
-	
 	
 	// ==== Fast Util ====
 	
