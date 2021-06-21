@@ -1,10 +1,9 @@
-package oiwa.atcoder.beginner205.questionD;
+package oiwa.atcoder.beginner206.questionD;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 public class Main {
@@ -18,41 +17,62 @@ public class Main {
 	
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
-//		int i = sc.nextInt();
-//		String s = sc.next();
-//		out.println(sc.next());
 		
 		int N = sc.nextInt();
-		int Q = sc.nextInt();
-		long[] as = sc.nextLongArray(N);
+		int[] as = sc.nextIntArray(N);
 		
-		long[] cnt = new long[N];
-		for (int i = 0; i < N; i++) {
-			cnt[i] = as[i] - 1 - i;
+//		int[] repmap2 = new int[2_000_00+1];
+//		Map<Integer, Integer> repmap = new HashMap<>();
+//		Map<Integer, Set<Integer>> eqmap = new HashMap<>();
+		int[] sameto = new int[2_000_00 + 1];
+		for (int i = 0; i <= 2_000_00; i++) {
+			sameto[i] = i;
 		}
 		
-		for (int i = 0; i < Q; i++) {
-			long ki = sc.nextLong();
-			int ceil = Arrays.binarySearch(cnt, ki);
-			if (ceil < 0) { ceil = (-ceil) -1; }
-			else {
-				while (ceil > 0 && cnt[ceil] == cnt[ceil-1]) { ceil--;}
+		long cnt = 0;
+		
+		int NH = N / 2;
+		for (int i = 0; i < NH; i++) {
+			int j = N - 1 - i;
+			int ai = as[i];
+			int aj = as[j];
+			if (ai != aj) {
+				int min = Math.min(sameto[ai], sameto[aj]);
+				if (min != sameto[ai]) sameto[sameto[ai]] = min;
+				if (min != sameto[aj]) sameto[sameto[aj]] = min;
+				sameto[ai] = min;
+				sameto[aj] = min;
 			}
-			
-//			long vc = cnt[ceil];
-			debug("c=" + ceil);
-			if (ceil < N) {
-				long vt = as[ceil] -1;
-				vt = vt - (cnt[ceil] - ki);
-				out.println(vt);
-			} else {
-				out.println(as[N-1] + (ki - cnt[N-1]));
-			}
+//			int aib = repmap2[ai] == 0 ? ai : repmap2[ai];//repmap.getOrDefault(ai, ai);
+//			int ajb = repmap2[aj] == 0 ? aj : repmap2[aj];//repmap.getOrDefault(aj, aj);
+//			if (aib == ajb) continue;
+//			Set<Integer> aibeq;
+//			if (!eqmap.containsKey(aib)) { // aib が自前のセットをまだ持っていない
+//				if (!eqmap.containsKey(ajb)) {
+//					eqmap.put(aib, aibeq = new HashSet<>());
+//				} else {
+//					eqmap.put(aib, aibeq = eqmap.get(ajb));
+//					for (int aa : aibeq) { repmap2[aa] = aib; /* repmap.put(aa, aib); */ }
+//				}
+//			} else {
+//				aibeq = eqmap.get(aib);
+//				if (eqmap.containsKey(ajb)) {
+//					Set<Integer> ajbeq = eqmap.get(ajb);
+//					aibeq.addAll(ajbeq);
+//					for (int aa : ajbeq) { repmap2[aa] = aib; /* repmap.put(aa, aib); */ }
+//				}
+//			}
+//			repmap2[ajb] = aib;
+////			repmap.put(ajb, aib);
+//			aibeq.add(ajb);
+//			cnt++;
 		}
 		
+		for (int i = 0; i <= 2_000_00; i++) {
+			if (sameto[i] != i) cnt++;
+		}
+		out.println(cnt);
 	}
-	
-	
 	
 	// ==== Fast Util ====
 	
@@ -229,5 +249,26 @@ public class Main {
 	
 	public void debug(String str) {
 		if (DEBUG) System.out.println(str);
+	}
+	public void debug(boolean[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}
+	public void debug(long[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}
+	public void debug(double[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
 	}
 }

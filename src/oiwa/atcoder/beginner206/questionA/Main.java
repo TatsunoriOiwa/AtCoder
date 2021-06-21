@@ -1,10 +1,9 @@
-package oiwa.atcoder.beginner205.questionD;
+package oiwa.atcoder.beginner206.questionA;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 public class Main {
@@ -21,35 +20,13 @@ public class Main {
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
-		
 		int N = sc.nextInt();
-		int Q = sc.nextInt();
-		long[] as = sc.nextLongArray(N);
 		
-		long[] cnt = new long[N];
-		for (int i = 0; i < N; i++) {
-			cnt[i] = as[i] - 1 - i;
-		}
-		
-		for (int i = 0; i < Q; i++) {
-			long ki = sc.nextLong();
-			int ceil = Arrays.binarySearch(cnt, ki);
-			if (ceil < 0) { ceil = (-ceil) -1; }
-			else {
-				while (ceil > 0 && cnt[ceil] == cnt[ceil-1]) { ceil--;}
-			}
-			
-//			long vc = cnt[ceil];
-			debug("c=" + ceil);
-			if (ceil < N) {
-				long vt = as[ceil] -1;
-				vt = vt - (cnt[ceil] - ki);
-				out.println(vt);
-			} else {
-				out.println(as[N-1] + (ki - cnt[N-1]));
-			}
-		}
-		
+		int price = (int) (N * 1.08);
+		int ref = 206;
+		if (price < ref) out.println("Yay!");
+		else if (price == ref) out.println("so-so");
+		else out.println(":(");
 	}
 	
 	
@@ -229,5 +206,26 @@ public class Main {
 	
 	public void debug(String str) {
 		if (DEBUG) System.out.println(str);
+	}
+	public void debug(boolean[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}
+	public void debug(long[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}
+	public void debug(double[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
 	}
 }
