@@ -6,6 +6,11 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.NoSuchElementException;
 
+/**
+ * ABC 194 C 11 min.
+ * @author T.Oiwa
+ * @date 2021/06/22
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -16,11 +21,23 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		int N = sc.nextInt();
+		
+		int[] as = sc.nextIntArray(N);
+		
+		long sqsum = 0;
+		long sum = 0;
+		
+		for (int i = 0; i < N ; i++) {
+			sqsum += as[i]*as[i];
+			sum += as[i];
+		}
+		
+		out.println(N*sqsum - sum*sum);
 	}
 	
 	
