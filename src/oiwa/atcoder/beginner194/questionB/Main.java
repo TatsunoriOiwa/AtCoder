@@ -6,6 +6,11 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.NoSuchElementException;
 
+/**
+ * ABC 194 B 5 min.
+ * @author T.Oiwa
+ * @date 2021/06/22
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -16,11 +21,31 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		int N = sc.nextInt();
+		int[] as = new int[N];
+		int[] bs = new int[N];
+		for (int i = 0; i < N; i++) {
+			as[i] = sc.nextInt();
+			bs[i] = sc.nextInt();
+		}
+		
+		long minTime = Long.MAX_VALUE;
+		for (int a = 0; a < N; a++) {
+			for (int b = 0; b < N; b++) {
+				long t;
+				if (a == b) {
+					t = as[a] + bs[b];
+				} else {
+					t = Math.max(as[a], bs[b]);
+				}
+				if (t < minTime) minTime = t;
+			}
+		}
+		out.println(minTime);
 	}
 	
 	
