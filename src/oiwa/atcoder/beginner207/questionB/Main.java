@@ -16,11 +16,22 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		int A = sc.nextInt();
+		int B = sc.nextInt();
+		int C = sc.nextInt();
+		int D = sc.nextInt();
+		
+		if (C*D - B <= 0) {
+			out.println(-1);
+		} else {
+			boolean flag = A % (C*D - B) == 0;
+			out.println(A / (C*D - B) + (flag ? 0 : 1));
+		}
+		
 	}
 	
 	

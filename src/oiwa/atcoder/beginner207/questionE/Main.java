@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 public class Main {
@@ -15,12 +16,34 @@ public class Main {
 	}
 	
 	
+	@SuppressWarnings("unused")
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		final int MOD = 1000_000_000 + 7;
+		
+		final int N = sc.nextInt();
+		long[] as = sc.nextLongArray(N);
+		
+		
+		/* i+1 要素までを j+1 分割する通りの数 */
+		long[][] dp = new long[N][];
+		Arrays.fill(dp, new long[N]);
+		Arrays.fill(dp[0], 1);
+		
+		int cnt = 1;
+		
+		for (int k = 2; k <= N; k++) { // k 分割
+			for (int i = k-1; i < N; i++) { // i 番目の要素までを
+				int sum = 0;
+				
+//				dp[i]
+			}
+			
+		}
+		
 	}
 	
 	

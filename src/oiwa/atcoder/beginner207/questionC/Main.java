@@ -16,14 +16,53 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		int N = sc.nextInt();
+		Seg[] segs = new Seg[N];
+		for (int i = 0; i < N; i++) {
+			segs[i] = new Seg(sc.nextInt(), sc.nextInt(), sc.nextInt());
+		}
+		
+		int cnt = 0;
+		for (int i = 0; i < N; i++) {
+			for (int j = i+1; j < N; j++) {
+				if (segs[i].intersectsWith(segs[j])) cnt++;
+			}
+		}
+		out.println(cnt);
 	}
 	
-	
+	public static class Seg {
+		private final int type;
+		private final int left;
+		private final int right;
+		public Seg(int type, int left, int right) {
+			this.type = type;
+			this.left = left;
+			this.right = right;
+		}
+		public int getLeft() { return left; }
+		public int getRight() { return right; }
+		public boolean includeLeft() { return type == 1 || type == 2; }
+		public boolean includeRight() { return type == 1 || type == 3; }
+		public boolean intersectsWith(Seg other) {
+			if (this.getLeft() < other.getLeft()) {
+				if (this.getRight() < other.getLeft() ||
+						(this.getRight() == other.getLeft() && (!this.includeRight() || !other.includeLeft()))) return false;
+				return true;
+			} else if (this.getLeft() == other.getLeft()) {
+				return true;
+			} else {
+				if (other.getRight() < this.getLeft() ||
+						(other.getRight() == this.getLeft() && (!other.includeRight() || !this.includeLeft()))) return false;
+				return true;
+			}
+		}
+	}
 	
 	// ==== Fast Util ====
 	
