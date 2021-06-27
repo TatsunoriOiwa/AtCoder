@@ -1,36 +1,30 @@
-package oiwa.atcoder.beginner194.questionE;
+package oiwa.atcoder.beginner207.questionA;
 
 import oiwa.atcoder.util.Case;
 import oiwa.atcoder.util.TesterV3;
 
-public class TestE {
+public class TestA {
 	public static void main(String[] args) {
 		new TesterV3(Main.class, new Case[] {
 				
 				new Case(true,
-						"3 2\r\n"
-						+ "0 0 1\r\n"
+						"3 4 5\r\n"
 						+ "",
-						"1\r\n"
+						"9\r\n"
 						+ ""),
 				new Case(true,
-						"3 2\r\n"
-						+ "1 1 1\r\n"
+						"6 6 6\r\n"
 						+ "",
-						"0\r\n"
+						"12\r\n"
 						+ ""),
 				new Case(true,
-						"3 2\r\n"
-						+ "0 1 0\r\n"
+						"99 99 98\r\n"
 						+ "",
-						"2\r\n"
+						"198\r\n"
 						+ ""),
-				new Case(true,
-						"7 3\r\n"
-						+ "0 0 1 2 0 1 0\r\n"
-						+ "",
-						"2\r\n"
-						+ ""),
+				new Case(false,
+						"",
+						""),
 				new Case(false,
 						"",
 						""),

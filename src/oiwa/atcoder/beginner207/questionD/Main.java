@@ -1,19 +1,13 @@
-package oiwa.atcoder.beginner194.questionE;
+package oiwa.atcoder.beginner207.questionD;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
-import java.util.TreeSet;
+import java.util.Set;
 
-/**
- * ABC 194 E 30 min.
- * @author T.Oiwa
- * @date 2021/06/23
- */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -28,45 +22,92 @@ public class Main {
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
-		int N = sc.nextInt();
-		int M = sc.nextInt();
-		int[] As = sc.nextIntArray(N);
 		
-		Map<Integer, Integer> used = new HashMap<>();
-//		PriorityQueue queue = new PriorityQueue<Integer>();
-		TreeSet<Integer> unused = new TreeSet<>();
-		for (int i = 0; i <= N; i++) { unused.add(i); }
-		
-		for (int i = 0; i < M; i++) {
-			int ai = As[i];
-			int nused = used.getOrDefault(ai, 0);
-			if (nused == 0) {
-				unused.remove(ai);
-			}
-			used.put(ai, nused+1);
+		final int N = sc.nextInt();
+		if (N == 1) {
+			out.println("Yes");
+			return;
 		}
-		int mex = unused.first();
 		
-		for (int i = M; i < N; i++) {
-			{
-				int ai0 = As[i-M];
-				int nused = used.get(ai0) - 1;
-				used.put(ai0, nused);
-				if (nused == 0) { unused.add(ai0); }
-			}
-			{
-				int aip = As[i];
-				int nused = used.getOrDefault(aip, 0);
-				used.put(aip, nused+1);
-				if (nused == 0) { unused.remove(aip); }
-			}
-			int tmp = unused.first();
-			if (mex > tmp) mex = tmp;
+		Set<Point> ab = new HashSet<>();
+		int a0 = sc.nextInt();
+		int b0 = sc.nextInt();
+		int a1 = sc.nextInt() - a0;
+		int b1 = sc.nextInt() - b0;
+		for (int i = 0; i < N - 2; i++) {
+			int ai = sc.nextInt() - a0;
+			int bi = sc.nextInt() - b0;
+			ab.add(new Point(a1*ai + b1*bi, a1*bi - b1*ai));
+//			debug(new Point(a1*ai + b1*bi, a1*bi - b1*ai) + "");
 		}
-		out.println(mex);
+		
+		int[][] cd = new int[N][];
+		for (int i = 0; i < N; i++) {
+			cd[i] = new int[2];
+			cd[i][0] = sc.nextInt();
+			cd[i][1] = sc.nextInt();
+		}
+		
+		final String YES = "Yes";
+		final String NO = "No";
+		
+		for (int i = 0; i < N; i++) {
+			int c0 = cd[i][0];
+			int d0 = cd[i][1];
+			for (int j = 0; j < N; j++) {
+				Set<Point> copy = new HashSet<>(ab);
+				if (i == j) continue;
+				int c1 = cd[j][0] - c0;
+				int d1 = cd[j][1] - d0;
+//				debug(i + " " + j);
+				if (c1*c1 + d1*d1 != a1*a1 + b1*b1) continue;
+				for (int k = 0; k < N; k++) {
+					if (k == i || k == j) continue;
+					int ck = cd[k][0] - c0;
+					int dk = cd[k][1] - d0;
+					Point pt = new Point(c1*ck + d1*dk, c1*dk - d1*ck);
+//					debug(pt + "");
+					if (!copy.contains(pt)) break;
+					copy.remove(pt);
+				}
+				if (copy.size() == 0) {
+					out.println(YES);
+					return;
+				}
+			}
+		}
+		
+		out.println(NO); return;
 	}
 	
-	
+	public static class Point {
+		private int dot;
+		private int cross;
+		
+		public Point(int dot, int cross) {
+			this.dot = dot;
+			this.cross = cross;
+		}
+		
+		@Override
+		public int hashCode() {
+			return dot + 10000 * cross;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Point) {
+				Point other = (Point) obj;
+				return this.dot == other.dot && this.cross == other.cross;
+			}
+			return false;
+		}
+		
+		@Override
+		public String toString() {
+			return "(" + this.dot + "," + this.cross + ")";
+		}
+	}
 	
 	// ==== Fast Util ====
 	

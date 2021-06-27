@@ -1,19 +1,11 @@
-package oiwa.atcoder.beginner194.questionE;
+package oiwa.atcoder.beginner207.questionC;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.TreeSet;
 
-/**
- * ABC 194 E 30 min.
- * @author T.Oiwa
- * @date 2021/06/23
- */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -28,45 +20,49 @@ public class Main {
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
 		int N = sc.nextInt();
-		int M = sc.nextInt();
-		int[] As = sc.nextIntArray(N);
-		
-		Map<Integer, Integer> used = new HashMap<>();
-//		PriorityQueue queue = new PriorityQueue<Integer>();
-		TreeSet<Integer> unused = new TreeSet<>();
-		for (int i = 0; i <= N; i++) { unused.add(i); }
-		
-		for (int i = 0; i < M; i++) {
-			int ai = As[i];
-			int nused = used.getOrDefault(ai, 0);
-			if (nused == 0) {
-				unused.remove(ai);
-			}
-			used.put(ai, nused+1);
+		Seg[] segs = new Seg[N];
+		for (int i = 0; i < N; i++) {
+			segs[i] = new Seg(sc.nextInt(), sc.nextInt(), sc.nextInt());
 		}
-		int mex = unused.first();
 		
-		for (int i = M; i < N; i++) {
-			{
-				int ai0 = As[i-M];
-				int nused = used.get(ai0) - 1;
-				used.put(ai0, nused);
-				if (nused == 0) { unused.add(ai0); }
+		int cnt = 0;
+		for (int i = 0; i < N; i++) {
+			for (int j = i+1; j < N; j++) {
+				if (segs[i].intersectsWith(segs[j])) cnt++;
 			}
-			{
-				int aip = As[i];
-				int nused = used.getOrDefault(aip, 0);
-				used.put(aip, nused+1);
-				if (nused == 0) { unused.remove(aip); }
-			}
-			int tmp = unused.first();
-			if (mex > tmp) mex = tmp;
 		}
-		out.println(mex);
+		out.println(cnt);
 	}
 	
-	
+	public static class Seg {
+		private final int type;
+		private final int left;
+		private final int right;
+		public Seg(int type, int left, int right) {
+			this.type = type;
+			this.left = left;
+			this.right = right;
+		}
+		public int getLeft() { return left; }
+		public int getRight() { return right; }
+		public boolean includeLeft() { return type == 1 || type == 2; }
+		public boolean includeRight() { return type == 1 || type == 3; }
+		public boolean intersectsWith(Seg other) {
+			if (this.getLeft() < other.getLeft()) {
+				if (this.getRight() < other.getLeft() ||
+						(this.getRight() == other.getLeft() && (!this.includeRight() || !other.includeLeft()))) return false;
+				return true;
+			} else if (this.getLeft() == other.getLeft()) {
+				return true;
+			} else {
+				if (other.getRight() < this.getLeft() ||
+						(other.getRight() == this.getLeft() && (!other.includeRight() || !this.includeLeft()))) return false;
+				return true;
+			}
+		}
+	}
 	
 	// ==== Fast Util ====
 	

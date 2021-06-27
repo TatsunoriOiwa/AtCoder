@@ -1,19 +1,12 @@
-package oiwa.atcoder.beginner194.questionE;
+package oiwa.atcoder.beginner207.questionE;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
-import java.util.TreeSet;
 
-/**
- * ABC 194 E 30 min.
- * @author T.Oiwa
- * @date 2021/06/23
- */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -23,47 +16,34 @@ public class Main {
 	}
 	
 	
+	@SuppressWarnings("unused")
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
-		int N = sc.nextInt();
-		int M = sc.nextInt();
-		int[] As = sc.nextIntArray(N);
+		final int MOD = 1000_000_000 + 7;
 		
-		Map<Integer, Integer> used = new HashMap<>();
-//		PriorityQueue queue = new PriorityQueue<Integer>();
-		TreeSet<Integer> unused = new TreeSet<>();
-		for (int i = 0; i <= N; i++) { unused.add(i); }
+		final int N = sc.nextInt();
+		long[] as = sc.nextLongArray(N);
 		
-		for (int i = 0; i < M; i++) {
-			int ai = As[i];
-			int nused = used.getOrDefault(ai, 0);
-			if (nused == 0) {
-				unused.remove(ai);
+		
+		/* i+1 要素までを j+1 分割する通りの数 */
+		long[][] dp = new long[N][];
+		Arrays.fill(dp, new long[N]);
+		Arrays.fill(dp[0], 1);
+		
+		int cnt = 1;
+		
+		for (int k = 2; k <= N; k++) { // k 分割
+			for (int i = k-1; i < N; i++) { // i 番目の要素までを
+				int sum = 0;
+				
+//				dp[i]
 			}
-			used.put(ai, nused+1);
+			
 		}
-		int mex = unused.first();
 		
-		for (int i = M; i < N; i++) {
-			{
-				int ai0 = As[i-M];
-				int nused = used.get(ai0) - 1;
-				used.put(ai0, nused);
-				if (nused == 0) { unused.add(ai0); }
-			}
-			{
-				int aip = As[i];
-				int nused = used.getOrDefault(aip, 0);
-				used.put(aip, nused+1);
-				if (nused == 0) { unused.remove(aip); }
-			}
-			int tmp = unused.first();
-			if (mex > tmp) mex = tmp;
-		}
-		out.println(mex);
 	}
 	
 	
