@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 public class Main {
 	public static boolean DEBUG = false;
@@ -118,6 +119,18 @@ public class Main {
 			long[] ret = new long[N];
 			for (int i = 0; i < N; i++) { ret[i] = this.nextLong() + offset; }
 			return ret;
+		}
+		/**
+		 * O(N)
+		 * @param <T>
+		 * @param arr
+		 * @param suppl
+		 * @return
+		 */
+		public <T> T[] nextObjArray(T[] arr, Function<FastScanner, T> suppl) {
+			final int N = arr.length;
+			for (int i = 0; i < N ; i++) { arr[i] = suppl.apply(this); }
+			return arr;
 		}
 	}
 	
