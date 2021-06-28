@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 public class Main {
@@ -16,14 +17,69 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		int K = sc.nextInt();
+		String S = sc.next();
+		String T = sc.next();
+		
+		int[] left = new int[9];
+		Arrays.fill(left, K);
+		int[] taka = new int[9];
+		int[] aoki = new int[9];
+		
+		for (int i = 0; i < 4; i++) {
+			int ci;
+			ci = Integer.valueOf(S.charAt(i) - '0') - 1;
+			left[ci]--;
+			taka[ci]++;
+			ci = Integer.valueOf(T.charAt(i) - '0') - 1;
+			left[ci]--;
+			aoki[ci]++;
+		}
+		
+		BigInteger total = BigInteger.ZERO;
+		BigInteger takaP = BigInteger.ZERO;
+		double probSum = 0;
+		for (int t = 0; t < 9; t++) {
+			if (left[t] == 0) continue;
+			double pt = left[t] / (double) (9*K - 8);
+			int lt = left[t];
+			left[t]--;
+			taka[t]++;
+			for (int a = 0; a < 9; a++) {
+				if (left[a] == 0) continue;
+				double pa = left[a] / (double) (9*K - 9);
+				double prob = pt * pa;
+//				debug(t + " " + a + " " + prob);
+//				total = total.add(BigInteger.valueOf(prob));
+				aoki[a]++;
+				if (this.score(taka) > this.score(aoki)) {
+					takaP = takaP.add(BigInteger.valueOf(lt).multiply(BigInteger.valueOf(left[a])));
+					probSum += prob;
+				}
+				aoki[a]--;
+			}
+			left[t]++;
+			taka[t]--;
+		}
+//		out.println(String.format("%.12f", takaP.doubleValue() / total.doubleValue()));
+//		out.println(String.format("%.12f", probSum));
+		long LK = K;
+		out.println(takaP.doubleValue() / ((9*LK - 8)*(9*LK - 9)));
 	}
 	
-	
+	public int score(int[] cnts) {
+		int score = 0;
+		for (int i = 0; i < 9; i++) {
+			int ci = cnts[i];
+			score += (i+1)*AtMath.power(10, ci);
+		}
+		return score;
+	}
 	
 	// ==== Fast Util ====
 	
