@@ -7,15 +7,21 @@ public class TestA {
 	public static void main(String[] args) {
 		new TesterV3(Main.class, new Case[] {
 				
-				new Case(false,
-						"",
-						""),
-				new Case(false,
-						"",
-						""),
-				new Case(false,
-						"",
-						""),
+				new Case(true,
+						"2 11\r\n"
+						+ "",
+						"Yes\r\n"
+						+ ""),
+				new Case(true,
+						"2 13\r\n"
+						+ "",
+						"No\r\n"
+						+ ""),
+				new Case(true,
+						"100 600\r\n"
+						+ "",
+						"Yes\r\n"
+						+ ""),
 				new Case(false,
 						"",
 						""),

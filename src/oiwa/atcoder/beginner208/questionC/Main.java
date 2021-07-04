@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
@@ -17,11 +18,24 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		int N = sc.nextInt();
+		long K = sc.nextLong();
+		
+		int[] as = sc.nextIntArray(N);
+		
+		long base = K / N;
+		int kd = (int) (K % N);
+		int[] asc = Arrays.copyOf(as, N);
+		Arrays.sort(asc);
+		int thresh = kd == 0 ? -1 : asc[kd-1];
+		for (int ai : as) {
+			out.println(base + (ai <= thresh ? 1 : 0));
+		}
 	}
 	
 	

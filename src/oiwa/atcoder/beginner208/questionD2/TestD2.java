@@ -1,9 +1,9 @@
-package oiwa.atcoder.beginner208.questionD;
+package oiwa.atcoder.beginner208.questionD2;
 
 import oiwa.atcoder.util.Case;
 import oiwa.atcoder.util.TesterV3;
 
-public class TestD {
+public class TestD2 {
 	public static void main(String[] args) {
 		new TesterV3(Main.class, new Case[] {
 				

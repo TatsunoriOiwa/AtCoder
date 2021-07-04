@@ -1,4 +1,4 @@
-package oiwa.atcoder.beginner208.questionD;
+package oiwa.atcoder.beginner208.questionD2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.function.Function;
 
 public class Main {
@@ -50,58 +49,19 @@ public class Main {
 		}
 		long sum = 0;
 		for (int k = 0; k < N; k++) {
-			// process in edges
-			for (Edge ie : inmap.get(k)) {
-				if (ie.from > k) continue;
-				for (int f = 0; f < N; f++) {
-					if (k == f) continue;
-					if (shortest[ie.from][f] > 0) {
-						long update = shortest[ie.from][f] + ie.weight;
-						if (update < shortest[k][f] || shortest[k][f] == 0) {
-							baseSum += - shortest[k][f] + update;
-							shortest[k][f] = update;
-						}
+			for (int i = 0; i < N; i++) {
+				for (int j = 0; j < N; j++) {
+					if (i == k || j == k || i == j) continue;
+					if ((shortest[j][i] == 0 || shortest[j][i] > shortest[k][i] + shortest[j][k])
+							&& (shortest[k][i] != 0)
+							&& (shortest[j][k] != 0)) {
+						debug(k + " " + i + " " + j);
+						long update = shortest[k][i] + shortest[j][k];
+						baseSum += -shortest[j][i] + update;
+						shortest[j][i] = update;
 					}
 				}
 			}
-			// process out edges.
-			TreeSet<Edge> queue = new TreeSet<>((e1, e2) -> {
-				int flag = Integer.compare(e1.from, e2.from);
-				if (flag != 0) return flag;
-				return Long.compare(e1.weight, e2.weight);
-			});
-			for (Edge oe : outmap.get(k)) {
-				for (int f = 0; f < N; f++) {
-					if (oe.to == f || k == f) continue;
-					if (shortest[k][f] > 0) {
-						long update = shortest[k][f] + oe.weight;
-						if (update < shortest[oe.to][f] || shortest[oe.to][f] == 0) {
-							baseSum += - shortest[oe.to][f] + update;
-							shortest[oe.to][f] = update;
-							if (oe.to <= k) { // ダイクストラスタート
-								queue.add(new Edge(f, oe.to, update));
-							}
-						}
-					}
-				}
-			}
-			
-			while (!queue.isEmpty()) {
-				Edge updated = queue.pollFirst();
-				if (updated.to > k) continue;
-				for (Edge oe : outmap.get(updated.to)) {
-					if (oe.to == updated.from) continue;
-					long update = shortest[updated.to][updated.from] + oe.weight;
-					if (update < shortest[oe.to][updated.from] || shortest[oe.to][updated.from] == 0) {
-						baseSum += - shortest[oe.to][updated.from] + update;
-						shortest[oe.to][updated.from] = update;
-						if (oe.to <= k) {
-							queue.add(new Edge(updated.from, oe.to, update));
-						}
-					}
-				}
-			}
-			
 			sum += baseSum;
 		}
 		

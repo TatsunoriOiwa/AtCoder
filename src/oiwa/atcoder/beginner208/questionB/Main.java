@@ -17,11 +17,32 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		int P = sc.nextInt();
+		
+		int[] fractions = new int[11];
+		{
+			int v = 1;
+			for (int i= 0; i <= 10; v *= (++i)) {
+				fractions[i] = v;
+			}
+		}
+		long cnt = 0;
+		int f = 10;
+		while (P > 0) {
+//			debug(P + " " + f + " " + fractions[f]);
+			while (P < fractions[f]) {
+				f--;
+//				debug(P + "-" + f + " " + fractions[f]);
+			}
+			cnt += P / fractions[f];
+			P %= fractions[f];
+		}
+		out.println(cnt);
 	}
 	
 	
@@ -215,6 +236,13 @@ public class Main {
 		if (DEBUG) System.out.println(str);
 	}
 	public void debug(boolean[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}
+	public void debug(int[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
 			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
