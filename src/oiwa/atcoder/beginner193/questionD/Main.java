@@ -41,25 +41,25 @@ public class Main {
 			aoki[ci]++;
 		}
 		
-		BigInteger total = BigInteger.ZERO;
+//		BigInteger total = BigInteger.ZERO;
 		BigInteger takaP = BigInteger.ZERO;
-		double probSum = 0;
+//		double probSum = 0;
 		for (int t = 0; t < 9; t++) {
 			if (left[t] == 0) continue;
-			double pt = left[t] / (double) (9*K - 8);
+//			double pt = left[t] / (double) (9*K - 8);
 			int lt = left[t];
 			left[t]--;
 			taka[t]++;
 			for (int a = 0; a < 9; a++) {
 				if (left[a] == 0) continue;
-				double pa = left[a] / (double) (9*K - 9);
-				double prob = pt * pa;
+//				double pa = left[a] / (double) (9*K - 9);
+//				double prob = pt * pa;
 //				debug(t + " " + a + " " + prob);
 //				total = total.add(BigInteger.valueOf(prob));
 				aoki[a]++;
 				if (this.score(taka) > this.score(aoki)) {
 					takaP = takaP.add(BigInteger.valueOf(lt).multiply(BigInteger.valueOf(left[a])));
-					probSum += prob;
+//					probSum += prob;
 				}
 				aoki[a]--;
 			}
