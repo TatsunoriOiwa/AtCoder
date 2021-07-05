@@ -1,10 +1,15 @@
-package oiwa.atcoder.util.template;
+package oiwa.atcoder.beginner208.questionD;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Function;
 
 public class Main {
@@ -17,14 +22,102 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		int N = sc.nextInt();
+		int M = sc.nextInt();
+		Map<Integer, Set<Edge>> outmap = new HashMap<>();
+		Map<Integer, Set<Edge>> inmap = new HashMap<>();
+		for (int v = 0; v < N; v++) {
+			outmap.put(v, new HashSet<>());
+			inmap.put(v, new HashSet<>());
+		}
+		// long[B][A] B番目の都市へ，Aから，番号がs, t, -1以下の都市を通って移動するのにかかる最短時間
+		long[][] shortest = new long[N][N];
+		long baseSum = 0;
+		for (int i = 0; i < M; i++) {
+			int A = sc.nextInt() - 1;
+			int B = sc.nextInt() - 1;
+			int C = sc.nextInt();
+			Edge edge = new Edge(A, B, C);
+			outmap.get(A).add(edge);
+			inmap.get(B).add(edge);
+			shortest[B][A] = C;
+			baseSum += C;
+		}
+		long sum = 0;
+		for (int k = 0; k < N; k++) {
+			// process in edges
+			for (Edge ie : inmap.get(k)) {
+				if (ie.from > k) continue;
+				for (int f = 0; f < N; f++) {
+					if (k == f) continue;
+					if (shortest[ie.from][f] > 0) {
+						long update = shortest[ie.from][f] + ie.weight;
+						if (update < shortest[k][f] || shortest[k][f] == 0) {
+							baseSum += - shortest[k][f] + update;
+							shortest[k][f] = update;
+						}
+					}
+				}
+			}
+			// process out edges.
+			TreeSet<Edge> queue = new TreeSet<>((e1, e2) -> {
+				int flag = Integer.compare(e1.from, e2.from);
+				if (flag != 0) return flag;
+				return Long.compare(e1.weight, e2.weight);
+			});
+			for (Edge oe : outmap.get(k)) {
+				for (int f = 0; f < N; f++) {
+					if (oe.to == f || k == f) continue;
+					if (shortest[k][f] > 0) {
+						long update = shortest[k][f] + oe.weight;
+						if (update < shortest[oe.to][f] || shortest[oe.to][f] == 0) {
+							baseSum += - shortest[oe.to][f] + update;
+							shortest[oe.to][f] = update;
+							if (oe.to <= k) { // ダイクストラスタート
+								queue.add(new Edge(f, oe.to, update));
+							}
+						}
+					}
+				}
+			}
+			
+			while (!queue.isEmpty()) {
+				Edge updated = queue.pollFirst();
+				if (updated.to > k) continue;
+				for (Edge oe : outmap.get(updated.to)) {
+					if (oe.to == updated.from) continue;
+					long update = shortest[updated.to][updated.from] + oe.weight;
+					if (update < shortest[oe.to][updated.from] || shortest[oe.to][updated.from] == 0) {
+						baseSum += - shortest[oe.to][updated.from] + update;
+						shortest[oe.to][updated.from] = update;
+						if (oe.to <= k) {
+							queue.add(new Edge(updated.from, oe.to, update));
+						}
+					}
+				}
+			}
+			
+			sum += baseSum;
+		}
+		
+		out.println(sum);
 	}
 	
-	
+	public static class Edge {
+		public final int from;
+		public final int to;
+		public final long weight;
+		public Edge(int from, int to, long weight) {
+			this.from = from;
+			this.to = to;
+			this.weight = weight;
+		}
+	}
 	
 	// ==== Fast Util ====
 	

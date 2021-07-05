@@ -1,4 +1,4 @@
-package oiwa.atcoder.util.template;
+package oiwa.atcoder.beginner208.questionA;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,11 +17,15 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		int A = sc.nextInt();
+		int B = sc.nextInt();
+		out.println((A <= B && B <= 6*A) ? "Yes" : "No");
+		
 	}
 	
 	

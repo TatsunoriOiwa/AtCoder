@@ -16,14 +16,46 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		int T = sc.nextInt();
+		for (int i = 0; i < T; i++) {
+			this.caze(out, sc);
+		}
 	}
 	
+	private void caze(PrintWriter out, FastScanner sc) {
+		long X = sc.nextLong();
+		long Y = sc.nextLong();
+		long P = sc.nextLong();
+		long Q = sc.nextLong();
+		
+		long XX = 2 * (X+Y);
+		long PP = P+Q;
+		
+		long t = Long.MAX_VALUE;
+		
+		for (long t1 = X; t1 < X+Y; t1++) {
+			for (long t2 = P; t2 < P+Q; t2++) {
+				long dt = t2 - t1;
+				long gcd = gcd(XX, PP);
+				if (dt % gcd != 0) continue;
+				
+				t = Math.min(t, Math.max(Math.floorDiv(dt, XX) * XX + t1, Math.floorDiv(dt, PP)*PP + t2));
+			}
+		}
+		if (t == Long.MAX_VALUE) { out.println("infinity"); }
+		else { out.println(t); }
+		
+	}
 	
+	/** 最大公約数 */
+	public long gcd (long a, long b) { return b>0 ? gcd(b,a%b) : a; }
+	/** 最小公倍数，オーバーフロー検査なし */
+	public long lcm (long a, long b) { return a/gcd(a,b)*b; } // 割ってから掛けないとオーバーフロー，GCDなので必ず割り切れる．
 	
 	// ==== Fast Util ====
 	

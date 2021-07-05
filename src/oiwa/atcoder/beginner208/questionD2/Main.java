@@ -1,10 +1,14 @@
-package oiwa.atcoder.util.template;
+package oiwa.atcoder.beginner208.questionD2;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.function.Function;
 
 public class Main {
@@ -17,14 +21,63 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		int N = sc.nextInt();
+		int M = sc.nextInt();
+		Map<Integer, Set<Edge>> outmap = new HashMap<>();
+		Map<Integer, Set<Edge>> inmap = new HashMap<>();
+		for (int v = 0; v < N; v++) {
+			outmap.put(v, new HashSet<>());
+			inmap.put(v, new HashSet<>());
+		}
+		// long[B][A] B番目の都市へ，Aから，番号がs, t, -1以下の都市を通って移動するのにかかる最短時間
+		long[][] shortest = new long[N][N];
+		long baseSum = 0;
+		for (int i = 0; i < M; i++) {
+			int A = sc.nextInt() - 1;
+			int B = sc.nextInt() - 1;
+			int C = sc.nextInt();
+			Edge edge = new Edge(A, B, C);
+			outmap.get(A).add(edge);
+			inmap.get(B).add(edge);
+			shortest[B][A] = C;
+			baseSum += C;
+		}
+		long sum = 0;
+		for (int k = 0; k < N; k++) {
+			for (int i = 0; i < N; i++) {
+				for (int j = 0; j < N; j++) {
+					if (i == k || j == k || i == j) continue;
+					if ((shortest[j][i] == 0 || shortest[j][i] > shortest[k][i] + shortest[j][k])
+							&& (shortest[k][i] != 0)
+							&& (shortest[j][k] != 0)) {
+						debug(k + " " + i + " " + j);
+						long update = shortest[k][i] + shortest[j][k];
+						baseSum += -shortest[j][i] + update;
+						shortest[j][i] = update;
+					}
+				}
+			}
+			sum += baseSum;
+		}
+		
+		out.println(sum);
 	}
 	
-	
+	public static class Edge {
+		public final int from;
+		public final int to;
+		public final long weight;
+		public Edge(int from, int to, long weight) {
+			this.from = from;
+			this.to = to;
+			this.weight = weight;
+		}
+	}
 	
 	// ==== Fast Util ====
 	
