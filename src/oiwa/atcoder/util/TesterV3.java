@@ -24,7 +24,10 @@ public class TesterV3 {
 	}
 	
 	private void test(Case c, int i, Class<?> clazz) {
-		if (!c.isEnabled()) { return; }
+		if (!c.isEnabled()) { 
+			System.out.println("Test case # " + i + " skipped.");
+			return;
+		}
 		System.out.println("Test case # " + i);
 		try {
 			StringOutputStream peeker = new StringOutputStream();
