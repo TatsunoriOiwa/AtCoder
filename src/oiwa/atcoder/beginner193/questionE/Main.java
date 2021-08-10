@@ -33,23 +33,69 @@ public class Main {
 		long P = sc.nextLong();
 		long Q = sc.nextLong();
 		
-		long XX = 2 * (X+Y);
-		long PP = P+Q;
+		long A = 2 * (X+Y);
+		long B = P+Q;
 		
-		long t = Long.MAX_VALUE;
+		long tRes = Long.MAX_VALUE;
 		
 		for (long t1 = X; t1 < X+Y; t1++) {
 			for (long t2 = P; t2 < P+Q; t2++) {
-				long dt = t2 - t1;
-				long gcd = gcd(XX, PP);
-				if (dt % gcd != 0) continue;
+				long T = t2 - t1;
 				
-				t = Math.min(t, Math.max(Math.floorDiv(dt, XX) * XX + t1, Math.floorDiv(dt, PP)*PP + t2));
+				long[] xyg = bezoutCoeff(A, -B);
+				long x0 = xyg[0];
+				long y0 = xyg[1];
+				long g = xyg[2];
+				if (T%g != 0) continue;
+				
+				for (long k = Math.floorDiv(-t*x0, b); k <= t*y0 / a; k++) {
+					long nt = (t*x0 + k*b)*A+t1;
+					if (t*x0+k*b >= 0 && t*y0-k*a >= 0) tRes = Math.min(tRes, nt);
+				}
 			}
 		}
-		if (t == Long.MAX_VALUE) { out.println("infinity"); }
-		else { out.println(t); }
-		
+		if (tRes == Long.MAX_VALUE) { out.println("infinity"); }
+		else { out.println(tRes); }
+	}
+	
+	/**
+	 * Computes Bezout coefficient from given a and b.<br>
+	 * <code>ax + by = g</code>, where g is the GCD of a and b.<br>
+	 * 
+	 * @param a
+	 * @param b
+	 * @return int[] {x, y, g}
+	 */
+	public long[] bezoutCoeff(long a, long b) {
+		long[] xyg = new long[3];
+		boolean ainv = a < 0;
+		boolean binv = b < 0;
+		if (ainv) a = -a;
+		if (binv) b = -b;
+		boolean swap = a < b;
+		if (swap) { long tmp = a; a = b; b = tmp; }
+		xyg[2] = bezoutGcd(xyg, a, b);
+		if (swap) { long tmp = xyg[0]; xyg[0] = xyg[1]; xyg[1] = tmp; }
+		if (ainv) xyg[0] = -xyg[0];
+		if (binv) xyg[1] = -xyg[1];
+		return xyg;
+	}
+	
+	private long bezoutGcd(long[] bezout, long a, long b) {
+		long r = a%b;
+		long gcd;
+		if (r != 0) {
+			gcd = this.bezoutGcd(bezout, b, r);
+			long q = a/b;
+			long tmp = bezout[0];
+			bezout[0] = bezout[1];
+			bezout[1] = tmp -q * bezout[1];
+		} else {
+			gcd = b;
+			bezout[0] = 0;
+			bezout[1] = 1;
+		}
+		return gcd;
 	}
 	
 	/** 最大公約数 */
@@ -243,7 +289,7 @@ public class Main {
 	public void debug(long[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
 			System.out.println("]");
 		}
 	}
