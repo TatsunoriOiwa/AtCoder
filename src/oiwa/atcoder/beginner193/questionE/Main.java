@@ -21,6 +21,12 @@ public class Main {
 //		String s = sc.next();
 //		out.println(sc.next());
 		
+//		long[] xyg = this.bezoutCoeff(12, -15);
+//		debug("" + xyg[2]*3);
+//		debug("" + (12 * (xyg[0]*3 - 15/xyg[2]*1) - 15 * (xyg[1]*3 - 12/xyg[2]*1)));
+//		debug("" + (12 * (xyg[0]*3 - 15/xyg[2]*2) - 15 * (xyg[1]*3 - 12/xyg[2]*2)));
+		
+		
 		int T = sc.nextInt();
 		for (int i = 0; i < T; i++) {
 			this.caze(out, sc);
@@ -34,7 +40,7 @@ public class Main {
 		long Q = sc.nextLong();
 		
 		long A = 2 * (X+Y);
-		long B = P+Q;
+		long B = -(P+Q);
 		
 		long tRes = Long.MAX_VALUE;
 		
@@ -42,16 +48,20 @@ public class Main {
 			for (long t2 = P; t2 < P+Q; t2++) {
 				long T = t2 - t1;
 				
-				long[] xyg = bezoutCoeff(A, -B);
+				long[] xyg = bezoutCoeff(A, B);
 				long x0 = xyg[0];
 				long y0 = xyg[1];
 				long g = xyg[2];
 				if (T%g != 0) continue;
 				
-				for (long k = Math.floorDiv(-t*x0, b); k <= t*y0 / a; k++) {
-					long nt = (t*x0 + k*b)*A+t1;
-					if (t*x0+k*b >= 0 && t*y0-k*a >= 0) tRes = Math.min(tRes, nt);
-				}
+				x0 *= T/g;
+				
+				long t = Math.round(Math.floor(((double) -x0)*g / B));
+				long x = x0 + B*t / g;
+				
+				long tmp = A*x + t1;
+				if (tmp < tRes) tRes = tmp;
+				debug(t + " " + (Math.floor(((double) -x0)*g / B)) + " " + x0 + " " + (B/g));
 			}
 		}
 		if (tRes == Long.MAX_VALUE) { out.println("infinity"); }
