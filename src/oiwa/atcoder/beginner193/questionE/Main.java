@@ -50,7 +50,7 @@ public class Main {
 				
 				long[] xyg = bezoutCoeff(A, B);
 				long x0 = xyg[0];
-				long y0 = xyg[1];
+//				long y0 = xyg[1];
 				long g = xyg[2];
 				if (T%g != 0) continue;
 				
