@@ -25,6 +25,11 @@ public class Main {
 		String X = sc.next();
 		long M = sc.nextLong();
 		
+		if (X.length() == 1) {
+			out.println(Integer.parseInt(X) <= M ? 1 : 0);
+			return;
+		}
+		
 		BigInteger[] xs = new BigInteger[X.length()];
 		int max = 1;
 		for (int i = 0; i < X.length(); i++) {
@@ -33,38 +38,37 @@ public class Main {
 			if (max < c) max = c;
 		}
 		int cn = X.charAt(0) - '0';
-//		debug("cn=" + cn + " max=" + max);
-		long d = xs.length == 1 ? 2 : Math.round(Math.floor(Math.pow(M / (cn + 1.0d), 1.0d / (xs.length - 1))));
-//		debug(M / (cn + 1.0d));
-//		debug("d= " + d);
-		if (d <= max) d = max + 1;
-		long cnt = d - max - 1;
-		for (;; d++) {
-//			debug(d);
-//			long xd = 0;
-			BigInteger xd = BigInteger.ZERO;
-			BigInteger dd = BigInteger.valueOf(d);
-			for (BigInteger ci : xs) {
-				xd = xd.multiply(dd).add(ci);
-//				if (xd.bitLength() > 63) break;
-			}
-//			debug(xd.longValue());
-			try {
-				if (xd.bitLength() < 64 && xd.longValueExact() <= M) {
-					cnt++;
-//					debug(xd.longValueExact());
-				} else {
-					break;
-				}
-			} catch (Exception e) {
-				break;
+		
+		long begin = Math.round(Math.floor(Math.pow(M / (cn + 1.0d), 1.0d / (xs.length - 1))));
+		long end   = Math.round( Math.ceil(Math.pow(M / (double) cn, 1.0d / (xs.length - 1)))) + 1;
+		if (begin < max) begin = max;
+		
+//		debug(begin + " " + end);
+		while (end > begin + 1) {
+			long mid = begin / 2 + end / 2 + ((begin%2) & (end%2));
+//			boolean eval = this.evaluate(mid, M, xs);
+//			debug(begin + " " + eval + " " + end); // 9,223,372,036,854,775,807
+			if (this.evaluate(mid, M, xs)) {
+				begin = mid;
+			} else {
+				end = mid;
 			}
 		}
+//		debug(begin + " " + end); // 9,223,372,036,854,775,807
 		
-		out.println(cnt);
+		out.println(begin - max);
 	}
 	
-	
+	private boolean evaluate(long d, long M, BigInteger[] xs) {
+		BigInteger xd = BigInteger.ZERO;
+		BigInteger dd = BigInteger.valueOf(d);
+		for (BigInteger ci : xs) { xd = xd.multiply(dd).add(ci); }
+		try {
+			return xd.longValueExact() <= M;
+		} catch (Exception e) {
+			return false;
+		}
+	}
 	
 	// ==== Fast Util ====
 	

@@ -48,12 +48,17 @@ public class TesterV3 {
 			
 			String result = peeker.convert();
 			if (!result.endsWith("\r\n")) result += "\r\n";
-			if (result.equals(c.getAns())) {
-				System.out.println(" Success!");
+			
+			if (c.getAns() == null) {
+				System.out.println("Pass");
 			} else {
-				System.out.println(" Failed!");
-				System.out.println("result  :" + result);
-				System.out.println("correct :" + c.getAns());
+				if (result.equals(c.getAns())) {
+					System.out.println(" Success!");
+				} else {
+					System.out.println(" Failed!");
+					System.out.println("result  :" + result);
+					System.out.println("correct :" + c.getAns());
+				}
 			}
 			
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException

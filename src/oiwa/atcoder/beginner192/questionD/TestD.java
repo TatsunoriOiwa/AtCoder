@@ -25,16 +25,26 @@ public class TestD {
 						+ "",
 						"1\r\n"
 						+ ""),
-				new Case(false,
+				new Case(true,
+						"13\r\n"
+						+ "1000000000000000000\r\n"
+						+ ""),
+				new Case(true,
+						"10\r\n"
+						+ "1000000000000000000\r\n"
+						+ ""),
+				new Case(true,
+						"11\r\n"
+						+ "1000000000000000000\r\n"
+						+ ""),
+				new Case(true,
 						"1\r\n"
-						+ "100\r\n",
-						""),
-				new Case(false,
-						"",
-						""),
-				new Case(false,
-						"",
-						""),
+						+ "10\r\n",
+						"1\r\n"),
+				new Case(true,
+						"8\r\n"
+						+ "3\r\n",
+						"0\r\n"),
 		});
 	}
 }
