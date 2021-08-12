@@ -1,10 +1,11 @@
-package oiwa.atcoder.beginner193.questionE;
+package oiwa.atcoder.beginner192.questionD;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 public class Main {
 	public static boolean DEBUG = false;
@@ -21,97 +22,49 @@ public class Main {
 //		String s = sc.next();
 //		out.println(sc.next());
 		
-//		long[] xyg = this.bezoutCoeff(12, -15);
-//		debug("" + xyg[2]*3);
-//		debug("" + (12 * (xyg[0]*3 - 15/xyg[2]*1) - 15 * (xyg[1]*3 - 12/xyg[2]*1)));
-//		debug("" + (12 * (xyg[0]*3 - 15/xyg[2]*2) - 15 * (xyg[1]*3 - 12/xyg[2]*2)));
+		String X = sc.next();
+		long M = sc.nextLong();
 		
-		
-		int T = sc.nextInt();
-		for (int i = 0; i < T; i++) {
-			this.caze(out, sc);
+		BigInteger[] xs = new BigInteger[X.length()];
+		int max = 1;
+		for (int i = 0; i < X.length(); i++) {
+			int c = X.charAt(i) - '0';
+			xs[i] = BigInteger.valueOf(c);
+			if (max < c) max = c;
 		}
-	}
-	
-	private void caze(PrintWriter out, FastScanner sc) {
-		long X = sc.nextLong();
-		long Y = sc.nextLong();
-		long P = sc.nextLong();
-		long Q = sc.nextLong();
-		
-		long A = 2 * (X+Y);
-		long B = -(P+Q);
-		
-		long tRes = Long.MAX_VALUE;
-		
-		for (long t1 = X; t1 < X+Y; t1++) {
-			for (long t2 = P; t2 < P+Q; t2++) {
-				long T = t2 - t1;
-				
-				long[] xyg = bezoutCoeff(A, B);
-				long x0 = xyg[0];
-//				long y0 = xyg[1];
-				long g = xyg[2];
-				if (T%g != 0) continue;
-				
-				x0 *= T/g;
-				
-				long t = Math.round(Math.floor(((double) -x0)*g / B));
-				long x = x0 + B*t / g;
-				
-				long tmp = A*x + t1;
-				if (tmp < tRes) tRes = tmp;
-				debug(t + " " + (Math.floor(((double) -x0)*g / B)) + " " + x0 + " " + (B/g));
+		int cn = X.charAt(0) - '0';
+//		debug("cn=" + cn + " max=" + max);
+		long d = xs.length == 1 ? 2 : Math.round(Math.floor(Math.pow(M / (cn + 1.0d), 1.0d / (xs.length - 1))));
+//		debug(M / (cn + 1.0d));
+//		debug("d= " + d);
+		if (d <= max) d = max + 1;
+		long cnt = d - max - 1;
+		for (;; d++) {
+//			debug(d);
+//			long xd = 0;
+			BigInteger xd = BigInteger.ZERO;
+			BigInteger dd = BigInteger.valueOf(d);
+			for (BigInteger ci : xs) {
+				xd = xd.multiply(dd).add(ci);
+//				if (xd.bitLength() > 63) break;
+			}
+//			debug(xd.longValue());
+			try {
+				if (xd.bitLength() < 64 && xd.longValueExact() <= M) {
+					cnt++;
+//					debug(xd.longValueExact());
+				} else {
+					break;
+				}
+			} catch (Exception e) {
+				break;
 			}
 		}
-		if (tRes == Long.MAX_VALUE) { out.println("infinity"); }
-		else { out.println(tRes); }
+		
+		out.println(cnt);
 	}
 	
-	/**
-	 * Computes Bezout coefficient from given a and b.<br>
-	 * <code>ax + by = g</code>, where g is the GCD of a and b.<br>
-	 * 
-	 * @param a
-	 * @param b
-	 * @return int[] {x, y, g}
-	 */
-	public long[] bezoutCoeff(long a, long b) {
-		long[] xyg = new long[3];
-		boolean ainv = a < 0;
-		boolean binv = b < 0;
-		if (ainv) a = -a;
-		if (binv) b = -b;
-		boolean swap = a < b;
-		if (swap) { long tmp = a; a = b; b = tmp; }
-		xyg[2] = bezoutGcd(xyg, a, b);
-		if (swap) { long tmp = xyg[0]; xyg[0] = xyg[1]; xyg[1] = tmp; }
-		if (ainv) xyg[0] = -xyg[0];
-		if (binv) xyg[1] = -xyg[1];
-		return xyg;
-	}
 	
-	private long bezoutGcd(long[] bezout, long a, long b) {
-		long r = a%b;
-		long gcd;
-		if (r != 0) {
-			gcd = this.bezoutGcd(bezout, b, r);
-			long q = a/b;
-			long tmp = bezout[0];
-			bezout[0] = bezout[1];
-			bezout[1] = tmp -q * bezout[1];
-		} else {
-			gcd = b;
-			bezout[0] = 0;
-			bezout[1] = 1;
-		}
-		return gcd;
-	}
-	
-	/** 最大公約数 */
-	public long gcd (long a, long b) { return b>0 ? gcd(b,a%b) : a; }
-	/** 最小公倍数，オーバーフロー検査なし */
-	public long lcm (long a, long b) { return a/gcd(a,b)*b; } // 割ってから掛けないとオーバーフロー，GCDなので必ず割り切れる．
 	
 	// ==== Fast Util ====
 	
@@ -207,6 +160,18 @@ public class Main {
 			for (int i = 0; i < N; i++) { ret[i] = this.nextLong() + offset; }
 			return ret;
 		}
+		/**
+		 * O(N)
+		 * @param <T>
+		 * @param arr
+		 * @param suppl
+		 * @return
+		 */
+		public <T> T[] nextObjArray(T[] arr, Function<FastScanner, T> suppl) {
+			final int N = arr.length;
+			for (int i = 0; i < N ; i++) { arr[i] = suppl.apply(this); }
+			return arr;
+		}
 	}
 	
 	public static class AtMath {
@@ -285,14 +250,22 @@ public class Main {
 			return res;
 		}
 	}
-	
+	public void debug(long v) { if (DEBUG) System.out.println(v); }
+	public void debug(double v) { if (DEBUG) System.out.println(v); }
 	public void debug(String str) {
 		if (DEBUG) System.out.println(str);
 	}
 	public void debug(boolean[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}
+	public void debug(int[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
 			System.out.println("]");
 		}
 	}
@@ -306,7 +279,7 @@ public class Main {
 	public void debug(double[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
 			System.out.println("]");
 		}
 	}
