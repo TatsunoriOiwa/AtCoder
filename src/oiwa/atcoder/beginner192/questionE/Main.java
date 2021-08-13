@@ -4,9 +4,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.function.Function;
 
+/**
+ * ABC193E 50 min
+ * @author T.Oiwa
+ * @date 2021/08/13
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -17,14 +27,97 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		int N = sc.nextInt();
+		int M = sc.nextInt();
+		int X = sc.nextInt() - 1;
+		int Y = sc.nextInt() - 1;
+		HashMap<Integer, Set<Edge>> outmap = new HashMap<>();
+		for (int i = 0; i < N; i++) { outmap.put(i, new HashSet<>()); }
+		for (int i = 0; i < M; i++) {
+			int a = sc.nextInt() - 1;
+			int b = sc.nextInt() - 1;
+			int t = sc.nextInt();
+			int k = sc.nextInt();
+			outmap.get(a).add(new Edge(a, b, t, k));
+			outmap.get(b).add(new Edge(b, a, t, k));
+		}
+		debug("X=" + (X+1) + ",Y=" + (Y+1));
+		
+		Map<Integer, Long> range = new HashMap<>();
+//		PriorityQueue<Tuple> djk = new PriorityQueue<>((e1, e2) -> {
+//			int f = Long.compare(e1.time, e2.time);
+//			if (f != 0) return f;
+//			return Integer.compare(e1.pos, e2.pos);
+//		});
+		PriorityQueue<Tuple> djk = new PriorityQueue<>((e1, e2) -> {
+			return Long.compare(e1.time, e2.time);
+		});
+		
+		djk.add(new Tuple(X, 0));
+		range.put(X, 0L);
+		
+		while (!djk.isEmpty()) {
+			Tuple current = djk.poll();
+			debug(current.pos + 1 + " djk=" + djk.size());
+			long currenttime = current.time;
+			if (currenttime > range.get(current.pos)) continue;
+			for (Edge tonext : outmap.get(current.pos)) {
+				long nexttime = currenttime % tonext.k == 0 ? 
+						currenttime + tonext.time :
+						currenttime - currenttime % tonext.k + tonext.k + tonext.time;
+				
+				if (nexttime < range.getOrDefault(tonext.to, Long.MAX_VALUE)) {
+					range.put(tonext.to, nexttime);
+					djk.add(new Tuple(tonext.to, nexttime));
+					debug((tonext.from+1) + " " + (tonext.to+1) + " " + nexttime + " djk=" + djk.size());
+				}
+			}
+		}
+		
+		out.println(range.getOrDefault(Y, -1L));
 	}
 	
+	public static class Edge {
+		private final int from;
+		private final int to;
+		private final int time;
+		private final int k;
+		
+		public Edge(int from, int to, int time, int k) {
+			this.from = from;
+			this.to = to;
+			this.time = time;
+			this.k = k;
+		}
+	}
 	
+	public static class Tuple {
+		private final int pos;
+		private final long time;
+		
+		public Tuple(int pos, long time) {
+			this.pos = pos;
+			this.time = time;
+		}
+		
+		@Override
+		public int hashCode() {
+			return (int) (pos*13 + time);
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Tuple) {
+				Tuple other = (Tuple) obj;
+				return other.pos == this.pos && this.time == other.time;
+			}
+			return false;
+		}
+	}
 	
 	// ==== Fast Util ====
 	

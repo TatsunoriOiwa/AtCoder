@@ -13,6 +13,7 @@ public class TesterV10 {
 	}
 	
 	private void run(Class<?> clazz, Case[] cases) {
+		System.out.print("begin tests...");
 		for (int i = 0; i < cases.length; i++) {
 			Case c = cases[i];
 			try {
@@ -21,6 +22,7 @@ public class TesterV10 {
 				e.printStackTrace();
 			}
 		}
+		System.out.print("completed tests...");
 	}
 	
 	private void test(Case c, int i, Class<?> clazz) {
@@ -54,29 +56,19 @@ public class TesterV10 {
 			case SKIP: System.out.println(" skip"); break;
 			case FAIL:
 				System.out.println(" Failed!");
+				
 				System.out.print("result  :");
 				if (result.contains("\n")) System.out.println();
 				System.out.println(result);
-				System.out.println("correct :");
+				
 				String ansstr = c.getAns();
+				System.out.print("correct :");
 				if (ansstr.contains("\n")) System.out.println();
 				System.out.println(ansstr);
 				break;
 			default:
 				System.err.println("WARN : THIS IS NOT SUPPOSED TO HAPPEN!!! something went wrong at TesterV10#test.");
 				break;
-			}
-			
-			if (c.getAns() == null) {
-				System.out.println("Pass");
-			} else {
-				if (result.equals(c.getAns())) {
-					System.out.println(" Success!");
-				} else {
-					System.out.println(" Failed!");
-					System.out.println("result  :" + result);
-					System.out.println("correct :" + c.getAns());
-				}
 			}
 			
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
