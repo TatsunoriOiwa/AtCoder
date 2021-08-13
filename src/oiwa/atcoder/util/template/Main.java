@@ -211,9 +211,10 @@ public class Main {
 		}
 	}
 	
-	public void debug(String str) {
-		if (DEBUG) System.out.println(str);
-	}
+	public void debug(String str) { if (DEBUG) System.out.println(str); }
+	public void debug(long val) { if (DEBUG) System.out.println(val); }
+	public void debug(double val) { if (DEBUG) System.out.println(val); }
+	public void debug(boolean val) { if (DEBUG) System.out.println(val); }
 	public void debug(boolean[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
