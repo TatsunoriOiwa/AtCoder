@@ -4,7 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.function.Function;
 
 public class Main {
@@ -21,8 +26,63 @@ public class Main {
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		final int N = sc.nextInt();
+		
+		Edge[] edges = new Edge[N-1];
+		Map<Integer, Set<Edge>> outs = new HashMap<>();
+		for (int i = 0; i < N ; i++) outs.put(i, new HashSet<>());
+		for (int ei = 0; ei < N-1; ei++) {
+			int ui = sc.nextInt() - 1;
+			int vi = sc.nextInt() - 1;
+			int wi = sc.nextInt();
+			Edge edge = new Edge(ui, vi, wi);
+			edges[ei] = edge;
+			outs.get(ui).add(edge);
+			outs.get(vi).add(edge);
+		}
+		Arrays.sort(edges, (e1, e2) -> Long.compare(e1.weight, e2.weight)); // 昇順
+		
+		HashMap<Integer, Integer> size = new HashMap<>();
+		for (int i = 0; i < N; i++) size.put(i, 1);
+		
+		long sum = 0;
+		for (Edge edge : edges) {
+			outs.get(edge.from).remove(edge);
+			outs.get(edge.to).remove(edge);
+			int sizeA = size.get(edge.from);
+			int sizeB = size.get(edge.to);
+			sum += edge.weight * sizeA * sizeB;
+			
+			int daihyo = Math.min(edge.from, edge.to);
+			int ura = Math.max(edge.from, edge.to);
+
+			size.put(daihyo, sizeA+sizeB);
+
+			for (Edge e : outs.get(ura)) e.reconnect(ura, daihyo);
+			outs.get(daihyo).addAll(outs.remove(ura));
+		}
+		
+		
+		
+		out.println(sum);
 	}
 	
+	public static class Edge {
+		public int from;
+		public int to;
+		public final long weight;
+		public Edge(int from, int to, long weight) {
+			this.from = from;
+			this.to = to;
+			this.weight = weight;
+		}
+		public void reconnect(int old, int nev) {
+			if (from == old) from = nev;
+			else if (to == old) to = nev;
+			else assert (false);
+		}
+	}
 	
 	
 	// ==== Fast Util ====

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.NoSuchElementException;
+import java.util.PriorityQueue;
 import java.util.function.Function;
 
 public class Main {
@@ -21,6 +22,40 @@ public class Main {
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		final int N = sc.nextInt();
+		int[] ss = sc.nextIntArray(N);
+		long[] ts = sc.nextLongArray(N);
+		
+		PriorityQueue<Tuple> queue = new PriorityQueue<>((e1, e2) -> Long.compare(e1.time, e2.time));
+		for (int i = 0; i < N; i++) {
+			queue.add(new Tuple(i, ts[i]));
+		}
+		
+		while (!queue.isEmpty()) {
+			Tuple current = queue.poll();
+			if (ts[current.indx] > current.time) continue;
+			long ntime = current.time + ss[current.indx];
+			int npos = (current.indx+1) % N;
+			if (ts[npos] > ntime) {
+				ts[npos] = ntime;
+				queue.add(new Tuple(npos, ntime));
+			}
+		}
+		
+		for (long t : ts) {
+			out.println(t);
+		}
+		
+	}
+	
+	public static class Tuple {
+		public final int indx;
+		public final long time;
+		public Tuple(int indx, long time) {
+			this.indx = indx;
+			this.time = time;
+		}
 	}
 	
 	

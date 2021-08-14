@@ -21,6 +21,16 @@ public class Main {
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		final int q4 = 125;
+		final int q6 = 211;
+//		final int q8 = 214;
+		
+		int N = sc.nextInt();
+
+		if (N <= q4) out.println(4);
+		else if (N <= q6) out.println(6);
+		else out.println(8);
 	}
 	
 	

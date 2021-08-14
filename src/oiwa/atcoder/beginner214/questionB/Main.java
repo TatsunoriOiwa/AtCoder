@@ -21,6 +21,20 @@ public class Main {
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		final int S = sc.nextInt();
+		final int T = sc.nextInt();
+		
+		int sum = 0;
+		for (int a = 0; a <= S; a++) {
+			for (int b = 0; b <= S - a; b++) {
+				for (int c = 0; c <= S - a - b; c++) {
+					if (a*b*c <= T) sum++;
+				}
+			}
+		}
+		out.println(sum);
+		
 	}
 	
 	
