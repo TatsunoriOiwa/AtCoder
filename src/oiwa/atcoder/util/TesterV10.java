@@ -6,13 +6,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class TesterV3 {
+public class TesterV10 {
 	
-	public TesterV3(Class<?> clazz, Case[] cases) {
+	public TesterV10(Class<?> clazz, Case[] cases) {
 		this.run(clazz, cases);
 	}
 	
 	private void run(Class<?> clazz, Case[] cases) {
+		System.out.print("begin tests...");
 		for (int i = 0; i < cases.length; i++) {
 			Case c = cases[i];
 			try {
@@ -21,6 +22,7 @@ public class TesterV3 {
 				e.printStackTrace();
 			}
 		}
+		System.out.print("completed tests...");
 	}
 	
 	private void test(Case c, int i, Class<?> clazz) {
@@ -46,19 +48,27 @@ public class TesterV3 {
 			timemillis = System.currentTimeMillis() - timemillis;
 			System.out.print(" took " + timemillis + " msec.");
 			
-			String result = peeker.convert();
-			if (!result.endsWith("\r\n")) result += "\r\n";
+			String result = peeker.convert().stripTrailing();
 			
-			if (c.getAns() == null) {
-				System.out.println("Pass");
-			} else {
-				if (result.equals(c.getAns())) {
-					System.out.println(" Success!");
-				} else {
-					System.out.println(" Failed!");
-					System.out.println("result  :" + result);
-					System.out.println("correct :" + c.getAns());
-				}
+			CaseResult res = c.predicate(result);
+			switch (res) {
+			case SUCCESS: System.out.println(" Success!"); break;
+			case SKIP: System.out.println(" skip"); break;
+			case FAIL:
+				System.out.println(" Failed!");
+				
+				System.out.print("result  :");
+				if (result.contains("\n")) System.out.println();
+				System.out.println(result);
+				
+				String ansstr = c.getAns();
+				System.out.print("correct :");
+				if (ansstr.contains("\n")) System.out.println();
+				System.out.println(ansstr);
+				break;
+			default:
+				System.err.println("WARN : THIS IS NOT SUPPOSED TO HAPPEN!!! something went wrong at TesterV10#test.");
+				break;
 			}
 			
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
