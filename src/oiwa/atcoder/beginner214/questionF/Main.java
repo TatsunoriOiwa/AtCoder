@@ -1,9 +1,10 @@
-package oiwa.atcoder.util.template;
+package oiwa.atcoder.beginner214.questionF;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
@@ -17,17 +18,63 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
 		
+		final int T = sc.nextInt();
 		
-		
-		
+		for (int i = 0; i < T; i++) {
+			this.test(out, sc);
+		}
 	}
 	
+	public void test(PrintWriter out, FastScanner sc) {
+		final int N = sc.nextInt();
+		Mark[] marks = new Mark[N*2];
+		for (int i = 0; i < N; i++) {
+			marks[i*2] = new Mark(sc.nextInt(), false);
+			marks[i*2+1] = new Mark(sc.nextInt(), true);
+		}
+		Arrays.sort(marks, (e1, e2) -> {
+			int f = Integer.compare(e1.pos, e2.pos);
+			if (f != 0) return f;
+			return -Boolean.compare(e1.isEnd, e2.isEnd);
+		});
+		
+		int cnt = 0;
+		int cap = 0;
+		int prevpos = -1;
+		for (Mark mark : marks) {
+			int current = mark.pos;
+			cnt -= current - prevpos;
+			prevpos = current;
+			
+			if (!mark.isEnd) {
+				cnt++;
+				cap++;
+			} else {
+				cap--;
+				
+			}
+			if (cnt > cap) {
+				out.println("No");
+				return;
+			}
+		}
+		out.println("Yes");
+	}
+	
+	public static class Mark {
+		final int pos;
+		final boolean isEnd;
+		public Mark(int pos, boolean isEnd) {
+			super();
+			this.pos = pos;
+			this.isEnd = isEnd;
+		}
+	}
 	
 	
 	// ==== Fast Util ====

@@ -1,4 +1,4 @@
-package oiwa.atcoder.util.template;
+package oiwa.atcoder.beginner214.questionG;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,10 +22,6 @@ public class Main {
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
-		
-		
-		
-		
 	}
 	
 	
