@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
+import java.util.function.LongUnaryOperator;
 
 public class Main {
 	public static boolean DEBUG = false;
@@ -213,6 +214,54 @@ public class Main {
 			}
 			return res;
 		}
+		
+		/**
+		 * finds the minimum {@code i} that is {@code func(i) >= key}.<br>
+		 * To get maximum {@code i} that is {@code func(i) < key}, subtract 1 from the result.
+		 * @param min
+		 * @param max
+		 * @param key
+		 * @param func must be weakly increasing
+		 * @return {@code min} if {@code key < func(min)}, {@code max + 1} if {@code func(max) < key}.
+		 */
+		public static long binarySearchLowerBound(long min, long max, long key, LongUnaryOperator func) {
+			if (func.applyAsLong(min) >= key) return min;
+			if (func.applyAsLong(max) < key) return max + 1;
+			while (min < max - 1) {
+				long mid = (min >> 1) + (max >> 1) + ((min&0b1) & (max&0b1));
+				if (func.applyAsLong(mid) < key) {
+					min = mid;
+				} else {
+					max = mid;
+				}
+			}
+			return max;
+		}
+		
+		/**
+		 * Finds the minimum {@code i} that is {@code func(i) > key}.<br>
+		 * To get maximum {@code i} that is {@code func(i) <= key}, subtract 1 from the result.
+		 * @param min
+		 * @param max
+		 * @param key
+		 * @param func
+		 * @return
+		 */
+		public static long binarySearchUpperBound(long min, long max, long key, LongUnaryOperator func) {
+			if (func.applyAsLong(min) > key) return min;
+			if (func.applyAsLong(max) <= key) return max + 1;
+			while (min < max - 1) {
+				long mid = (min >> 1) + (max >> 1) + ((min&0b1) & (max&0b1));
+				if (func.applyAsLong(mid) <= key) {
+					min = mid;
+				} else {
+					max = mid;
+				}
+			}
+			return max;
+		}
+		
+		
 	}
 	
 	public void debug(String str) { if (DEBUG) System.out.println(str); }
