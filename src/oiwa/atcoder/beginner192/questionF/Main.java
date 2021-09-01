@@ -17,11 +17,40 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		int N = sc.nextInt();
+		long X = sc.nextLong();
+		long[] as = sc.nextLongArray(N);
+		
+		long res = Long.MAX_VALUE;
+		for (int k = 1; k <= 100; k++) { // 選ぶ素材の数
+			long[][][] dp = new long[N+1][k+1][k]; // 取りうる魔力の初期値 0は不可能
+			for (int i = 0; i < N+1; i++)
+				for (int j = 0; j < k+1; j++)
+					for (int l = 0; l < k; l++)
+						dp[i][j][l] = Long.MAX_VALUE;
+			
+			dp[0][0][(int) (X%k)] = X;
+			
+			for (int i = 0; i < N; i++) { // i番目までの素材を使う
+				for (int u = 0; u <= k; u++) {
+					for (int mod = 0; mod < k; mod++) {
+						if (dp[i][u][mod] == Long.MAX_VALUE) continue;
+						dp[i+1][u  ]           [mod] = Math.min(dp[i+1][u  ][           mod], dp[i][u][mod]); // 使わない場合
+						if (u < k) {
+							long next = dp[i][u][mod] - as[i]; // i+1番目の材料の魔力を引いた値
+							dp[i+1][u+1][(int) (next%k)] = Math.min(dp[i+1][u+1][(int) (next%k)], next); // 使う場合
+						}
+					}
+				}
+			}
+			if (dp[N][k][0] != Long.MAX_VALUE) res = Math.min(res, dp[N][k][0]/k);
+		}
+		out.println(res);
 	}
 	
 	
