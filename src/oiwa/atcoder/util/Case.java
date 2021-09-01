@@ -3,6 +3,7 @@ package oiwa.atcoder.util;
 import java.util.function.Function;
 
 import oiwa.atcoder.util.cases.DummyPredicate;
+import oiwa.atcoder.util.cases.MarginedPredicate;
 import oiwa.atcoder.util.cases.StringPredicate;
 
 public class Case {
@@ -26,6 +27,14 @@ public class Case {
 	
 	public Case(boolean enabled, String test, String ans) {
 		this(enabled, test, ans, new StringPredicate(ans));
+	}
+	
+	public Case(boolean enabled, String test, String ans, double err) {
+		this(enabled, test, ans, err, err);
+	}
+	
+	public Case(boolean enabled, String test, String ans, double absErr, double relErr) {
+		this(enabled, test, ans, new MarginedPredicate(ans, relErr, absErr));
 	}
 	
 	public Case(boolean enabled, String test, String ans, Function<String, CaseResult> predicate) {
