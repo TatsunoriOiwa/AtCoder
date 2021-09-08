@@ -17,11 +17,46 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		final long N = sc.nextLong();
+		final int K = sc.nextInt();
+		
+		long a = N;
+		
+		for (int i = 0; i < K; i++) {
+			a = f(a);
+		}
+		
+		out.println(a);
+	}
+	
+	private long f(long a) {
+		int[] bucket = new int[10];
+		
+		while (a > 0) {
+			bucket[(int) (a%10)]++;
+			a /= 10;
+		}
+		
+		long f1 = 0;
+		for (int i = 9; i >= 0; i--) {
+			for (int j = 0; j < bucket[i]; j++) {
+				f1 = f1*10 + i;
+			}
+		}
+		
+		long f2 = 0;
+		for (int i = 1; i < 10; i++) {
+			for (int j = 0; j < bucket[i]; j++) {
+				f2 = f2*10 + i;
+			}
+		}
+		
+		return f1 - f2;
 	}
 	
 	
@@ -217,21 +252,27 @@ public class Main {
 	public void debug(boolean[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
 			System.out.println("]");
 		}
 	}
-	public void debug(long[] arr) {
+	public void debug(int[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}	public void debug(long[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
 			System.out.println("]");
 		}
 	}
 	public void debug(double[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
 			System.out.println("]");
 		}
 	}

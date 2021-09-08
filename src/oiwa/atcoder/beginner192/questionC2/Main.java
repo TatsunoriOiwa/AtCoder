@@ -1,17 +1,13 @@
-package oiwa.atcoder.beginner192.questionB;
+package oiwa.atcoder.beginner192.questionC2;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
-/**
- * ABC192B 5 min.
- * @author Oiwa
- * @date 2021/09/08
- */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -27,18 +23,28 @@ public class Main {
 //		String s = sc.next();
 //		out.println(sc.next());
 		
-		final String S = sc.next();
+		final String N = sc.next();
+		final int K = sc.nextInt();
 		
-		for (int i = 0; i < S.length(); i++) {
-			char c = S.charAt(i);
-			if (Character.isLowerCase(c) ^ (i%2==0)) { // NOP
-				out.println("No");
-				return;
-			}
-			
+		String a = N;
+		
+		for (int i = 0; i < K; i++) {
+			a = f(a);
 		}
-		out.println("Yes");
 		
+		out.println(a);
+	}
+	
+	private String f(String a) {
+		char[] arr = a.toCharArray();
+		Arrays.sort(arr);
+		long f = 0;
+		for (int i = 0; i < arr.length; i++) {
+			f *= 10;
+			f += arr[arr.length-1-i] - arr[i];
+		}
+		
+		return String.valueOf(f);
 	}
 	
 	
@@ -234,21 +240,27 @@ public class Main {
 	public void debug(boolean[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
 			System.out.println("]");
 		}
 	}
-	public void debug(long[] arr) {
+	public void debug(int[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}	public void debug(long[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
 			System.out.println("]");
 		}
 	}
 	public void debug(double[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
 			System.out.println("]");
 		}
 	}
