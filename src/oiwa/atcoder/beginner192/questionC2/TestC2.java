@@ -1,26 +1,26 @@
-package oiwa.atcoder.beginner192.questionB;
+package oiwa.atcoder.beginner192.questionC2;
 
 import oiwa.atcoder.util.Case;
 import oiwa.atcoder.util.TesterV10;
 
-public class TestB {
+public class TestC2 {
 	public static void main(String[] args) {
 		new TesterV10(Main.class, new Case[] {
 				
 				new Case(true,
-						"dIfFiCuLt\r\n"
+						"314 2\r\n"
 						+ "",
-						"Yes\r\n"
+						"693\r\n"
 						+ ""),
 				new Case(true,
-						"eASY\r\n"
+						"1000000000 100\r\n"
 						+ "",
-						"No\r\n"
+						"0\r\n"
 						+ ""),
 				new Case(true,
-						"a\r\n"
+						"6174 100000\r\n"
 						+ "",
-						"Yes\r\n"
+						"6174\r\n"
 						+ ""),
 				new Case(false,
 						"",

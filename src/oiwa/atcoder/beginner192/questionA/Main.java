@@ -7,6 +7,11 @@ import java.math.BigInteger;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
+/**
+ * ABC197A 3 min.
+ * @author Oiwa
+ * @date 2021/09/08
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -17,11 +22,15 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
+		
+		final int X = sc.nextInt();
+		
+		int mod = X % 100;
+		out.println(100 - mod);
 	}
 	
 	
