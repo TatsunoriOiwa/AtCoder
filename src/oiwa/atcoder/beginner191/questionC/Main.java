@@ -8,6 +8,11 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC191 C 23 min.
+ * @author Oiwa
+ * @date 2021/09/10
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -18,18 +23,126 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
 		
+		final int H = sc.nextInt();
+		final int W = sc.nextInt();
 		
+		boolean[][] img = new boolean[H][W]; // img[i][j]
+		for (int i = 0; i < H; i++) {
+			String s = sc.next();
+			for (int j = 0; j < W; j++) {
+				img[i][j] = s.charAt(j) == '#';
+			}
+		}
 		
+		Pos first = searchFirst(img);
 		
+		Pos current = first;
+		Dir dir = Dir.IP;
+		
+		int edges = 0;
+		
+		while (true) {
+			Pos next = current.offset(dir);
+			if (img[next.i][next.j]) {
+				Pos nn = next.offset(dir.rotCCW());
+				if (img[nn.i][nn.j]) {
+					current = nn;
+					dir = dir.rotCCW();
+					edges++;
+				} else {
+					current = next;
+				}
+			} else {
+				edges++;
+				dir = dir.rotCW();
+			}
+			if (current.equals(first) && dir == Dir.IP) {
+				break;
+			}
+		}
+		out.println(edges);
 	}
 	
+	public Pos searchFirst(boolean[][] img) {
+		for (int i = 0; i < img.length; i++) {
+			for (int j = 0; j < img[i].length; j++) {
+				if (img[i][j]) return new Pos(i, j);
+			}
+		}
+		assert(false);
+		return null;
+	}
 	
+	public static enum Dir {
+		IP(0, 1, 0, 2, 3),
+		IN(1,-1, 0, 3, 2),
+		JP(2, 0, 1, 1, 0),
+		JN(3, 0,-1, 0, 1);
+		
+		private final int indx;
+		public final int i;
+		public final int j;
+		private final int ccw;
+		private final int cw;
+		
+		public static final Dir[] MAP = new Dir[Dir.values().length];
+		
+		private Dir(int indx, int i, int j, int cw, int ccw) {
+			this.indx = indx;
+			this.i = i;
+			this.j = j;
+			this.cw = cw;
+			this.ccw = ccw;
+		}
+		
+		public Dir rotCW() {
+			return MAP[this.cw];
+		}
+		
+		public Dir rotCCW() {
+			return MAP[this.ccw];
+		}
+		
+		static {
+			for (Dir dir : Dir.values()) {
+				MAP[dir.indx] = dir;
+			}
+		}
+	}
+	
+	public static class Pos {
+		public final int i;
+		public final int j;
+		public Pos(int i, int j) {
+			this.i = i;
+			this.j = j;
+		}
+		public Pos offset(Dir dir) {
+			return new Pos(this.i + dir.i, this.j + dir.j);
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == this) return true;
+			if (obj instanceof Pos) {
+				Pos other = (Pos) obj;
+				return other.i == this.i && other.j == this.j;
+			}
+			return false;
+		}
+		@Override
+		public int hashCode() {
+			return 17*this.i + this.j;
+		}
+		@Override
+		public String toString() {
+			return "(" + this.i + "," + this.j + ")";
+		}
+	}
 	
 	// ==== Fast Util ====
 	
