@@ -8,6 +8,11 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC191 D, 48 min.
+ * @author Oiwa
+ * @date 2021/09/12
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -18,18 +23,58 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
 		
+		final long X = Math.round(sc.nextDouble()*10000);
+		final long Y = Math.round(sc.nextDouble()*10000);
+		final long R = Math.round(sc.nextDouble()*10000);
 		
+		long maxY = floor1000(Y + R);
+		long minY = ceil1000(Y - R);
 		
+		final long R2 = R*R;
 		
+		long sum = 0;
+		for (long y = minY; y <= maxY; y += 10000) {
+			long dy = y - Y;
+			long dxp = binSqrtFloor(R2, dy*dy);
+			long dxn = binSqrtCeil(R2, dy*dy);
+//			debug(dxp + " " + dxn + " " + (X+dxp) + " " + (X - dxn));
+			sum += (floor1000(X+dxp) - ceil1000(X - dxn)) / 10000 + 1;
+		}
+		out.println(sum);
 	}
 	
+	private long binSqrtFloor(long R2, long dy2) {
+		double coarse = Math.sqrt(R2 - dy2);
+		long min = Math.round(Math.floor(coarse)) - 10;
+		if (min < 0) min = 0;
+		long max = Math.round(Math.ceil(coarse)) + 10;
+		return AtMath.binarySearchUpperBound(min, max, 0, i -> i*i - R2 + dy2) - 1;
+	}
 	
+	private long binSqrtCeil(long R2, long dy2) {
+		double coarse = Math.sqrt(R2 - dy2);
+		long min = Math.round(Math.floor(coarse)) - 10;
+		if (min < 0) min = 0;
+		long max = Math.round(Math.ceil(coarse)) + 10;
+		return AtMath.binarySearchUpperBound(min, max, 0, i -> i*i - R2 + dy2) - 1;
+	}
+	
+	private long floor1000(long val) {
+		if (val % 10000 == 0) return val;
+		if (val < 0) val -= 10000;
+		return val - val % 10000;
+	}
+	
+	private long ceil1000(long val) {
+		if (val % 10000 == 0) return val;
+		if (val > 0) val += 10000;
+		return val -= val % 10000;
+	}
 	
 	// ==== Fast Util ====
 	
