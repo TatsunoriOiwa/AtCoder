@@ -217,7 +217,8 @@ public class Main {
 		
 		/**
 		 * finds the minimum {@code i} that is {@code func(i) >= key}.<br>
-		 * To get maximum {@code i} that is {@code func(i) < key}, subtract 1 from the result.
+		 * To get maximum {@code i} that is {@code func(i) < key}, subtract 1 from the result.<br>
+		 * For {@code i} that is {@code func(i) > key}, use upper bound. For {@code func(i) <= key}, use upper bound -1.
 		 * @param min
 		 * @param max
 		 * @param key
@@ -240,7 +241,8 @@ public class Main {
 		
 		/**
 		 * Finds the minimum {@code i} that is {@code func(i) > key}.<br>
-		 * To get maximum {@code i} that is {@code func(i) <= key}, subtract 1 from the result.
+		 * To get maximum {@code i} that is {@code func(i) <= key}, subtract 1 from the result.<br>
+		 * For {@code i} that is {@code func(i) >= key}, use lower bound. For {@code func(i) < key}, use lower bound -1.
 		 * @param min
 		 * @param max
 		 * @param key
