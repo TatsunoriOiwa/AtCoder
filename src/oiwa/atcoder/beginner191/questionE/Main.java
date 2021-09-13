@@ -4,10 +4,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC191 E, 30 min.
+ * @author Oiwa
+ * @date 2021/09/13
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -18,17 +28,74 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
 		
+		final int N = sc.nextInt();
+		final int M = sc.nextInt();
 		
+		Map<Integer, Set<Edge>> outs = new HashMap<>();
+		for (int i = 0; i < N; i++) { outs.put(i, new HashSet<>()); }
+		
+		for (int i = 0; i < M; i++) {
+			int ai = sc.nextInt() - 1;
+			int bi = sc.nextInt() - 1;
+			int ci = sc.nextInt();
+			Edge edge = new Edge(ai, bi, ci);
+			outs.get(ai).add(edge);
+		}
+		
+		PriorityQueue<Entry> queue = new PriorityQueue<>((e1, e2) -> Long.compare(e1.dist, e2.dist));
+		Map<Integer, Long> distmap = new HashMap<>();
+		
+		for (int i0 = 0; i0 < N; i0++) {
+			
+			queue.add(new Entry(0, i0));
+			
+			long minDist = Long.MAX_VALUE;
+			while (!queue.isEmpty()) {
+				Entry ee = queue.poll();
+				
+				for (Edge e : outs.get(ee.node)) {
+					long ndist = e.c + ee.dist;
+					int nn = e.to;
+					if (minDist > ndist && (!distmap.containsKey(nn) || distmap.get(nn) > ndist)) {
+						distmap.put(nn, ndist);
+						queue.add(new Entry(ndist, nn));
+						if (nn == i0) minDist = ndist;
+					}
+				}
+			}
+			out.println(minDist == Long.MAX_VALUE ? -1 : minDist);
+			
+			queue.clear();
+			distmap.clear();
+		}
+	}
+	
+	public static class Entry {
+		public final long dist;
+		public final int node;
+		public Entry(long dist, int node) {
+			this.dist = dist;
+			this.node = node;
+		}
 		
 		
 	}
 	
+	public static class Edge {
+		public final int from;
+		public final int to;
+		public final int c;
+		public Edge(int from, int to, int c) {
+			this.from = from;
+			this.to = to;
+			this.c = c;
+		}
+	}
 	
 	
 	// ==== Fast Util ====
