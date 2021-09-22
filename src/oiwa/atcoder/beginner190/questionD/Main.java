@@ -18,18 +18,38 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
 		
+		final long N = sc.nextLong();
+		final long n2 = 2*N;
 		
-		
+		long count = 0;
+		for (long a = 1; a*a <= n2; a++) {
+			if (n2 % a != 0) continue;
+			long b = n2 / a;
+			
+			if (check(a, b)) count++;
+//			if (check(b, a)) count++;
+			if (check(-a, -b)) count++;
+//			if (check(-b, -a)) count++;
+			
+		}
+		out.println(count);
 		
 	}
 	
-	
+	/**
+	 * a <= b
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	public boolean check(long a, long b) {
+		return ((a + b - 1) % 2 == 0) && ((b - a + 1) % 2 == 0);
+	}
 	
 	// ==== Fast Util ====
 	
