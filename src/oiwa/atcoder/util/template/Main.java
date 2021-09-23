@@ -247,7 +247,7 @@ public class Main {
 		 * @param max
 		 * @param key
 		 * @param func
-		 * @return
+		 * @return {@code min} if {@code key < func(min)}, {@code max + 1} if {@code func(max) < key}.
 		 */
 		public static long binarySearchUpperBound(long min, long max, long key, LongUnaryOperator func) {
 			if (func.applyAsLong(min) > key) return min;
