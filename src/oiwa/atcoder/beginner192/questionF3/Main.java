@@ -18,15 +18,48 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
 		
+		final int N = sc.nextInt();
+		final long X = sc.nextLong();
+		final long[] A = sc.nextLongArray(N);
 		
+		long res = Long.MAX_VALUE;
+		for (int k = 1; k <= N; k++) {
+			final long[][][] dp = new long[N+1][N+1][k]; // n, m, mod k
+			for (int i = 0; i <= N; i++)
+				for (int j = 0; j <= N; j++)
+					for (int ki = 0; ki < k; ki++)
+						dp[i][j][ki] = Long.MAX_VALUE;
+//					Arrays.fill(dp[i][j], Long.MAX_VALUE);
+			
+			dp[0][0][(int) (X % k)] = X;
+			
+			for (int n = 0; n < N; n++) {
+				for (int m = 0; m <= n; m++) {
+					for (int ki = 0; ki < k; ki++) {
+						long current = dp[n][m][ki];
+						if (current != Long.MAX_VALUE) {
+							dp[n+1][m  ][ki ] = Math.min(current, dp[n+1][m  ][ki]); // 追加しない場合
+							
+							long add = current - A[n]; // 追加する場合　初期値分減る
+							int mod = (int) (add % k);
+							dp[n+1][m+1][mod] = Math.min(add    , dp[n+1][m+1][mod]);
+						}
+					}
+				}
+			}
+			
+			if (dp[N][k][0] != Long.MAX_VALUE) {
+				long tmp = dp[N][k][0] / k;
+				if (res > tmp) res = tmp;
+			}
+		}
 		
-		
+		out.println(res);
 	}
 	
 	
