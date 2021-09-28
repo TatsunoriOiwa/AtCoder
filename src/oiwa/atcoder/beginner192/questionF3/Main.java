@@ -8,6 +8,11 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 192 F 3rd, 35 min.
+ * @author 17952
+ *
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
