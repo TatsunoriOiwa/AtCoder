@@ -6,10 +6,8 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -57,8 +55,9 @@ public class Main {
 		long max = 0;
 		
 		for (int k = 0; k < K; k++) { // djkstra
+			long[] dists = djkstra(adjacent, C[k], N);
 			for (int l = k+1; l < K; l++) {
-				long tmpd = djkstra(adjacent, C[k], C[l], N);
+				long tmpd = dists[l];
 				if (tmpd == Long.MAX_VALUE) {
 					out.println(-1);
 					return;
@@ -70,35 +69,47 @@ public class Main {
 			dist[k][k] = 0;
 		}
 		
-		Map<Long, Long> routeLen = new HashMap<>();
+		long[][] dp = new long[(1 << K)][K];
+		for (int i = 0; i < (1 << K); i++) Arrays.fill(dp[i], -1);
 		
-		out.println(recurcive(0, (1 << K) - 1, routeLen, dist, K));
+		long min = Long.MAX_VALUE;
+		for (int pos = 0; pos < K; pos++) {
+			long tmp = recurcive(((1 << K) -1) & ~(1 << pos), pos, dp, dist, K);
+			if (min > tmp) min = tmp;
+		}
+		out.println(min + 1);
+		for (int i = 0; i < (1 << K); i++) {
+			System.out.print(Integer.toBinaryString((1<<K) + i).substring(1));
+			for (int j = 0; j < K; j++) System.out.print(" " + dp[i][j]);
+			debug("");
+		}
 	}
 	
-	public long recurcive(int pos, int v, Map<Long, Long> routeLen, long[][] dist, int K) {
-	    if ((1 << K) - 1 == v)
-	        return dist[pos][0];
-	    else  {
-	    	long min = Long.MAX_VALUE;
-	    	for (int k = 0; k < K; k++) {
-	    		if ((v & (1 << k)) == 0) {
-	    			
-	    			dist[p][x] + tsp(x, v | (1 << x))
-	    		}
-	    	}
-	    	
-	    	return min;
-	    }
-	    
-	        return min([dist[p][x] + tsp(x, v | (1 << x)) for x in xrange(point_size) if not (v & (1 << x))])
+	public long recurcive(int set, int pos, long[][]dp, long[][] dist, int K) {
+		if (dp[set][pos] >= 0) return dp[set][pos];
+		if (set == 0) {
+			debug("set=" + Integer.toBinaryString((1<<K) + set).substring(1) + ",pos=" + pos + " " + 0);
+			return dp[set][pos] = 0; // 同じ点同士
+		}
+		
+		long min = Long.MAX_VALUE;
+		for (int k = 0; k < K; k++) {
+			if ((set & (1 << k)) != 0) {
+				long tmp = dist[k][pos] + recurcive(set & (~(1 << k)), k, dp, dist, K);
+				if (tmp < min) min = tmp;
+			}
+		}
+		debug("set=" + Integer.toBinaryString((1<<K) + set).substring(1) + ",pos=" + pos + " " + min);
+//		return dp[set][pos] = min == Long.MAX_VALUE ? 0 : min;
+		return dp[set][pos] = min;
 	}
 	
-	public long djkstra(List<Set<Integer>> adjacent, int from, int to, int N) {
+	public long[] djkstra(List<Set<Integer>> adjacent, int from, int N) {
 		
 		PriorityQueue<Entry> queue = new PriorityQueue<>((e1, e2) -> Long.compare(e1.dist, e2.dist));
 		long[] dists = new long[N];
 		Arrays.fill(dists, Long.MAX_VALUE);
-		Map<Integer, Long> distmap = new HashMap<>();
+//		Map<Integer, Long> distmap = new HashMap<>();
 		
 		dists[from] = 0;
 		queue.add(new Entry(0, from));
@@ -112,7 +123,7 @@ public class Main {
 				}
 			}
 		}
-		return dists[to];
+		return dists;
 	}
 	
 	public static class Entry {
@@ -366,21 +377,21 @@ public class Main {
 	public void debug(boolean[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
 			System.out.println("]");
 		}
 	}
 	public void debug(long[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
 			System.out.println("]");
 		}
 	}
 	public void debug(double[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
 			System.out.println("]");
 		}
 	}
