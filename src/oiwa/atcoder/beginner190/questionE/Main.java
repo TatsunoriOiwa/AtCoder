@@ -4,10 +4,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * 65 min...
+ * @author T.Oiwa
+ * @date 2021/09/25
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -18,18 +31,98 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
 		
+		final int N = sc.nextInt();
+		final int M = sc.nextInt();
 		
+		List<Set<Integer>> adjacent = new ArrayList<>();
+		for (int i = 0; i < N; i++) { adjacent.add(new HashSet<>()); }
+		for (int i = 0; i < M; i++) {
+			int ai = sc.nextInt() -1;
+			int bi = sc.nextInt() -1;
+			adjacent.get(ai).add(bi);
+			adjacent.get(bi).add(ai);
+		}
 		
+		final int K = sc.nextInt();
 		
+		int[] C = sc.nextIntArray(K, -1);
+		
+		long[][] dist = new long[K][K];
+		for (int i = 0; i < K; i++) Arrays.fill(dist[i], Long.MAX_VALUE);
+		long max = 0;
+		
+		for (int k = 0; k < K; k++) { // djkstra
+			for (int l = k+1; l < K; l++) {
+				long tmpd = djkstra(adjacent, C[k], C[l], N);
+				if (tmpd == Long.MAX_VALUE) {
+					out.println(-1);
+					return;
+				}
+				dist[k][l] = tmpd;
+				dist[l][k] = tmpd;
+				if (max < tmpd) max = tmpd;
+			}
+			dist[k][k] = 0;
+		}
+		
+		Map<Long, Long> routeLen = new HashMap<>();
+		
+		out.println(recurcive(0, (1 << K) - 1, routeLen, dist, K));
 	}
 	
+	public long recurcive(int pos, int v, Map<Long, Long> routeLen, long[][] dist, int K) {
+	    if ((1 << K) - 1 == v)
+	        return dist[pos][0];
+	    else  {
+	    	long min = Long.MAX_VALUE;
+	    	for (int k = 0; k < K; k++) {
+	    		if ((v & (1 << k)) == 0) {
+	    			
+	    			dist[p][x] + tsp(x, v | (1 << x))
+	    		}
+	    	}
+	    	
+	    	return min;
+	    }
+	    
+	        return min([dist[p][x] + tsp(x, v | (1 << x)) for x in xrange(point_size) if not (v & (1 << x))])
+	}
 	
+	public long djkstra(List<Set<Integer>> adjacent, int from, int to, int N) {
+		
+		PriorityQueue<Entry> queue = new PriorityQueue<>((e1, e2) -> Long.compare(e1.dist, e2.dist));
+		long[] dists = new long[N];
+		Arrays.fill(dists, Long.MAX_VALUE);
+		Map<Integer, Long> distmap = new HashMap<>();
+		
+		dists[from] = 0;
+		queue.add(new Entry(0, from));
+		while (!queue.isEmpty()) {
+			Entry e = queue.poll();
+			if (e.dist > dists[e.pos]) continue;
+			for (int next : adjacent.get(e.pos)) {
+				if (dists[e.pos] + 1 < dists[next]) {
+					dists[next] = dists[e.pos] + 1;
+					queue.add(new Entry(dists[next], next));
+				}
+			}
+		}
+		return dists[to];
+	}
+	
+	public static class Entry {
+		public final long dist;
+		public final int pos;
+		public Entry(long dist, int pos) {
+			this.dist = dist;
+			this.pos = pos;
+		}
+	}
 	
 	// ==== Fast Util ====
 	
