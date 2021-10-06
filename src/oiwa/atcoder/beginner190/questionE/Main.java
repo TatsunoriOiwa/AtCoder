@@ -57,7 +57,7 @@ public class Main {
 		for (int k = 0; k < K; k++) { // djkstra
 			long[] dists = djkstra(adjacent, C[k], N);
 			for (int l = k+1; l < K; l++) {
-				long tmpd = dists[l];
+				long tmpd = dists[C[l]];
 				if (tmpd == Long.MAX_VALUE) {
 					out.println(-1);
 					return;
@@ -68,6 +68,7 @@ public class Main {
 			}
 			dist[k][k] = 0;
 		}
+//		for (int i = 0; i < K; i++) { debug(dist[i]); }
 		
 		long[][] dp = new long[(1 << K)][K];
 		for (int i = 0; i < (1 << K); i++) Arrays.fill(dp[i], -1);
@@ -78,18 +79,19 @@ public class Main {
 			if (min > tmp) min = tmp;
 		}
 		out.println(min + 1);
-		for (int i = 0; i < (1 << K); i++) {
-			System.out.print(Integer.toBinaryString((1<<K) + i).substring(1));
-			for (int j = 0; j < K; j++) System.out.print(" " + dp[i][j]);
-			debug("");
-		}
+		
+//		for (int i = 0; i < (1 << K); i++) {
+//			System.out.print(Integer.toBinaryString((1<<K) + i).substring(1));
+//			for (int j = 0; j < K; j++) System.out.print(" " + dp[i][j]);
+//			debug("");
+//		}
 	}
 	
 	public long recurcive(int set, int pos, long[][]dp, long[][] dist, int K) {
 		if (dp[set][pos] >= 0) return dp[set][pos];
 		if (set == 0) {
-			debug("set=" + Integer.toBinaryString((1<<K) + set).substring(1) + ",pos=" + pos + " " + 0);
-			return dp[set][pos] = 0; // 同じ点同士
+//			debug("set=" + Integer.toBinaryString((1<<K) + set).substring(1) + ",pos=" + pos + " " + 0);
+			return dp[set][pos] = 0; // 自分以外にない場合
 		}
 		
 		long min = Long.MAX_VALUE;
@@ -99,7 +101,7 @@ public class Main {
 				if (tmp < min) min = tmp;
 			}
 		}
-		debug("set=" + Integer.toBinaryString((1<<K) + set).substring(1) + ",pos=" + pos + " " + min);
+//		debug("set=" + Integer.toBinaryString((1<<K) + set).substring(1) + ",pos=" + pos + " " + min);
 //		return dp[set][pos] = min == Long.MAX_VALUE ? 0 : min;
 		return dp[set][pos] = min;
 	}
