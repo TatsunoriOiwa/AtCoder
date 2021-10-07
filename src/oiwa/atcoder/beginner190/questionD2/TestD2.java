@@ -1,26 +1,26 @@
-package oiwa.atcoder.beginner190.questionA;
+package oiwa.atcoder.beginner190.questionD2;
 
 import oiwa.atcoder.util.Case;
 import oiwa.atcoder.util.TesterV10;
 
-public class TestA {
+public class TestD2 {
 	public static void main(String[] args) {
 		new TesterV10(Main.class, new Case[] {
 				
 				new Case(true,
-						"2 1 0\r\n"
+						"12\r\n"
 						+ "",
-						"Takahashi\r\n"
+						"4\r\n"
 						+ ""),
 				new Case(true,
-						"2 2 0\r\n"
+						"1\r\n"
 						+ "",
-						"Aoki\r\n"
+						"2\r\n"
 						+ ""),
 				new Case(true,
-						"2 2 1\r\n"
+						"963761198400\r\n"
 						+ "",
-						"Takahashi\r\n"
+						"1920\r\n"
 						+ ""),
 				new Case(false,
 						"",

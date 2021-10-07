@@ -1,4 +1,4 @@
-package oiwa.atcoder.beginner190.questionA;
+package oiwa.atcoder.beginner190.questionD2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,8 +9,8 @@ import java.util.function.Function;
 import java.util.function.LongUnaryOperator;
 
 /**
- * ABC 190 A, 4 min.
- * @author T.Oiwa
+ * ABC 190 D 2nd, 20 min
+ * @author 17952
  *
  */
 public class Main {
@@ -28,24 +28,20 @@ public class Main {
 //		String s = sc.next();
 //		out.println(sc.next());
 		
-		final int A = sc.nextInt();
-		final int B = sc.nextInt();
-		final int C = sc.nextInt();
+		final long N2 = sc.nextLong()*2;
 		
-		final String TAKAHASHI = "Takahashi";
-		final String AOKI = "Aoki";
+		long cnt = 0;
 		
-		if (A == B) {
-			out.println(C == 0 ? AOKI : TAKAHASHI);
-		} else if (A < B) {
-			out.println(AOKI);
-		} else {
-			out.println(TAKAHASHI);
+		for (long a = 1; a*a <= N2; a++) {
+			if (N2 % a != 0) continue;
+			long b = N2 / a;
+			if ((a+b+1) % 2 == 0 && (b-a+1) % 2 == 0 && (a+b+1) > 0) {
+				cnt++;
+			}
 		}
+		cnt *= 2; // 正の根と負の根
 		
-		
-		
-		
+		out.println(cnt);
 	}
 	
 	
@@ -266,7 +262,7 @@ public class Main {
 		 * @param max
 		 * @param key
 		 * @param func
-		 * @return
+		 * @return {@code min} if {@code key < func(min)}, {@code max + 1} if {@code func(max) < key}.
 		 */
 		public static long binarySearchUpperBound(long min, long max, long key, LongUnaryOperator func) {
 			if (func.applyAsLong(min) > key) return min;
