@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
+import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
 public class Main {
@@ -263,7 +264,26 @@ public class Main {
 			return max;
 		}
 		
-		
+		/**
+		 * Returns the minimum long value that is "true".
+		 * @param min
+		 * @param max
+		 * @param predicate Must return false for all values below threshold, and always return true if not．
+		 * @return returns max+1 if not exist.
+		 */
+		public static long binarySearchPredicate(long min, long max, LongPredicate predicate) {
+			if (predicate.test(min)) return min;
+			if (!predicate.test(max)) return max+1;
+			while (min < max - 1) {
+				long mid = (min >> 1) + (max >> 1) + ((min&0b1) & (max&0b1));
+				if (!predicate.test(mid)) {
+					min = mid;
+				} else {
+					max = mid;
+				}
+			}
+			return max;
+		}
 	}
 	
 	public void debug(String str) { if (DEBUG) System.out.println(str); }
