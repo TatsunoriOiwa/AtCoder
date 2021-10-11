@@ -4,10 +4,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.BitSet;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 190 F, 28 min.
+ * @author T.Oiwa
+ *
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -18,15 +24,29 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
 		
+		final int N = sc.nextInt();
+		final int[] As = sc.nextIntArray(N);
 		
+		long flip = 0;
 		
+		BitSet bset = new BitSet();
 		
+//		TreeSet<Integer> set = new TreeSet<>();
+		for (int i = 0; i < N; i++) {
+			flip += i - bset.get(0, As[i]).cardinality(); // set.tailSet(As[i]).size();
+//			set.add(As[i]);
+			bset.set(As[i]);
+		}
+		
+		for (int i = 0; i < N; i++) {
+			out.println(flip);
+			flip += (N - As[i] - 1) - As[i];
+		}
 	}
 	
 	
