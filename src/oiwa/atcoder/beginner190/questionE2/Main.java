@@ -4,11 +4,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 190 E 2nd: 35 min
+ * @author T.Oiwa
+ *
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -19,17 +31,94 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
 		
+		final int N = sc.nextInt();
+		final int M = sc.nextInt();
+		
+		Map<Integer, List<Integer>> outs = new HashMap<>();
+		for (int i = 0; i < N; i++) { outs.put(i, new ArrayList<>()); }
+		
+		for (int i = 0; i < M; i++) {
+			int ai = sc.nextInt() - 1;
+			int bi = sc.nextInt() - 1;
+			outs.get(ai).add(bi);
+			outs.get(bi).add(ai);
+		}
+		
+		final int K = sc.nextInt();
+		final int[] Cs = sc.nextIntArray(K, -1);
+		
+		long[][] dists = new long[K][K];
+		for (int i = 0; i < K; i++) {
+			long[] bfs = this.bfs(Cs[i], outs, N);
+			for (int j = i+1; j < K; j++) {
+				long d = bfs[Cs[j]];
+				if (d == Long.MAX_VALUE) {
+					out.println(-1);
+					return;
+				}
+				dists[j][i] = dists[i][j] = d;
+			}
+			dists[i][i] = 0;
+//			debug(dists[i]);
+		}
+		
+		this.cache = new long[K][1 << K];
+		for (int k = 0; k < K; k++) {
+			Arrays.fill(cache[k], Long.MAX_VALUE);
+			cache[k][0] = 0;
+		}
 		
 		
-		
+		long res = Long.MAX_VALUE;
+		for (int k = 0; k < K; k++) {
+			long dist = this.shortest(k, ((1 << K) - 1) & ~(1 << k), dists, K);
+			if (res > dist) res = dist;
+		}
+		out.println(res+1);
+//		for (int k = 0; k < K; k++) {
+//			debug(cache[k]);
+//		}
 	}
 	
+	private long[][] cache;
+	private long shortest(int from, int set, long[][] dists, int K) {
+		if (cache[from][set] < Long.MAX_VALUE) return cache[from][set];
+		
+		long min = Long.MAX_VALUE;
+		for (int k = 0; k < K; k++) {
+			if ((set & (1 << k)) > 0) {
+				long dist =  dists[from][k] + shortest(k, set & ~(1 << k), dists, K);
+				if (min > dist) min = dist;
+			}
+		}
+		
+		return cache[from][set] = min;
+	}
+	
+	private long[] bfs(int from, Map<Integer, List<Integer>> outs, int N) {
+		long[] dist = new long[N];
+		Arrays.fill(dist, Long.MAX_VALUE);
+		
+		Deque<Integer> queue = new LinkedList<>();
+		queue.offer(from);
+		dist[from] = 0;
+		while (!queue.isEmpty()) {
+			int pos = queue.poll();
+			long ndist = dist[pos]+ 1;
+			for (int next : outs.get(pos)) {
+				if (dist[next] > ndist) {
+					dist[next] = ndist;
+					queue.offer(next);
+				}
+			}
+		}
+		return dist;
+	}
 	
 	
 	// ==== Fast Util ====
@@ -293,21 +382,21 @@ public class Main {
 	public void debug(boolean[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
 			System.out.println("]");
 		}
 	}
 	public void debug(long[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
 			System.out.println("]");
 		}
 	}
 	public void debug(double[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.println(","); System.out.print(arr[i]); }
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
 			System.out.println("]");
 		}
 	}
