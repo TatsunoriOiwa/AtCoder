@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.LongUnaryOperator;
@@ -18,18 +19,52 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
 		
+		final int N = sc.nextInt();
+		final int M = sc.nextInt();
 		
+		Condition[] conditions = new Condition[M];
+		for (int i = 0; i < M; i++) {
+			conditions[i] = new Condition(sc.nextInt() - 1, sc.nextInt() - 1);
+		}
 		
+		final int K = sc.nextInt();
+		int[][] person = new int[K][2];
+		for (int i = 0; i < K; i++) {
+			person[i][0] = sc.nextInt() - 1;
+			person[i][1] = sc.nextInt() - 1;
+		}
 		
+		final int max = 1 << K;
+		boolean[] status = new boolean[N];
+		int res = 0;
+		for (int i = 0; i < max; i++) {
+			Arrays.fill(status, false);
+			for (int k = 0, mask = 1; k < K; k++, mask <<= 1) {
+				status[person[k][(i & mask) == 0 ? 0 : 1]] = true;
+			}
+			int tmp = 0;
+			for (int m = 0; m < M; m++) {
+				Condition c = conditions[m];
+				if (status[c.a] && status[c.b]) tmp++;
+			}
+			if (tmp > res) res = tmp;
+		}
+		out.println(res);
 	}
 	
-	
+	public static class Condition {
+		public final int a;
+		public final int b;
+		public Condition(int a, int b) {
+			this.a = a;
+			this.b = b;
+		}
+	}
 	
 	// ==== Fast Util ====
 	

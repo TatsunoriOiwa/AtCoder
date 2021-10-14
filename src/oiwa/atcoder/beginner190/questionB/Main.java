@@ -8,6 +8,11 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 190 B, 3 min.
+ * @author T.Oiwa
+ *
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -18,15 +23,25 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
 		
+		int N = sc.nextInt();
+		int S = sc.nextInt();
+		int D = sc.nextInt();
 		
-		
-		
+		for (int i = 0; i < N; i++) {
+			int xi = sc.nextInt();
+			int yi = sc.nextInt();
+			
+			if (xi < S && yi > D) {
+				out.println("Yes");
+				return;
+			}
+		}
+		out.println("No");
 	}
 	
 	
