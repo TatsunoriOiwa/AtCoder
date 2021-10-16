@@ -9,6 +9,11 @@ import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 189 A, 2 min
+ * @author T. Oiwa
+ * @date 2021/10/16
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -19,14 +24,18 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
 		
+		String s = sc.next();
 		
-		
+		if (s.charAt(0) == s.charAt(1) && s.charAt(1) == s.charAt(2)) {
+			out.println("Won");
+		} else {
+			out.println("Lost");
+		}
 		
 	}
 	
