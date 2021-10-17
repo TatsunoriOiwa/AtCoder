@@ -1,4 +1,4 @@
-package oiwa.atcoder.beginner223.questionB;
+package oiwa.atcoder.beginner223.questionC2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,21 +19,61 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		FastScanner sc = new FastScanner();
-		
-		final String S = sc.next();
-		final int N = S.length();
-		
-		String min = S;
-		String max = S;
-		for (int i = 1; i < N; i++) {
-			String tmp = S.substring(i, N) + S.substring(0, i);
-			if (tmp.compareTo(min) < 0) min = tmp;
-			if (tmp.compareTo(max) > 0) max = tmp;
+//		FastScanner sc = new FastScanner();
+//		
+//		final int N = sc.nextInt();
+//		
+//		Tuple[] cords = new Tuple[N];
+//		for (int i = 0; i < N; i++) {
+//			cords[i] = new Tuple(sc.nextInt(), sc.nextInt());
+//		}
+//		
+//		int head = 0;
+//		int tail = N - 1; // excluding
+//		
+//		double fore = cords[head].length;
+//		double aft = cords[tail].length;
+//		double sum = 0;
+//		
+//		while (head < tail) {
+//			double f = fore / cords[head].speed;
+//			double a = aft / cords[tail].speed;
+//			
+//			if (f < a) { // 前が燃え尽きる方が早い
+//				sum += fore;
+//				head++;
+//				fore = cords[head].length;
+//				
+//				aft -= cords[tail].speed * f;
+//			} else if (f > a) {
+//				sum += cords[head].speed * a;
+//				tail--;
+//				aft = cords[tail].length;
+//				
+//				fore -= cords[head].speed * a;
+//			} else {
+//				out.println(sum + fore);
+//				return;
+//			}
+//			debug(head + " " + fore + " : " + tail + " " + aft);
+//		}
+//		
+//		if (head == tail) {
+//			long t = ((fore+aft) - cords[head].length) / (cords[head].speed * 2);
+//			fore += t *  cords[head].speed;
+//			sum += t *  cords[head].speed;
+//		}
+//		
+//		out.println(sum / (double) BASE);
+	}
+	
+	public static class Tuple {
+		public final long length;
+		public final long speed;
+		public Tuple(long ai, long bi) {
+			this.length = ai;
+			this.speed = bi;
 		}
-		out.println(min);
-		out.println(max);
-		
 	}
 	
 	

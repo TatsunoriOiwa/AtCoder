@@ -21,7 +21,12 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
-		
+		int X = sc.nextInt();
+		if (X > 0 && X % 100 == 0) {
+			out.println("Yes");
+		} else {
+			out.println("No");
+		}
 		
 	}
 	

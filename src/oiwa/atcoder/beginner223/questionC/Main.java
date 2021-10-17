@@ -20,9 +20,67 @@ public class Main {
 	
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
+		final long BASE = 10000000000L;
 		
+		final int N = sc.nextInt();
 		
+		Tuple[] cords = new Tuple[N];
+		for (int i = 0; i < N; i++) {
+			cords[i] = new Tuple(sc.nextInt() * BASE, sc.nextInt());
+		}
 		
+		int head = 0;
+		int tail = N - 1; // excluding
+		
+		long fore = cords[head].length;
+		long aft = cords[tail].length;
+		long sum = 0;
+		
+		while (head < tail) {
+			long f = fore / cords[head].speed;
+			long a = aft / cords[tail].speed;
+			debug("f=" + f + " a=" + a);
+			
+			if (f < a) { // 前が燃え尽きる方が早い
+				sum += fore;
+				head++;
+				fore = cords[head].length;
+				
+				aft -= cords[tail].speed * f;
+			} else if (f > a) {
+				sum += cords[head].speed * a;
+				
+				fore -= cords[head].speed * a;
+				
+				tail--;
+				aft = cords[tail].length;
+			} else {
+				sum += fore;
+				
+				head++;
+				tail--;
+				fore = cords[head].length;
+				aft = cords[tail].length;
+			}
+			debug(head + " " + fore + " : " + tail + " " + aft);
+		}
+		
+		if (head == tail) {
+			long t = ((fore+aft) - cords[head].length) / (cords[head].speed * 2);
+			fore += t *  cords[head].speed;
+			sum += t *  cords[head].speed;
+		}
+		
+		out.println(sum / (double) BASE);
+	}
+	
+	public static class Tuple {
+		public final long length;
+		public final long speed;
+		public Tuple(long ai, long bi) {
+			this.length = ai;
+			this.speed = bi;
+		}
 	}
 	
 	

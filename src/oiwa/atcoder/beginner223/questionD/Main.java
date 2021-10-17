@@ -4,7 +4,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
@@ -21,8 +28,55 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int M = sc.nextInt();
 		
+		TreeSet<Integer> active = new TreeSet<>();
+		Map<Integer, Set<Integer>> outs = new HashMap<>();
+		Map<Integer, Set<Integer>> restriction = new HashMap<>();
 		
+		for (int i = 0; i < N; i++) {
+			active.add(i);
+			outs.put(i, new HashSet<>());
+		}
+		
+
+		
+		for (int i = 0; i < M; i++) {
+			int ai = sc.nextInt() - 1;
+			int bi = sc.nextInt() - 1;
+			
+			active.remove(bi);
+			if (!restriction.containsKey(bi)) {
+				restriction.put(bi, new HashSet<>());
+			}
+			restriction.get(bi).add(ai);
+			outs.get(ai).add(bi);
+		}
+		
+		List<Integer> result = new ArrayList<>();
+		while (!active.isEmpty()) {
+			int min = active.pollFirst();
+			result.add(min);
+			for (int bi : outs.get(min)) {
+				Set<Integer> remain = restriction.get(bi);
+				remain.remove(min);
+				if (remain.isEmpty()) {
+					restriction.remove(bi);
+					active.add(bi);
+				}
+			}
+		}
+		
+		 // 長さが規定通り　else -1
+		if (result.size() == N) {
+			out.print(result.get(0) + 1);
+			for (int i = 1; i < N; i++) {
+				out.print(" " + (result.get(i) + 1));
+			}
+		} else {
+			out.println(-1);
+		}
 	}
 	
 	

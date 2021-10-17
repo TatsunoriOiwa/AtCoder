@@ -21,11 +21,91 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int Q = sc.nextInt();
+		final String S = sc.next();
 		
+		boolean[] parensys = new boolean[N];
+		
+		BinaryIndexedTree bitree = new BinaryIndexedTree((int) Math.ceil(N * Math.log(N) / Math.log(2)) + 1000);
+		
+		for (int i = 0; i < N; i++) {
+			parensys[i] = S.charAt(i) == '(';
+			bitree.updateBIT(N, i, parensys[i] ? 1 : -1);
+		}
+		
+		for (int i = 0; i < Q; i++) {
+			int q = sc.nextInt();
+			int l = sc.nextInt() - 1;
+			int r = sc.nextInt() - 1;
+			
+			if (q == 1) { // 入れ替え
+				boolean tmp = parensys[l];
+				parensys[l] = parensys[r];
+				parensys[r] = tmp;
+				bitree.updateBIT(N, l, parensys[l] ? 1 : -1);
+				bitree.updateBIT(N, r, parensys[r] ? 1 : -1);
+			} else { // 判定
+				out.println((bitree.getSum(r) - (l == 0 ? 0 : bitree.getSum(l - 1)) == 0) ? "Yes" : "No");
+			}
+		}
 		
 	}
 	
+	public void set(int i, int val, int[] tree) {
+		
+	}
 	
+	public static class BinaryIndexedTree
+	{
+		final int MAX;
+		public int BITree[];
+
+		public BinaryIndexedTree(int max) {
+			this.MAX = max;
+			this.BITree = new int[MAX];
+		}
+
+		int getSum(int index) {
+			int sum = 0; // Initialize result
+
+			// index in BITree[] is 1 more than
+			// the index in arr[]
+			index = index + 1;
+
+			// Traverse ancestors of BITree[index]
+			while (index > 0) {
+				// Add current element of BITree
+				// to sum
+				sum += BITree[index];
+
+				// Move index to parent node in
+				// getSum View
+				index -= index & (-index);
+			}
+			return sum;
+		}
+
+		// Updates a node in Binary Index Tree (BITree)
+		// at given index in BITree. The given value
+		// 'val' is added to BITree[i] and all of
+		// its ancestors in tree.
+		public void updateBIT(int n, int index, int val) {
+			// index in BITree[] is 1 more than
+			// the index in arr[]
+			index = index + 1;
+
+			// Traverse all ancestors and add 'val'
+			while (index <= n) {
+				// Add 'val' to current node of BIT Tree
+				BITree[index] += val;
+
+				// Update index to that of parent
+				// in update View
+				index += index & (-index);
+			}
+		}
+	}
 	
 	// ==== Fast Util ====
 	
