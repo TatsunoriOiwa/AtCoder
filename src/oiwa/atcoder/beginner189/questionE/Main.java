@@ -9,6 +9,11 @@ import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 189 E, 30 min
+ * @author T.Oiwa
+ * @date 2021/10/18
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -19,15 +24,102 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 //		int i = sc.nextInt();
 //		String s = sc.next();
 //		out.println(sc.next());
 		
+		final int N = sc.nextInt();
+		Pos[] pos = new Pos[N];
+		for (int i = 0; i < N; i++) {
+			pos[i] = new Pos(sc.nextLong(), sc.nextLong());
+		}
 		
+		final int M = sc.nextInt();
+		Matrix[] results = new Matrix[M+1];
+		results[0] = Matrix.IDENTITY;
+		for (int i = 0; i < M; i++) {
+			Matrix mat;
+			int op = sc.nextInt();
+			switch(op) {
+			case 1: mat = Matrix.ROT_CW; break;
+			case 2: mat = Matrix.ROT_CCW; break;
+			case 3:
+				int px = sc.nextInt();
+				mat = Matrix.invX(px);
+				break;
+			case 4:
+				int py = sc.nextInt();
+				mat = Matrix.invY(py);
+				break;
+			default:
+				mat = Matrix.IDENTITY;
+				assert(false);
+			}
+			results[i+1] = mat.multiply(results[i]);
+		}
 		
+		final int Q = sc.nextInt();
+		for (int i = 0; i < Q; i++) {
+			int ai = sc.nextInt();
+			int bi = sc.nextInt() - 1;
+			out.println(results[ai].apply(pos[bi]));
+		}
+	}
+	
+	public static class Pos {
+		public final long x;
+		public final long y;
+		public Pos(long x, long y) {
+			this.x = x;
+			this.y = y;
+		}
+		public String toString() {
+			return this.x + " " + this.y;
+		}
+	}
+	
+	public static class Matrix {
+		public static final Matrix IDENTITY = new Matrix(1, 0, 0,   0, 1, 0);
+		public static final Matrix ROT_CW = new Matrix(0, 1, 0,   -1, 0, 0);
+		public static final Matrix ROT_CCW = new Matrix(0, -1, 0,   1, 0, 0);
 		
+		private long[][] mat;
+		
+		public Matrix(long xx, long xy, long xw, long yx, long yy, long yw) {
+			this(new long[][] {{ xx, xy, xw }, { yx, yy, yw }, { 0, 0, 1 }});
+		}
+		
+		public Matrix(long[][] mat) {
+			this.mat = mat;
+		}
+		
+		public static Matrix invX(long p) {
+			return new Matrix(-1, 0, p*2,  0, 1, 0);
+		}
+		public static Matrix invY(long p) {
+			return new Matrix(1, 0, 0,  0, -1, p*2);
+		}
+		
+		public Matrix multiply(Matrix mat) {
+			return new Matrix(new long[][] {
+				{ 	this.mat[0][0]*mat.mat[0][0] + this.mat[0][1]*mat.mat[1][0] + this.mat[0][2]*mat.mat[2][0],
+					this.mat[0][0]*mat.mat[0][1] + this.mat[0][1]*mat.mat[1][1] + this.mat[0][2]*mat.mat[2][1],
+					this.mat[0][0]*mat.mat[0][2] + this.mat[0][1]*mat.mat[1][2] + this.mat[0][2]*mat.mat[2][2],},
+				{ 	this.mat[1][0]*mat.mat[0][0] + this.mat[1][1]*mat.mat[1][0] + this.mat[1][2]*mat.mat[2][0],
+					this.mat[1][0]*mat.mat[0][1] + this.mat[1][1]*mat.mat[1][1] + this.mat[1][2]*mat.mat[2][1],
+					this.mat[1][0]*mat.mat[0][2] + this.mat[1][1]*mat.mat[1][2] + this.mat[1][2]*mat.mat[2][2],},
+				{ 	this.mat[2][0]*mat.mat[0][0] + this.mat[2][1]*mat.mat[1][0] + this.mat[2][2]*mat.mat[2][0],
+					this.mat[2][0]*mat.mat[0][1] + this.mat[2][1]*mat.mat[1][1] + this.mat[2][2]*mat.mat[2][1],
+					this.mat[2][0]*mat.mat[0][2] + this.mat[2][1]*mat.mat[1][2] + this.mat[2][2]*mat.mat[2][2],},
+			});
+		}
+		
+		public Pos apply(Pos pos) {
+			return new Pos(
+					this.mat[0][0]*pos.x + this.mat[0][1]*pos.y + this.mat[0][2],
+					this.mat[1][0]*pos.x + this.mat[1][1]*pos.y + this.mat[1][2]);
+		}
 	}
 	
 	
