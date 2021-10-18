@@ -21,7 +21,7 @@ public class MarginedPredicate implements Function<String, CaseResult> {
 		double result = Double.parseDouble(t);
 		if (ans - absErr <= result && result <= ans + absErr) return CaseResult.SUCCESS;
 		if (ans * (1 - relErr) <= result && result <= ans * (1 + relErr)) return CaseResult.SUCCESS;
-		return null;
+		return CaseResult.FAIL;
 	}
 
 }
