@@ -9,6 +9,11 @@ import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 188 C, 22 min
+ * @author T.Oiwa
+ * @date 2021/10/19
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -19,11 +24,32 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int[] A = sc.nextIntArray(1 << N);
+		final int[] table = new int[1 << N];
+		for (int i = 0; i < 1 << N; i++) {
+			table[i] = i;
+		}
+		for (int n = N - 1; n > 0; n--) {
+			for (int i = 0; i < 1 << n; i++) {
+				if (A[table[i*2]] > A[table[i*2 + 1]]) {
+					table[i] = table[i*2];
+				} else {
+					table[i] = table[i*2+1];
+				}
+			}
+			debug(table);
+		}
+		int res;
+		if (A[table[0]] < A[table[1]]) {
+			res = table[0];
+		} else {
+			res = table[1];
+		}
 		
-		
+		out.println(res + 1);
 	}
 	
 	
@@ -294,6 +320,13 @@ public class Main {
 		}
 	}
 	public void debug(long[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}
+	public void debug(int[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
 			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
