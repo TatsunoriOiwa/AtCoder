@@ -4,11 +4,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 188 D, 28 min
+ * @author T.Oiwa
+ * @date 2021/10/20
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -19,14 +25,57 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int C = sc.nextInt();
 		
+		Service[] service = new Service[N*2];
+		for (int i = 0; i < N; i++) {
+			int ai = sc.nextInt();
+			int bi = sc.nextInt();
+			int ci = sc.nextInt();
+			service[i*2  ] = new Service(ai, false, ci);
+			service[i*2+1] = new Service(bi+1, true, ci);
+		}
+		Arrays.sort(service, (e1, e2) -> {
+			int flag = Integer.compare(e1.date, e2.date);
+			if (flag != 0) return flag;
+			return -Boolean.compare(e1.end, e2.end);
+		});
+//		debug(service);
 		
+		long cumlative = 0;
+		long res = 0;
+		int prev = 0;
+		for (Service s : service) {
+			long delta = s.date - prev;
+			res += Math.min(cumlative, C) * delta;
+			if (s.end) {
+				cumlative -= s.cost;
+			} else {
+				cumlative += s.cost;
+			}
+			debug(s.date + " " + delta + " " + s.end + " " + cumlative);
+			prev = s.date;
+		}
+		out.println(res);
 	}
 	
-	
+	public static class Service {
+		public final int date;
+		public final boolean end;
+		public final int cost;
+		public Service(int date, boolean end, int cost) {
+			this.date = date;
+			this.end = end;
+			this.cost = cost;
+		}
+		@Override
+		public String toString() {
+			return "(" + date + " " + end + " " + cost + ")";
+		}
+	}
 	
 	// ==== Fast Util ====
 	
@@ -301,6 +350,13 @@ public class Main {
 		}
 	}
 	public void debug(double[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}
+	public <T> void debug(T[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
 			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
