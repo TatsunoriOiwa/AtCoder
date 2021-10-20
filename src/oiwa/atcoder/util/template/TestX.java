@@ -25,6 +25,12 @@ public class TestX {
 				new Case(false,
 						"",
 						""),
+				new Case(false,
+						"",
+						""),
+				new Case(false,
+						"",
+						""),
 		});
 	}
 }
