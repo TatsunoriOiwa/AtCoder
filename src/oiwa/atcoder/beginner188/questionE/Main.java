@@ -4,11 +4,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 188 E, 28 min.
+ * @author T.Oiwa
+ * @date 2021/10/21
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -19,11 +29,52 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int M = sc.nextInt();
+		final long[] As = sc.nextLongArray(N);
 		
+		Map<Integer, Set<Integer>> outs = new HashMap<>();
+		for (int i = 0; i < N; i++) { outs.put(i, new HashSet<>()); }
+		for (int i = 0; i < M; i++) {
+			int xi = sc.nextInt() - 1;
+			int yi = sc.nextInt() - 1;
+			outs.get(xi).add(yi);
+		}
 		
+		this.cache = new long[N];
+		Arrays.fill(this.cache, Long.MIN_VALUE);
+
+		long res = Long.MIN_VALUE;
+		for (int i = N - 1; i >= 0; i--) {
+			if (outs.get(i).size() > 0) {
+				for (int o : outs.get(i)) {
+					long tmp = maxIncome(o, As, outs) + As[o] - As[i];
+					if (tmp > res) res = tmp;
+				}
+			}
+		}
+		out.println(res);
+		
+//		long[] res = new long[N];
+//		Arrays.fill(res, Long.MIN_VALUE);
+//
+//		for (int i = N - 1; i >= 0; i--) {
+//			long current = res[i] == Long.MIN_VALUE ? 0 : res[i];
+//		}
+		debug(cache);
+	}
+	
+	private long[] cache;
+	public long maxIncome(int town, long[] As, Map<Integer, Set<Integer>> outs) {
+		if (cache[town] != Long.MIN_VALUE) return cache[town]; // cache hit
+		long max = 0;
+		for (int i : outs.get(town)) {
+			long tmp = maxIncome(i, As, outs) + As[i] - As[town];
+			if (tmp > max) max = tmp;
+		}
+		return cache[town] = max;
 	}
 	
 	
