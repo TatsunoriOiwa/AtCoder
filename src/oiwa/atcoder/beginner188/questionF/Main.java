@@ -19,9 +19,10 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		int X = sc.nextInt();
+		int Y = sc.nextInt();
 		
 		
 	}
