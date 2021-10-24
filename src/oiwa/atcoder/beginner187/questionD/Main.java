@@ -4,11 +4,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 187 D, 12 min
+ * @author T.Oiwa
+ * @date 2021/10/24
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -19,14 +25,44 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final Tuple[] town = new Tuple[N];
+		for (int i = 0; i < N;i++) {
+			town[i] = new Tuple(sc.nextInt(), sc.nextInt());
+		}
 		
+		long aoki = 0;
+		for(int i = 0; i < N; i++) { aoki += town[i].a; }
 		
+		Arrays.sort(town, (e1, e2) -> -Long.compare(e1.value(), e2.value()));
+		
+		long takahashi = 0;
+		for (int i = 0; i < N; i++) {
+			if (aoki < takahashi) {
+				out.println(i);
+				return;
+			}
+			aoki -= town[i].a;
+			takahashi += town[i].a + town[i].b;
+		}
+		
+		out.println(N);
 	}
 	
-	
+	public static class Tuple {
+		public final long a;
+		public final long b;
+		public Tuple(int x, int y) {
+			this.a = x;
+			this.b = y;
+		}
+		
+		public long value() {
+			return a*2 + b;
+		}
+	}
 	
 	// ==== Fast Util ====
 	

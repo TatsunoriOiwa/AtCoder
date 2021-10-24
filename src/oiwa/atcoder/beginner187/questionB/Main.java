@@ -9,6 +9,11 @@ import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 187 B, 6 min.
+ * @author T.Oiwa
+ * @date 2021/10/24
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -19,14 +24,36 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final Pos[] pos = new Pos[N];
+		for (int i = 0; i < N; i++) {
+			pos[i] = new Pos(sc.nextInt(), sc.nextInt());
+		}
 		
-		
+		int cnt = 0;
+		for (int i = 0; i < N; i++) {
+			for (int j = i+1; j < N; j++) {
+				int dx = pos[j].x - pos[i].x;
+				int dy = pos[j].y - pos[i].y;
+				if (dx < 0) dx *= -1;
+				if (-dx <= dy && dy <= dx) {
+					cnt++;
+				}
+			}
+		}
+		out.println(cnt);
 	}
 	
-	
+	public static class Pos {
+		public final int x;
+		public final int y;
+		public Pos(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+	}
 	
 	// ==== Fast Util ====
 	
