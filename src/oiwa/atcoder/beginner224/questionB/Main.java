@@ -1,11 +1,9 @@
-package oiwa.atcoder.beginner188.questionF;
+package oiwa.atcoder.beginner224.questionB;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.LongPredicate;
@@ -23,35 +21,33 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
-		long X = sc.nextLong();
-		long Y = sc.nextLong();
+		final int H = sc.nextInt();
+		final int W = sc.nextInt();
 		
-		this.cache = new HashMap<>();
-		cache.put(0L, X);
-		cache.put(1L, X - 1);
+		long[][] A = new long[H][];
+		for (int i = 0; i < H; i++) {
+			A[i] = sc.nextLongArray(W);
+		}
 		
-		out.println(recurcive(Y, X));
+		final String YES = "Yes";
+		final String NO = "No";
+		
+		for (int i1 = 0; i1 < H; i1++) {
+			for (int j1 = 0; j1 < W; j1++) {
+				for (int i2 = i1+1; i2 < H; i2++) {
+					for (int j2 = j1+1; j2 < W; j2++) {
+						if (A[i1][j1] + A[i2][j2] > A[i2][j1] + A[i1][j2]) {
+							out.println(NO);
+							return;
+						}
+					}
+				}
+			}
+		}
+		out.println(YES);
 	}
 	
-	private Map<Long, Long> cache;
-	private long recurcive(long y, final long X) {
-		if (cache.containsKey(y)) {
-			return cache.get(y);
-		}
-		long ret;
-		if (y % 2 == 0) {
-			ret = Math.min(Math.abs(X - y), recurcive(y / 2, X) + 1);
-		} else {
-			ret = min(Math.abs(X - y), recurcive((y + 1) / 2, X) + 2, recurcive((y - 1) / 2, X) + 2);
-		}
-		this.cache.put(y, ret);
-		return ret;
-	}
 	
-	private long min(long v1, long v2, long v3) {
-		if (v1 < v2) return Math.min(v1, v3);
-		return Math.min(v2, v3);
-	}
 	
 	// ==== Fast Util ====
 	
@@ -325,7 +321,21 @@ public class Main {
 			System.out.println("]");
 		}
 	}
+	public void debug(int[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}
 	public void debug(double[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}
+	public <T> void debug(T[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
 			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }

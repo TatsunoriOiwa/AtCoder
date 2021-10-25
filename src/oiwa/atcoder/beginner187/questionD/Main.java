@@ -1,16 +1,20 @@
-package oiwa.atcoder.beginner188.questionF;
+package oiwa.atcoder.beginner187.questionD;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 187 D, 12 min
+ * @author T.Oiwa
+ * @date 2021/10/24
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -23,34 +27,41 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
-		long X = sc.nextLong();
-		long Y = sc.nextLong();
+		final int N = sc.nextInt();
+		final Tuple[] town = new Tuple[N];
+		for (int i = 0; i < N;i++) {
+			town[i] = new Tuple(sc.nextInt(), sc.nextInt());
+		}
 		
-		this.cache = new HashMap<>();
-		cache.put(0L, X);
-		cache.put(1L, X - 1);
+		long aoki = 0;
+		for(int i = 0; i < N; i++) { aoki += town[i].a; }
 		
-		out.println(recurcive(Y, X));
+		Arrays.sort(town, (e1, e2) -> -Long.compare(e1.value(), e2.value()));
+		
+		long takahashi = 0;
+		for (int i = 0; i < N; i++) {
+			if (aoki < takahashi) {
+				out.println(i);
+				return;
+			}
+			aoki -= town[i].a;
+			takahashi += town[i].a + town[i].b;
+		}
+		
+		out.println(N);
 	}
 	
-	private Map<Long, Long> cache;
-	private long recurcive(long y, final long X) {
-		if (cache.containsKey(y)) {
-			return cache.get(y);
+	public static class Tuple {
+		public final long a;
+		public final long b;
+		public Tuple(int x, int y) {
+			this.a = x;
+			this.b = y;
 		}
-		long ret;
-		if (y % 2 == 0) {
-			ret = Math.min(Math.abs(X - y), recurcive(y / 2, X) + 1);
-		} else {
-			ret = min(Math.abs(X - y), recurcive((y + 1) / 2, X) + 2, recurcive((y - 1) / 2, X) + 2);
+		
+		public long value() {
+			return a*2 + b;
 		}
-		this.cache.put(y, ret);
-		return ret;
-	}
-	
-	private long min(long v1, long v2, long v3) {
-		if (v1 < v2) return Math.min(v1, v3);
-		return Math.min(v2, v3);
 	}
 	
 	// ==== Fast Util ====
@@ -325,7 +336,21 @@ public class Main {
 			System.out.println("]");
 		}
 	}
+	public void debug(int[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}
 	public void debug(double[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}
+	public <T> void debug(T[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
 			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }

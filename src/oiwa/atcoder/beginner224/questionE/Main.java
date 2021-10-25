@@ -1,12 +1,15 @@
-package oiwa.atcoder.beginner188.questionF;
+package oiwa.atcoder.beginner224.questionE;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
@@ -23,34 +26,91 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
-		long X = sc.nextLong();
-		long Y = sc.nextLong();
+		final int H = sc.nextInt();
+		final int W = sc.nextInt();
+		final int N = sc.nextInt();
 		
-		this.cache = new HashMap<>();
-		cache.put(0L, X);
-		cache.put(1L, X - 1);
+//		int [][] A = new int[H][W];
+//		for (int i = 0; i < H; i++) {
+//			Arrays.fill(A[i], 0);
+//		}
 		
-		out.println(recurcive(Y, X));
+		Map<Integer, Set<Pos>> rows = new HashMap<>();
+		for (int i = 0; i < H; i++) { rows.put(i, new HashSet<>()); }
+		Map<Integer, Set<Pos>> cols = new HashMap<>();
+		for (int i = 0; i < W; i++) { cols.put(i, new HashSet<>()); }
+		
+		Map<Integer, Integer> rowmax = new HashMap<>();
+		Map<Integer, Integer> colmax = new HashMap<>();
+		
+		Pos[] poss = new Pos[N];
+		for (int i = 0; i < N ; i++) {
+			final int ri = sc.nextInt() - 1;
+			final int ci = sc.nextInt() - 1;
+			final int ai = sc.nextInt();
+//			A[ri][ci] = ai;
+			poss[i] = new Pos(ri, ci, ai, i);
+		}
+		Arrays.sort(poss, (e1, e2) -> -Integer.compare(e1.a, e2.a));
+		
+		int[] res = new int[N];
+		Arrays.fill(res, -1);
+		
+		for (Pos pos : poss) {
+			int max = 0;
+//			debug(pos + "");
+//			for (Pos next : rows.getOrDefault(pos.r, EMPTY)) {
+//				if (next.a <= pos.a) continue;
+//				int tmp = res[next.index] + 1;
+//				if (max < tmp) max = tmp;
+//			}
+//			for (Pos next : cols.getOrDefault(pos.c, EMPTY)) {
+//				if (next.a <= pos.a) continue;
+//				int tmp = res[next.index] + 1;
+//				if (max < tmp) max = tmp;
+//			}
+			boolean r = false;;
+			boolean c = false;
+			if (rowmax.getOrDefault(pos.r, -1) + 1 > max) { max = rowmax.get(pos.r) + 1; r = true; }
+			if (colmax.getOrDefault(pos.c, -1) + 1 > max) { max = colmax.get(pos.c) + 1; c = true; }
+//			set(rows, pos.r, pos);
+//			set(cols, pos.c, pos);
+//			rows.get(pos.r).add(pos);
+//			cols.get(pos.c).add(pos);
+			if (r) rowmax.put(pos.r, max);
+			if (c) colmax.put(pos.c, max);
+			res[pos.index] = max;
+		}
+		
+		for (int r : res) {
+			out.println(r);
+		}
 	}
 	
-	private Map<Long, Long> cache;
-	private long recurcive(long y, final long X) {
-		if (cache.containsKey(y)) {
-			return cache.get(y);
-		}
-		long ret;
-		if (y % 2 == 0) {
-			ret = Math.min(Math.abs(X - y), recurcive(y / 2, X) + 1);
-		} else {
-			ret = min(Math.abs(X - y), recurcive((y + 1) / 2, X) + 2, recurcive((y - 1) / 2, X) + 2);
-		}
-		this.cache.put(y, ret);
-		return ret;
-	}
+//	private final Set<Pos> EMPTY = new HashSet<>();
+//	
+//	private void set(Map<Integer, Set<Pos>> map, int index, Pos val) {
+////		if (!map.containsKey(index)) {
+////			map.put(index, new HashSet<>());
+////		}
+//		map.get(index).add(val);
+//	}
 	
-	private long min(long v1, long v2, long v3) {
-		if (v1 < v2) return Math.min(v1, v3);
-		return Math.min(v2, v3);
+	public static class Pos {
+		public final int r;
+		public final int c;
+		public final int a;
+		public final int index;
+		public Pos(int x, int y, int a, int i) {
+			this.r = x;
+			this.c = y;
+			this.a = a;
+			this.index = i;
+		}
+		@Override
+		public String toString() {
+			return "(r=" + r + ",c=" + c + ",a=" + a + ",i=" + index + ")";
+		}
 	}
 	
 	// ==== Fast Util ====
@@ -325,7 +385,21 @@ public class Main {
 			System.out.println("]");
 		}
 	}
+	public void debug(int[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}
 	public void debug(double[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}
+	public <T> void debug(T[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
 			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }

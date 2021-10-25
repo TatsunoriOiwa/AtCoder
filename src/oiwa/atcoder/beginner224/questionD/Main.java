@@ -1,12 +1,16 @@
-package oiwa.atcoder.beginner188.questionF;
+package oiwa.atcoder.beginner224.questionD;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
@@ -23,35 +27,103 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
-		long X = sc.nextLong();
-		long Y = sc.nextLong();
+		final int N = 9; // 頂点の数
+		final int M = sc.nextInt();
+		final int L = 8; // コマの数
 		
-		this.cache = new HashMap<>();
-		cache.put(0L, X);
-		cache.put(1L, X - 1);
+		Map<Integer, Set<Integer>> outs = new HashMap<>();
+		for (int i = 0; i < N; i++) {
+			outs.put(i, new HashSet<>());
+		}
+		for (int i = 0; i < M; i++) {
+			final int ui = sc.nextInt() - 1;
+			final int vi = sc.nextInt() - 1;
+			outs.get(ui).add(vi);
+			outs.get(vi).add(ui);
+		}
 		
-		out.println(recurcive(Y, X));
+		final int[] initial = new int[N];
+		Arrays.fill(initial, 8);
+		for (int i = 0; i < L; i++) { initial[sc.nextInt() - 1] = i; }
+		final int[] goal = new int[N];
+		for (int i = 0; i < N; i++) { goal[i] = i; }
+		
+//		cache = new long[(int) AtMath.power(9, 8)];
+//		Arrays.fill(cache, -1);
+		
+		HashMap<Integer, Long> distmap = new HashMap<>();
+		LinkedList<Tuple> queue = new LinkedList<>();
+		queue.offer(new Tuple(0, goal, 8));
+		distmap.put(toKey(goal), 0L);
+		
+		while (!queue.isEmpty()) {
+			Tuple current = queue.poll();
+			for (int from : outs.get(current.open)) {
+				int[] next = Arrays.copyOf(current.state, 9);
+//				debug(next);
+				next[current.open] = next[from]; // 移動させる
+				next[from] = 8; // 何もない状態にする
+				int key = toKey(next);
+				if (!distmap.containsKey(key)) {
+					queue.offer(new Tuple(current.dist + 1, next, from));
+					distmap.put(key, current.dist + 1L);
+//					debug("moved " + next[current.open] + " from " + from + " to " + current.open);
+//					debug(next);
+				}
+			}
+		}
+		out.println(distmap.getOrDefault(toKey(initial), -1L));
 	}
 	
-	private Map<Long, Long> cache;
-	private long recurcive(long y, final long X) {
-		if (cache.containsKey(y)) {
-			return cache.get(y);
+	private static class Tuple {
+		public final long dist;
+		public final int[] state;
+		public final int open;
+		public Tuple(long dist, int[] state, int open) {
+			this.dist = dist;
+			this.state = state;
+			this.open = open;
 		}
-		long ret;
-		if (y % 2 == 0) {
-			ret = Math.min(Math.abs(X - y), recurcive(y / 2, X) + 1);
-		} else {
-			ret = min(Math.abs(X - y), recurcive((y + 1) / 2, X) + 2, recurcive((y - 1) / 2, X) + 2);
+		@Override
+		public String toString() {
+			return this.open + " " + this.dist;
 		}
-		this.cache.put(y, ret);
-		return ret;
 	}
 	
-	private long min(long v1, long v2, long v3) {
-		if (v1 < v2) return Math.min(v1, v3);
-		return Math.min(v2, v3);
+//	private static class State {
+//		public final int[] state;
+//
+//		public State(int[] state) {
+//			this.state = state;
+//		}
+//	}
+	
+//	private long[] cache;
+//	private long distance(int[] state, Map<Integer, Set<Integer>> outs) {
+//		int key = toKey(state);
+//		if (cache[key] >= 0) return cache[key];
+//		long ret;
+//		for ()
+//		
+//	}
+//	
+	private int toKey(int[] state) {
+		int res = 0;
+		for (int i = 8; i >= 0; i--) {
+			res *= 10;
+			res += state[i];
+		}
+		return res;
 	}
+//	
+//	private int[] decode(int key) {
+//		int[] res = new int[8];
+//		for (int i = 0; i < 8; i++) {
+//			res[i] = key % 9;
+//			key /= 9;
+//		}
+//		return res;
+//	}
 	
 	// ==== Fast Util ====
 	
@@ -325,7 +397,21 @@ public class Main {
 			System.out.println("]");
 		}
 	}
+	public void debug(int[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}
 	public void debug(double[] arr) {
+		if (DEBUG) {
+			System.out.print("[");
+			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
+			System.out.println("]");
+		}
+	}
+	public <T> void debug(T[] arr) {
 		if (DEBUG) {
 			System.out.print("[");
 			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
