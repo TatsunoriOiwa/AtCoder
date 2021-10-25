@@ -4,11 +4,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 187 E, 48 min.
+ * @author T.Oiwa
+ * @date 2021/10/25
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -19,14 +29,110 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		Edge[] edge = new Edge[N-1];
+		for (int i = 0; i < N -1; i++) {
+			int a = sc.nextInt() - 1;
+			int b = sc.nextInt() - 1;
+			edge[i] = new Edge(a, b);
+		}
+		Map<Integer, Set<Integer>> outs = new HashMap<>();
+		for (int i = 0; i < N ;i++) outs.put(i, new HashSet<>());
+		for (int i = 0; i < N-1; i++) {
+			outs.get(edge[i].a).add(i);
+			outs.get(edge[i].b).add(i);
+		}
+
+		final int Q = sc.nextInt();
+		debug(Q);
+		for (int i = 0; i < Q; i++) {
+			int t = sc.nextInt();
+			int e = sc.nextInt() - 1;
+			int x = sc.nextInt();
+			if (t == 1) {
+				edge[e].ca += x;
+			} else {
+				edge[e].cb += x;
+			}
+		}
 		
+//		for (Edge e : edge) {
+//			debug(e.a + " " + e.b + " " + e.ca + " " + e.cb);
+//		}
 		
+		long sumall = 0;
+		long[] dc = new long[N];
+		Arrays.fill(dc, Long.MIN_VALUE);
+		sumall = dfs(0, edge, outs, dc, 0);
+		
+		for (int i = 0; i < N; i++) {
+			out.println(sumall + dc[i]);
+		}
+		
+//		LinkedList<DFS> dfs = new LinkedList<>();
+//		dfs.push(new DFS(0, 0));
+//		while (!dfs.isEmpty()) {
+//			DFS now = dfs.pop();
+//			
+//		}
 	}
 	
+//	public static class DFS {
+//		public final int pos;
+//		public final int current;
+//		public DFS(int pos, int current) {
+//			super();
+//			this.pos = pos;
+//			this.current = current;
+//		}
+//		
+//	}
 	
+	public long dfs(int pos, Edge[] edge, Map<Integer, Set<Integer>> outs, long[] dc, long current) {
+		dc[pos] = current;
+//		debug(pos +  " " + current);
+		long sum = 0;
+		for (int ei : outs.get(pos)) {
+			Edge e = edge[ei];
+			int next = e.other(pos);
+			if (dc[next] == Long.MIN_VALUE) {
+//				debug(pos + " -> " + next + " d=" + e.delta(pos));
+				sum += e.all(pos);
+				sum += dfs(next, edge, outs, dc, current + e.delta(pos));
+			}
+		}
+		return sum;
+	}
+	
+	public static class Edge {
+		public final int a;
+		public final int b;
+		public long ca = 0;
+		public long cb = 0;
+		public Edge(int a, int b) {
+			this.a = a;
+			this.b = b;
+		}
+		public long allA2B() { return ca; }
+		public long deltaA2B() { return -ca+cb; }
+		public long allB2A() { return cb; }
+		public long deltaB2A() { return -cb + ca; }
+		public long delta(int v) {
+			if (v == a) { return deltaA2B(); }
+			else return deltaB2A();
+		}
+		public long all(int v) {
+			if (v == a) { return allA2B(); }
+			else return allB2A();
+		}
+		
+		public int other(int i) {
+			if (i == a) return b;
+			return a;
+		}
+	}
 	
 	// ==== Fast Util ====
 	
