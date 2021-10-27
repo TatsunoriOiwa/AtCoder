@@ -1,16 +1,13 @@
-package oiwa.atcoder.beginner187.questionF;
+package oiwa.atcoder.beginner187.questionF2;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
@@ -29,54 +26,37 @@ public class Main {
 		
 		final int N = sc.nextInt();
 		final int M = sc.nextInt();
-		Map<Integer, List<Integer>> outs = new HashMap<>();
-		for (int i = 0; i < N; i++) outs.put(i, new ArrayList<>());
+		Map<Integer, Integer> outs = new HashMap<>();
+		for (int i = 0; i < N; i++) outs.put(i, 0);
 		for (int i = 0; i < M; i++) {
 			int a = sc.nextInt() - 1;
 			int b = sc.nextInt() - 1;
-			outs.get(a).add(b);
-			outs.get(b).add(a);
+			outs.put(a, outs.get(a) | (1 << b));
+			outs.put(b, outs.get(b) | (1 << a));
 		}
 		
 		cache = new int[1 << N];
+		cache[0] = 1;
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < (1 << i); j++) {
+				if ((outs.get(i) & j) == j) { cache[j | 1 << i] = cache[j]; }
+				// 完全グラフであるような誘導部分グラフを事前に全て求めておく．
+				// これによりrecurciveで完全グラフかの判定を繰り返す必要がなくなる
+			}
+		}
 		cache[0] = 0;
-//		Arrays.fill(cache, -1);
-		Set<Integer> sset = new HashSet<>();
-		for (int i = 0; i < N; i++) { sset.add(i); }
-		out.println(recurcive((1 << N) - 1, sset, outs, N));
-//		debug(cache);
+		
+		out.println(recurcive((1 << N) - 1, outs, N));
 	}
 	private int[] cache;
-	public int recurcive(int set, Set<Integer> sset, Map<Integer, List<Integer>> outs, int N) {
+	public int recurcive(int set, Map<Integer, Integer> outs, int N) {
 		if (cache[set] > 0) return cache[set];
 		if (set == 0) return 0;
 		
-		Set<Integer> nset = new HashSet<>();
-		if (test(set, outs, N)) {
-			return cache[set] = 1;
-		}
 		int min = N;
-		for (int targ : sset) { // 基準
-//			if ((set & (1 << targ)) == 0) continue;
-			List<Integer> out = outs.get(targ);
-			final int pown = outs.get(targ).size();
-			final int pow = 1 << pown;
-			final int base = 1 << targ;
-			for (int bits = 0; bits < pow; bits++) {
-				int flag = base; // 今回取り除く分
-				nset.addAll(sset);
-				for (int b = 0; b < pown; b++) {
-					if ((bits & (1 << b)) == 0) continue;
-					int adj = out.get(b);
-					flag += (1 << adj);
-					nset.remove(adj);
-				}
-				nset.remove(targ);
-				if (!test(bits, out, outs, pown)) continue;
-				int tmp = 1 + recurcive(set & (~flag), nset, outs, N);
-				if (tmp < min) min = tmp;
-				nset.clear();
-			}
+		for (int i = (set - 1) & set; i > 0; i = ((i - 1) & set)) { // 部分集合を舐める
+			int tmp = recurcive(i, outs, N) + recurcive(set ^ i, outs, N);
+			if (tmp < min) min = tmp;
 		}
 		return cache[set] = min;
 	}

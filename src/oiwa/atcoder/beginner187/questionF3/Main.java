@@ -1,16 +1,13 @@
-package oiwa.atcoder.beginner187.questionF;
+package oiwa.atcoder.beginner187.questionF3;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
@@ -29,87 +26,36 @@ public class Main {
 		
 		final int N = sc.nextInt();
 		final int M = sc.nextInt();
-		Map<Integer, List<Integer>> outs = new HashMap<>();
-		for (int i = 0; i < N; i++) outs.put(i, new ArrayList<>());
+		Map<Integer, Integer> outs = new HashMap<>();
+		for (int i = 0; i < N; i++) outs.put(i, 0);
 		for (int i = 0; i < M; i++) {
 			int a = sc.nextInt() - 1;
 			int b = sc.nextInt() - 1;
-			outs.get(a).add(b);
-			outs.get(b).add(a);
+			outs.put(a, outs.getOrDefault(a, 0) | (1 << b));
+			outs.put(b, outs.getOrDefault(b, 0) | (1 << a));
 		}
 		
 		cache = new int[1 << N];
-		cache[0] = 0;
+		Arrays.fill(cache, N);
+		cache[0] = 1;
 //		Arrays.fill(cache, -1);
-		Set<Integer> sset = new HashSet<>();
-		for (int i = 0; i < N; i++) { sset.add(i); }
-		out.println(recurcive((1 << N) - 1, sset, outs, N));
+//		Set<Integer> sset = new HashSet<>();
+//		for (int i = 0; i < N; i++) { sset.add(i); }
 //		debug(cache);
+		
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < (1 << i); j++) {
+				if ((outs.get(i) & j) == j) cache[j | (1 << i)] = cache[j];
+			}
+		}
+		for (int i = 0; i < (1 << N); i++) {
+			for (int j = i; j > 0; j = ((j - 1) & i)) { // 部分bit集合をなめる
+				if (cache[i] > cache[j] + cache[i ^ j]) cache[i] = cache[j] + cache[i ^ j];
+			}
+		}
+		out.println(cache[(1 << N) - 1]);
 	}
 	private int[] cache;
-	public int recurcive(int set, Set<Integer> sset, Map<Integer, List<Integer>> outs, int N) {
-		if (cache[set] > 0) return cache[set];
-		if (set == 0) return 0;
-		
-		Set<Integer> nset = new HashSet<>();
-		if (test(set, outs, N)) {
-			return cache[set] = 1;
-		}
-		int min = N;
-		for (int targ : sset) { // 基準
-//			if ((set & (1 << targ)) == 0) continue;
-			List<Integer> out = outs.get(targ);
-			final int pown = outs.get(targ).size();
-			final int pow = 1 << pown;
-			final int base = 1 << targ;
-			for (int bits = 0; bits < pow; bits++) {
-				int flag = base; // 今回取り除く分
-				nset.addAll(sset);
-				for (int b = 0; b < pown; b++) {
-					if ((bits & (1 << b)) == 0) continue;
-					int adj = out.get(b);
-					flag += (1 << adj);
-					nset.remove(adj);
-				}
-				nset.remove(targ);
-				if (!test(bits, out, outs, pown)) continue;
-				int tmp = 1 + recurcive(set & (~flag), nset, outs, N);
-				if (tmp < min) min = tmp;
-				nset.clear();
-			}
-		}
-		return cache[set] = min;
-	}
-	
-	/**
-	 * O(N^2)
-	 * @param set
-	 * @param outs
-	 * @param N
-	 * @return
-	 */
-	public boolean test(int set, List<Integer> out, Map<Integer, List<Integer>> outs, int pown) {
-		for (int ii = 0; ii < pown; ii++) {
-			if ((set & (1 << ii)) == 0) continue;
-			int i = out.get(ii);
-			for (int jj = ii+1; jj < pown; jj++) {
-				if ((set & (1 << jj)) == 0) continue;
-				if (!outs.get(i).contains(out.get(jj))) return false;
-			}
-		}
-		return true;
-	}
-	
-	public boolean test(int set, Map<Integer, List<Integer>> outs, int N) {
-		for (int i = 0; i < N; i++) {
-			if ((set & (1 << i)) == 0) continue;
-			for (int j = i+1; j < N; j++) {
-				if ((set & (1 << j)) == 0) continue;
-				if (!outs.get(i).contains(j)) return false;
-			}
-		}
-		return true;
-	}
 	
 	// ==== Fast Util ====
 	
