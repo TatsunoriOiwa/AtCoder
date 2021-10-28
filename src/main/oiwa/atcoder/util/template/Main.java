@@ -5,7 +5,10 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.NoSuchElementException;
+import java.util.function.BinaryOperator;
+import java.util.function.DoubleBinaryOperator;
 import java.util.function.Function;
+import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
@@ -279,6 +282,72 @@ public class Main {
 				}
 			}
 			return max;
+		}
+		
+		/**
+		 * O(1)
+		 * @param a
+		 * @param b
+		 * @param c
+		 * @return
+		 */
+		public static long min(long a, long b, long c) {
+			if (a < b) return a < c ? a : c;
+			return b < c ? b : c;
+		}
+		
+		/**
+		 * O(1)
+		 * @param a
+		 * @param b
+		 * @param c
+		 * @return
+		 */
+		public static double min(double a, double b, double c) {
+			if (a < b) return a < c ? a : c;
+			return b < c ? b : c;
+		}
+		
+		/**
+		 * O(1)
+		 * @param a
+		 * @param b
+		 * @param c
+		 * @return
+		 */
+		public static long max(long a, long b, long c) {
+			if (a < b) return a < c ? a : c;
+			return b < c ? b : c;
+		}
+		
+		/**
+		 * O(1)
+		 * @param a
+		 * @param b
+		 * @param c
+		 * @return
+		 */
+		public static double max(double a, double b, double c) {
+			if (a < b) return a < c ? a : c;
+			return b < c ? b : c;
+		}
+		
+		public static <T> T reduce(T[] array, BinaryOperator<T> reducer, T initialValue) {
+			T result = initialValue;
+			for (T t : array) { result = reducer.apply(result, t); }
+			return result;
+		}
+		
+		public static long reduce(long[] array, LongBinaryOperator reducer, long initialValue) {
+			long result = initialValue;
+			for (long t : array) { result = reducer.applyAsLong(result, t); }
+			return result;
+		}
+		
+		public static double reduce(double[] array, DoubleBinaryOperator reducer, double initialValue) {
+			double result = initialValue;
+			for (double t : array) { result = reducer.applyAsDouble(result, t); }
+			return result;
 		}
 	}
 	
