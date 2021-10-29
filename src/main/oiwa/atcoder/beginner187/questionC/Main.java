@@ -4,11 +4,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 187 C, 13 min.
+ * @author T.Oiwa
+ * @date 2021/10/29
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -19,11 +26,24 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		Set<String> strs = new HashSet<>();
 		
+		final int N = sc.nextInt();
+		String res = "satisfiable";
 		
+		for (int i = 0; i < N; i++) {
+			strs.add(sc.next());
+		}
+		for (String s : strs) {
+			if (s.charAt(0) == '!' && strs.contains(s.substring(1))) {
+				res = s.substring(1);
+				break;
+			}
+		}
+		
+		out.println(res);
 	}
 	
 	
