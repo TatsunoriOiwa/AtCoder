@@ -12,6 +12,11 @@ import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 186 B, 4 min.
+ * @author T.Oiwa
+ * @date 2021/10/29
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -22,11 +27,23 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int H = sc.nextInt();
+		final int W = sc.nextInt();
 		
+		long sum = 0;
+		long min = Long.MAX_VALUE;
 		
+		for (int i = 0; i < H; i++) {
+			for (int j = 0; j < W; j++) {
+				int aij = sc.nextInt();
+				if (aij < min) min = aij;
+				sum += aij;
+			}
+		}
+		debug(sum + " " + min);
+		out.println(sum - min * H * W);
 	}
 	
 	

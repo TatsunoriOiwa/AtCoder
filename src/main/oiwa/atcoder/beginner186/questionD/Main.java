@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
@@ -12,6 +13,11 @@ import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 196 D, 6 min.
+ * @author T.Oiwa
+ * @date 2021/10/29
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -22,11 +28,22 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		long[] A = sc.nextLongArray(N);
+		Arrays.sort(A);
 		
-		
+		long[] sum = new long[N];
+		sum[N-1] = A[N-1];
+		for (int i = N - 2; i >= 0; i--) {
+			sum[i] = sum[i+1] + A[i];
+		}
+		long res = 0;
+		for (int i = 0; i < N-1; i++) {
+			res += sum[i+1] - (N - 1 - i) * A[i];
+		}
+		out.println(res);
 	}
 	
 	
