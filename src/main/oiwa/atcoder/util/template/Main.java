@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
@@ -33,7 +34,7 @@ public class Main {
 	
 	// ==== Fast Util ====
 	
-	static class FastScanner {
+	public static class FastScanner {
 		private final InputStream in = System.in;
 		private final byte[] buffer = new byte[1024];
 		private int ptr = 0;
@@ -220,7 +221,7 @@ public class Main {
 		 * To get maximum {@code i} that is {@code func(i) < key}, subtract 1 from the result.<br>
 		 * For {@code i} that is {@code func(i) > key}, use upper bound. For {@code func(i) <= key}, use upper bound -1.
 		 * @param min
-		 * @param max
+		 * @param max inclusive
 		 * @param key
 		 * @param func must be weakly increasing
 		 * @return {@code min} if {@code key < func(min)}, {@code max + 1} if {@code func(max) < key}.
@@ -244,7 +245,7 @@ public class Main {
 		 * To get maximum {@code i} that is {@code func(i) <= key}, subtract 1 from the result.<br>
 		 * For {@code i} that is {@code func(i) >= key}, use lower bound. For {@code func(i) < key}, use lower bound -1.
 		 * @param min
-		 * @param max
+		 * @param max inclusive
 		 * @param key
 		 * @param func
 		 * @return {@code min} if {@code key < func(min)}, {@code max + 1} if {@code func(max) < key}.
@@ -264,9 +265,10 @@ public class Main {
 		}
 		
 		/**
-		 * Returns the minimum long value that is "true".
+		 * Returns the minimum long value that is "true".<br>
+		 * data must be [ false, false, ..., false, true, true, ... ]
 		 * @param min
-		 * @param max
+		 * @param max inclusive
 		 * @param predicate Must return false for all values below threshold, and always return true if not．
 		 * @return returns max+1 if not exist.
 		 */
@@ -355,39 +357,9 @@ public class Main {
 	public void debug(long val) { if (DEBUG) System.out.println(val); }
 	public void debug(double val) { if (DEBUG) System.out.println(val); }
 	public void debug(boolean val) { if (DEBUG) System.out.println(val); }
-	public void debug(boolean[] arr) {
-		if (DEBUG) {
-			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
-			System.out.println("]");
-		}
-	}
-	public void debug(long[] arr) {
-		if (DEBUG) {
-			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
-			System.out.println("]");
-		}
-	}
-	public void debug(int[] arr) {
-		if (DEBUG) {
-			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
-			System.out.println("]");
-		}
-	}
-	public void debug(double[] arr) {
-		if (DEBUG) {
-			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
-			System.out.println("]");
-		}
-	}
-	public <T> void debug(T[] arr) {
-		if (DEBUG) {
-			System.out.print("[");
-			for (int i = 0; i < arr.length; i++) { if (i != 0) System.out.print(","); System.out.print(arr[i]); }
-			System.out.println("]");
-		}
-	}
+	public void debug(boolean[] arr) { if (DEBUG) System.out.println(Arrays.toString(arr)); }
+	public void debug(long[] arr) { if (DEBUG) System.out.println(Arrays.toString(arr)); }
+	public void debug(int[] arr) { if (DEBUG) System.out.println(Arrays.toString(arr)); }
+	public void debug(double[] arr) { if (DEBUG) System.out.println(Arrays.toString(arr)); }
+	public <T> void debug(T[] arr) { if (DEBUG) System.out.println(Arrays.toString(arr)); }
 }
