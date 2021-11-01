@@ -12,6 +12,11 @@ import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 186 E
+ * @author T.Oiwa
+ * @date 2021/11/01
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -22,14 +27,85 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
-		
-		
+		final int T = sc.nextInt();
+		for (int i = 0; i < T; i++) {
+			test(out, sc);
+		}
 	}
 	
+	public void test(PrintWriter out, FastScanner sc) {
+		long N = sc.nextLong();
+		long S = sc.nextLong();
+		long K = sc.nextLong();
+		
+		long[] xyg = bezoutCoeff(-K, N);
+		// xK + yN = gcd(K,N)
+		long x = xyg[0];
+//		long y = xyg[1];
+		long g = xyg[2];
+//		debug(xyg);
+		
+		if (S % g != 0) {
+			out.println(-1);
+			return;
+		}
+//		if ((S*x) % g != 0 || (S*y) % g != 0) {
+//			out.println(-1);
+//			return;
+//		}
+		N /= g;
+		K /= g;
+		S /= g;
+		
+		long m = S*x;
+//		debug(m + " " + (S*y / g));
+		
+		long mod = m % N;
+		if (mod < 0) mod += (N);
+		out.println(mod);
+	}
 	
+	/**
+	 * Computes Bezout coefficient from given a and b.<br>
+	 * <code>ax + by = g</code>, where g is the GCD of a and b.<br>
+	 * 
+	 * @param a
+	 * @param b
+	 * @return long[] {x, y, g}
+	 */
+	public long[] bezoutCoeff(long a, long b) {
+		long[] xyg = new long[3];
+		boolean ainv = a < 0;
+		boolean binv = b < 0;
+		if (ainv) a = -a;
+		if (binv) b = -b;
+		boolean swap = a < b;
+		if (swap) { long tmp = a; a = b; b = tmp; }
+		xyg[2] = bezoutGcd(xyg, a, b);
+		if (swap) { long tmp = xyg[0]; xyg[0] = xyg[1]; xyg[1] = tmp; }
+		if (ainv) xyg[0] = -xyg[0];
+		if (binv) xyg[1] = -xyg[1];
+		return xyg;
+	}
+	
+	private long bezoutGcd(long[] bezout, long a, long b) {
+		long r = a%b;
+		long gcd;
+		if (r != 0) {
+			gcd = this.bezoutGcd(bezout, b, r);
+			long q = a/b;
+			long tmp = bezout[0];
+			bezout[0] = bezout[1];
+			bezout[1] = tmp -q * bezout[1];
+		} else {
+			gcd = b;
+			bezout[0] = 0;
+			bezout[1] = 1;
+		}
+		return gcd;
+	}
 	
 	// ==== Fast Util ====
 	
