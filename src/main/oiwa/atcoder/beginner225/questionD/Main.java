@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
