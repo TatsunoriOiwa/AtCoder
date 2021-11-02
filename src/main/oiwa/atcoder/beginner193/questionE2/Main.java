@@ -1,4 +1,4 @@
-package oiwa.atcoder.util.template;
+package oiwa.atcoder.beginner193.questionE2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,14 +23,49 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
 		
-		
+		int T = sc.nextInt();
+		for (int i = 0; i < T; i++) {
+			this.caze(out, sc);
+		}
 	}
 	
-	
+	private void caze(PrintWriter out, FastScanner sc) {
+		long X = sc.nextLong();
+		long Y = sc.nextLong();
+		long P = sc.nextLong();
+		long Q = sc.nextLong();
+		
+		long A = 2 * (X+Y);
+		long B = -(P+Q);
+		
+		long tRes = Long.MAX_VALUE;
+		
+		for (long t1 = X; t1 < X+Y; t1++) {
+			for (long t2 = P; t2 < P+Q; t2++) {
+				long T = t2 - t1;
+				
+				long[] xyg = AtMath.bezoutCoeff(A, B);
+				long x0 = xyg[0];
+//				long y0 = xyg[1];
+				long g = xyg[2];
+				if (T%g != 0) continue;
+				
+				x0 *= T/g;
+				
+				long t = Math.round(Math.floor(((double) -x0)*g / B));
+				long x = x0 + B*t / g;
+				
+				long tmp = A*x + t1;
+				if (tmp < tRes) tRes = tmp;
+				debug(t + " " + (Math.floor(((double) -x0)*g / B)) + " " + x0 + " " + (B/g));
+			}
+		}
+		if (tRes == Long.MAX_VALUE) { out.println("infinity"); }
+		else { out.println(tRes); }
+	}
 	
 	// ==== Fast Util ====
 	
