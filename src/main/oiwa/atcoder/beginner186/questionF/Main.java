@@ -4,7 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.Function;
@@ -12,6 +18,11 @@ import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 186 F 53 min.
+ * @author T.Oiwa
+ * @date 2021/11/04
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -20,16 +31,81 @@ public class Main {
 		out.flush();
 	}
 	
-	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int H = sc.nextInt();
+		final int W = sc.nextInt();
+		final int M = sc.nextInt();
+		
+		Map<Integer, Set<Integer>> obsByLine = new HashMap<>();
+		for (int i = 0; i < H; i++) { obsByLine.put(i, new HashSet<>()); }
+		int[] minYByLine = new int[H];
+		Arrays.fill(minYByLine, W);
+		int maxx = H;
+		int maxy = W;
+		
+		for (int i = 0; i < M; i++) {
+			int xi = sc.nextInt() - 1;
+			int yi = sc.nextInt() - 1;
+			if (minYByLine[xi] > yi) minYByLine[xi] = yi;
+			obsByLine.get(xi).add(yi);
+			if (yi == 0 && maxx > xi) maxx = xi;
+			if (xi == 0 && maxy > yi) maxy = yi;
+		}
 		
 		
+		long sum = 0;
+		
+		BitSet bitset = new BitSet();
+		boolean flag = maxx > 1;
+
+		sum += minYByLine[0];
+		bitset.set(0, maxy, true);
+		for (int obsy : obsByLine.get(0)) { bitset.set(obsy, false); }
+		
+		for (int i = 1; i < H; i++) {
+			for (int obsy : obsByLine.get(i)) {
+				bitset.set(obsy, false);
+			}
+			flag = maxx > i;
+			if (flag) {
+				sum += minYByLine[i];
+				if (minYByLine[i] <= maxy) {
+					sum += bitset.get(minYByLine[i], maxy).cardinality();
+				}
+//				debug(minYByLine[i] + bitset.get(minYByLine[i], maxy).cardinality() + " 1");
+			} else {
+				sum += bitset.get(0, maxy).cardinality();
+//				debug(bitset.get(0, maxy).cardinality() + " 2");
+			}
+		}
+		out.println(sum);
 	}
 	
-	
+//	public static class FenwickTree {
+//		private final long[] array;
+//		private final int N;
+//		private final int depth;
+//		
+//		public FenwickTree(int N) {
+//			int size = 0;
+//			int depth = 0;
+//			for (int i = 1; i <= N; i <<= 1) {
+//				size += i;
+//				depth++;
+//			}
+//			
+//			this.array = new long[size];
+//			this.N = N;
+//			this.depth = depth;
+//		}
+//		
+//		public void set(int index, long value) {
+//			
+//		}
+//		
+//	}
 	
 	// ==== Fast Util ====
 	
