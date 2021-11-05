@@ -7,12 +7,16 @@ public class TestC {
 	public static void main(String[] args) {
 		new TesterV10(Main.class, new Case[] {
 				
-				new Case(false,
-						"",
-						""),
-				new Case(false,
-						"",
-						""),
+				new Case(true,
+						"20\r\n"
+						+ "",
+						"17\r\n"
+						+ ""),
+				new Case(true,
+						"100000\r\n"
+						+ "",
+						"30555\r\n"
+						+ ""),
 				new Case(false,
 						"",
 						""),

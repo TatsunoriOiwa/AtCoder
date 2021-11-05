@@ -13,6 +13,11 @@ import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 195 D, 13 min.
+ * @author T.Oiwa
+ * @date 2021/11/05
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -23,11 +28,44 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int M = sc.nextInt();
+		final int[] A = sc.nextIntArray(M, -1);
+		if (A.length == N) {
+			out.println(0);
+			return;
+		}
+		Arrays.sort(A);
 		
 		
+		int prev = 0;
+		int mingap = N;
+		for (int a : A) {
+			if (mingap > a - prev && a - prev > 0) mingap = a - prev;
+			prev = a+1;
+		}
+		if (mingap > N - prev && N - prev > 0) mingap = N - prev;
+		
+		prev = 0;
+		long cnt = 0;
+		for (int a : A) {
+			long delta = a - prev;
+			if (delta != 0) {
+				cnt += delta / mingap + (delta % mingap == 0 ? 0 : 1);
+			}
+			prev = a+1;
+//			debug(cnt + " " + a);
+		}
+		{
+			long delta = N - prev;
+			if (delta != 0) {
+				cnt += delta / mingap + (delta % mingap == 0 ? 0 : 1);
+			}
+//			debug(cnt);
+		}
+		out.println(cnt);
 	}
 	
 	

@@ -12,6 +12,11 @@ import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 196 C, 4 min.
+ * @author T.Oiwa
+ * @date 2021/11/05
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -22,14 +27,24 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
 		
-		
+		long cnt = 0;
+		for (int i = 1; i  <= N; i++) {
+			if (test(i, 10) && test(i, 8)) cnt++;
+		}
+		out.println(cnt);
 	}
 	
-	
+	private boolean test(int v, int base) {
+		while (v > 0) {
+			if (v % base == 7) return false;
+			v /= base;
+		}
+		return true;
+	}
 	
 	// ==== Fast Util ====
 	
