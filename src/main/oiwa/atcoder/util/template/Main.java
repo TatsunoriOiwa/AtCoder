@@ -397,6 +397,36 @@ public class Main {
 		}
 	}
 	
+	public static class AtCollections {
+		public static class FenwickTree {
+			private static final int DEFAULT_CAPACITY = 16;
+			private long[] array;
+			
+			public FenwickTree() {
+				this(DEFAULT_CAPACITY);
+			}
+			
+			public FenwickTree(int initialCapacity) {
+				this.array = new long[initialCapacity];
+			}
+			
+			public void ensureCapacity(int minCapacity) {
+				if (this.array.length < minCapacity) {
+					this.array = Arrays.copyOf(this.array, minCapacity);
+				}
+			}
+			
+			/**
+			 * returns the sum from 0 to to. {@code O(logN)}
+			 * @param to the index before the last element to be sumed.
+			 * @return
+			 */
+			public long sum(int to) {
+				
+			}
+		}
+	}
+	
 	public void debug(String str) { if (DEBUG) System.out.println(str); }
 	public void debug(long val) { if (DEBUG) System.out.println(val); }
 	public void debug(double val) { if (DEBUG) System.out.println(val); }
