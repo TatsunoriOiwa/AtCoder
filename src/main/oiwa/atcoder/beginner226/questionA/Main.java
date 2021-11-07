@@ -1,4 +1,4 @@
-	package oiwa.atcoder.beginner226.questionA;
+package oiwa.atcoder.beginner226.questionA;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +25,11 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
-		
+		String s = sc.next();
+		String[] ss = s.split("\\.");
+		int base = Integer.parseInt(ss[0]);
+		base += (ss[1].charAt(0) - '0' >= 5 ? 1 : 0);
+		out.println(base);
 		
 	}
 	
