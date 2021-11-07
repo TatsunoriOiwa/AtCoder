@@ -1,4 +1,4 @@
-package oiwa.atcoder.beginner226.questionA;
+	package oiwa.atcoder.beginner226.questionA;
 
 import java.io.IOException;
 import java.io.InputStream;
