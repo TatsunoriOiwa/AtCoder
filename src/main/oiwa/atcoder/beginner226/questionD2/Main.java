@@ -1,11 +1,14 @@
-package oiwa.atcoder.util.template;
+package oiwa.atcoder.beginner226.questionD2;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.TreeSet;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.Function;
@@ -21,15 +24,126 @@ public class Main {
 		out.flush();
 	}
 	
+//	public static int[] sosuu;
+//	static {
+//		List<Integer> list = new LinkedList<>();
+//		TreeSet<Integer> set = new TreeSet<>();
+//		for (int i = 3; i < 32000; i += 2) {
+//			set.add(i);
+//		}
+//		list.add(2);
+//		while (!set.isEmpty()) {
+//			int p = set.first();
+//			for (int pp = p; pp < 32_000; pp += p) {
+//				set.remove(pp);
+//			}
+//			list.add(p);
+//		}
+//		sosuu = new int[list.size()];
+//		int i = 0;
+//		for (int p : list) {
+//			sosuu[i] = p;
+//			i++;
+//		}
+//	}
 	
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
 		
+//		Set<Tuple2l> magics = new HashSet<>();
 		
+		List<Tuple2l> towns = new ArrayList<>(N);
+		for (int i = 0; i < N; i++) {
+			int x = sc.nextInt();
+			int y = sc.nextInt();
+			towns.add(new Tuple2l(x, y));
+		}
+		
+		TreeSet<Tuple2l> posi = new TreeSet<>((e1, e2) -> Long.compare(e1.y*e2.x, e2.y*e1.x));
+		TreeSet<Tuple2l> nega = new TreeSet<>((e1, e2) -> Long.compare(e1.y*e2.x, e2.y*e1.x));
+		boolean x0 = false;
+		
+		for (int i = 0; i < N; i++) {
+			for (int j = i+1; j < N; j++) {
+				Tuple2l ti = towns.get(i);
+				Tuple2l tj = towns.get(j);
+				long dx = ti.x - tj.x;
+				long dy = ti.y - tj.y;
+				if (dx ==0) {
+					x0 = true;
+				} else if (dx > 0) {
+					posi.add(new Tuple2l(dx, dy));
+					nega.add(new Tuple2l(-dx, -dy));
+				} else {
+					nega.add(new Tuple2l(dx, dy));
+					posi.add(new Tuple2l(-dx, -dy));
+				}
+				
+			}
+		}
+		out.println(posi.size() + (long) nega.size() + (x0 ? 2 : 0));
 	}
 	
+//	Map<Tuple2l, Tuple2l> cache = new HashMap<>();
+//	public Tuple2l toSo(long x, long y) {
+//		if (x == 0) return new Tuple2l(0, y > 0 ? 1 : -1);
+//		if (y == 0) return new Tuple2l(x > 0 ? 1 : -1, 0);
+//		int fx = x < 0 ? -1 : 1;
+//		int fy = y < 0 ? -1 : 1;
+//		if (x < 0) x = -x;
+//		if (y < 0) y = -y;
+//		Tuple2l origin = new Tuple2l(x, y);
+//		if (cache.containsKey(origin)) {
+//			Tuple2l res = cache.get(origin);
+//			x = res.x;
+//			y = res.y;
+//		} else {
+//			long min = Math.min(x, y);
+//			if (x % min == 0 && y % min == 0) {
+//				x /= min;
+//				y /= min;
+//			} else {
+//				for (int p : sosuu) {
+//					while (x % p == 0 && y % p == 0) {
+//						x /= p;
+//						y /= p;
+//					}
+//					if (p > x || p > y) {
+//						break;
+//					}
+//				}
+//			}
+//		}
+//		Tuple2l result =  new Tuple2l(x * fx, y * fy);
+//		if (!cache.containsKey(origin)) cache.put(origin, new Tuple2l(x, y));
+//		return result;
+//	}
 	
+	/**
+	 * ========================== ========================== ========================== ==========================
+	 * @author T.Oiwa
+	 * @date 2021/10/28
+	 */
+	public static class Tuple2l {
+		public final long x;
+		public final long y;
+		public Tuple2l(long x, long y) {
+			this.x = x;
+			this.y = y;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Tuple2l) {
+				Tuple2l other = (Tuple2l) obj; 
+				return this.x == other.x && this.y == other.y;
+			}
+			return false;
+		}
+		@Override public int hashCode() { return Long.hashCode(x) * 31 + Long.hashCode(y); }
+		@Override public String toString() { return "(" + x + "" + y + ")"; }
+	}
 	
 	// ==== Fast Util ====
 	
@@ -393,64 +507,6 @@ public class Main {
 				bezout[1] = 1;
 			}
 			return gcd;
-		}
-	}
-	
-	public static class AtCollections {
-		public static class FenwickTree {
-			public long[] array;
-			private long[] value;
-			private int size;
-			
-			public FenwickTree(int initialCapacity) {
-				int capacity = 16;
-				while (capacity < initialCapacity) capacity <<= 1;
-				
-				this.array = new long[capacity];
-				this.value = new long[capacity];
-				this.size = capacity;
-			}
-			
-			/**
-			 * returns the sum from 0 to index. {@code O(logN)}
-			 * @param index the index before the last element to be summarised.
-			 * @return 0 if index is negative.
-			 */
-			public long sum(int index) {
-				if (index < 0) return 0;
-				long sum = 0;
-				while (index >= 0) {
-					sum += array[index];
-					index -= (index+1) & ~index;
-				}
-				return sum;
-			}
-			
-			public long sum(int begin, int end) {
-				return sum(end) - sum(begin - 1);
-			}
-			
-			/**
-			 * Sets the given value. {@code O(logN)}
-			 * @param index the index before the last element to be summarised.
-			 * @param value the value to be set.
-			 */
-			public void set(int index, long value) {
-				long delta = value - this.value[index];
-				this.value[index] = value;
-				while (index < size) {
-					array[index] += delta;
-					index += (index+1) & ~index;
-				}
-			}
-			
-			public void add(int index, long value) {
-				this.value[index] += value;
-				while (index < size) {
-					array[index] += value;
-					index += (index+1) & ~index;
-				}
-			}
 		}
 	}
 	

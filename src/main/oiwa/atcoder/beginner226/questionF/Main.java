@@ -1,4 +1,4 @@
-package oiwa.atcoder.util.template;
+package oiwa.atcoder.beginner226.questionF;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +23,7 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
+		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
 		
@@ -393,64 +394,6 @@ public class Main {
 				bezout[1] = 1;
 			}
 			return gcd;
-		}
-	}
-	
-	public static class AtCollections {
-		public static class FenwickTree {
-			public long[] array;
-			private long[] value;
-			private int size;
-			
-			public FenwickTree(int initialCapacity) {
-				int capacity = 16;
-				while (capacity < initialCapacity) capacity <<= 1;
-				
-				this.array = new long[capacity];
-				this.value = new long[capacity];
-				this.size = capacity;
-			}
-			
-			/**
-			 * returns the sum from 0 to index. {@code O(logN)}
-			 * @param index the index before the last element to be summarised.
-			 * @return 0 if index is negative.
-			 */
-			public long sum(int index) {
-				if (index < 0) return 0;
-				long sum = 0;
-				while (index >= 0) {
-					sum += array[index];
-					index -= (index+1) & ~index;
-				}
-				return sum;
-			}
-			
-			public long sum(int begin, int end) {
-				return sum(end) - sum(begin - 1);
-			}
-			
-			/**
-			 * Sets the given value. {@code O(logN)}
-			 * @param index the index before the last element to be summarised.
-			 * @param value the value to be set.
-			 */
-			public void set(int index, long value) {
-				long delta = value - this.value[index];
-				this.value[index] = value;
-				while (index < size) {
-					array[index] += delta;
-					index += (index+1) & ~index;
-				}
-			}
-			
-			public void add(int index, long value) {
-				this.value[index] += value;
-				while (index < size) {
-					array[index] += value;
-					index += (index+1) & ~index;
-				}
-			}
 		}
 	}
 	

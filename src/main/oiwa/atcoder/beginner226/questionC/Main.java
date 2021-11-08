@@ -1,11 +1,15 @@
-package oiwa.atcoder.util.template;
+package oiwa.atcoder.beginner226.questionC;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.Function;
@@ -25,10 +29,61 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		
+		Map<Integer, Set<Integer>> outs = new HashMap<>();
+		for (int i = 0; i < N; i++) {
+			outs.put(i, new HashSet<>());
+		}
+		long[] T = new long[N];
+		boolean[] needed = new boolean[N];
+		
+		for (int i = 0; i < N; i++) {
+			T[i] = sc.nextLong();
+			int Ki = sc.nextInt();
+			for (int j = 0; j < Ki; j++) {
+				outs.get(i).add(sc.nextInt() - 1);
+			}
+		}
+		
+		long time = 0;
+		needed[N - 1] = true;
+		for (int i = N - 1; i >= 0; i--) {
+			if (needed[i]) {
+				time += T[i];
+				for (int n : outs.get(i)) {
+					needed[n] = true;
+				}
+			}
+		}
 		
 		
+		out.println(time);
 	}
 	
+	/**
+	 * ========================== ========================== ========================== ==========================
+	 * @author T.Oiwa
+	 * @date 2021/10/28
+	 */
+	public static class Entry {
+		public final long time;
+		public final int pos;
+		public Entry(long x, int y) {
+			this.time = x;
+			this.pos = y;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Entry) {
+				Entry other = (Entry) obj; 
+				return this.time == other.time && this.pos == other.pos;
+			}
+			return false;
+		}
+		@Override public int hashCode() { return Long.hashCode(time) * 31 + Long.hashCode(pos); }
+		@Override public String toString() { return "(" + time + "" + pos + ")"; }
+	}
 	
 	
 	// ==== Fast Util ====
@@ -393,64 +448,6 @@ public class Main {
 				bezout[1] = 1;
 			}
 			return gcd;
-		}
-	}
-	
-	public static class AtCollections {
-		public static class FenwickTree {
-			public long[] array;
-			private long[] value;
-			private int size;
-			
-			public FenwickTree(int initialCapacity) {
-				int capacity = 16;
-				while (capacity < initialCapacity) capacity <<= 1;
-				
-				this.array = new long[capacity];
-				this.value = new long[capacity];
-				this.size = capacity;
-			}
-			
-			/**
-			 * returns the sum from 0 to index. {@code O(logN)}
-			 * @param index the index before the last element to be summarised.
-			 * @return 0 if index is negative.
-			 */
-			public long sum(int index) {
-				if (index < 0) return 0;
-				long sum = 0;
-				while (index >= 0) {
-					sum += array[index];
-					index -= (index+1) & ~index;
-				}
-				return sum;
-			}
-			
-			public long sum(int begin, int end) {
-				return sum(end) - sum(begin - 1);
-			}
-			
-			/**
-			 * Sets the given value. {@code O(logN)}
-			 * @param index the index before the last element to be summarised.
-			 * @param value the value to be set.
-			 */
-			public void set(int index, long value) {
-				long delta = value - this.value[index];
-				this.value[index] = value;
-				while (index < size) {
-					array[index] += delta;
-					index += (index+1) & ~index;
-				}
-			}
-			
-			public void add(int index, long value) {
-				this.value[index] += value;
-				while (index < size) {
-					array[index] += value;
-					index += (index+1) & ~index;
-				}
-			}
 		}
 	}
 	
