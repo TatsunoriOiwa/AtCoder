@@ -13,6 +13,11 @@ import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 185 E, 40 min.
+ * @author T.Oiwa
+ * @date 2021/11/08
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -23,11 +28,32 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int M = sc.nextInt();
+		final int[] A = sc.nextIntArray(N);
+		final int[] B = sc.nextIntArray(M);
 		
+		long[][] dp = new long[N+1][M+1];
 		
+		dp[0][0] = 0;
+		for (int n = 1; n <= N; n++) {
+			dp[n][0] = n;
+		}
+		for (int m = 1; m <= M; m++) {
+			dp[0][m] = m;
+		}
+		
+		for (int n = 1; n <= N; n++) {
+			for (int m = 1; m <= M; m++) {
+				long min = dp[n-1][m-1] + (A[n-1] == B[m-1] ? 0 : 1);
+				if (dp[n-1][m  ] + 1 < min) min = dp[n-1][m  ] + 1;
+				if (dp[n  ][m-1] + 1 < min) min = dp[n  ][m-1] + 1;
+				dp[n][m] = min;
+			}
+		}
+		out.println(dp[N][M]);
 	}
 	
 	

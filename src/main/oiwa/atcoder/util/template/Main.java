@@ -23,6 +23,7 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
+		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
 		
