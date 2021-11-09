@@ -13,6 +13,11 @@ import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 185 F, 12 min.
+ * @author T.Oiwa
+ * @date 2021/11/09
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -23,14 +28,97 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int Q = sc.nextInt();
 		
+		FenwickTree tree = new FenwickTree(N);
 		
+		for (int i = 0; i < N; i++) {
+			tree.set(i, sc.nextInt());
+		}
+//		debug(tree.array);
+		
+		for (int i = 0; i < Q; i++) {
+			int t = sc.nextInt();
+			int x = sc.nextInt();
+			int y = sc.nextInt();
+			switch (t) {
+			case 1: {
+				tree.add(x-1, y);
+//				debug(tree.array);
+			} break;
+			case 2: {
+				out.println(tree.sum(x-1, y-1));
+			}
+			}
+			
+			
+		}
 	}
 	
-	
+	public static class FenwickTree {
+		public long[] array;
+		private long[] value;
+		private int size;
+		
+		public FenwickTree(int initialCapacity) {
+			int capacity = 16;
+			while (capacity < initialCapacity) capacity <<= 1;
+			
+			this.array = new long[capacity];
+			this.value = new long[capacity];
+			this.size = capacity;
+		}
+		
+		/**
+		 * returns the sum from 0 to index. {@code O(logN)}
+		 * @param index the index before the last element to be summarised.
+		 * @return 0 if index is negative.
+		 */
+		public long sum(int index) {
+			if (index < 0) return 0;
+			long sum = 0;
+			while (index >= 0) {
+				sum ^= array[index];
+				index -= (index+1) & ~index;
+			}
+			return sum;
+		}
+		
+		/**
+		 * 
+		 * @param begin inclusive
+		 * @param end
+		 * @return
+		 */
+		public long sum(int begin, int end) {
+			return sum(end) ^ sum(begin - 1);
+		}
+		
+		/**
+		 * Sets the given value. {@code O(logN)}
+		 * @param index the index before the last element to be summarised.
+		 * @param value the value to be set.
+		 */
+		public void set(int index, long value) {
+			long delta = value ^ this.value[index];
+			this.value[index] = value;
+			while (index < size) {
+				array[index] ^= delta;
+				index += (index+1) & ~index;
+			}
+		}
+		
+		public void add(int index, long value) {
+			this.value[index] ^= value;
+			while (index < size) {
+				array[index] ^= value;
+				index += (index+1) & ~index;
+			}
+		}
+	}
 	
 	// ==== Fast Util ====
 	
