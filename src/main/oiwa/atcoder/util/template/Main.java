@@ -427,6 +427,12 @@ public class Main {
 				return sum;
 			}
 			
+			/**
+			 * 
+			 * @param begin inclusive
+			 * @param end
+			 * @return 
+			 */
 			public long sum(int begin, int end) {
 				return sum(end) - sum(begin - 1);
 			}
