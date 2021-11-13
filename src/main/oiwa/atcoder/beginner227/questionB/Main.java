@@ -23,11 +23,21 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		int[] S = sc.nextIntArray(N);
 		
+		int cnt = 0;
 		
+lbl:		for (int s : S) {
+			for (int a = 1; a*7 < s; a++) {
+				int b = (s - 3*a) / (4*a + 3);
+				if ((s - 3*a) % (4*a + 3) == 0 && b > 0 && a > 0) continue lbl;
+			}
+			cnt++;
+		}
+		out.println(cnt);
 	}
 	
 	

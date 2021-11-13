@@ -23,11 +23,22 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final long N = sc.nextLong();
 		
+		long cnt = 0;
 		
+		for (long a = 1; a*a*a <= N; a++) {
+			for (long b = a; a*b*b <= N; b++) {
+				long aa = a;
+				long bb = b;
+				cnt += AtMath.binarySearchPredicate(b, (N / a + 4) / b + 4,
+						c -> aa*bb*c > N) - b;
+			}
+		}
+		
+		out.println(cnt);
 	}
 	
 	

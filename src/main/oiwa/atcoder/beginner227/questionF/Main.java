@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
@@ -23,14 +24,94 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int H = sc.nextInt();
+		final int W = sc.nextInt();
+		final int K = sc.nextInt();
+		final long[][] A = new long[H][];
+		for (int i = 0; i < H; i++) A[i] = sc.nextLongArray(W);
 		
+		final long[][] sum = new long[H][W];
+		@SuppressWarnings("unchecked")
+		final LinkedList<Long>[][] weights = new LinkedList[H][W];
+		for (int i = 0; i < H; i++) Arrays.fill(sum[i], Long.MAX_VALUE);
+//		for (int i = 0; i < H; i++) for (int j = 0; j < W; j++) weights[i][j];
 		
+		LinkedList<Pos> queue = new LinkedList<>();
+		
+		queue.add(new Pos(H-1, W-1, A[H-1][W-1]));
+		sum[H-1][W-1] = A[H-1][W-1];
+		weights[H-1][W-1] = new LinkedList<>();
+		weights[H-1][W-1].add(A[H-1][W-1]);
+		while (!queue.isEmpty()) {
+			Pos pos = queue.poll();
+//			debug(pos + "");
+			int i = pos.i;
+			int j = pos.j;
+			if (pos.w > sum[i][j]) continue;
+			LinkedList<Long> clist = weights[i][j];
+			
+			// down
+			if (i > 0) {
+				LinkedList<Long> tmp = new LinkedList<>(clist);
+				tmp.add(A[i-1][j]);
+				tmp.sort((e1, e2) -> -Long.compare(e1, e2));
+				long tsum = 0;
+				int k = 0;
+				for (long l : tmp) {
+					tsum += l;
+					k++;
+					if (k >= K) break;
+				}
+				if (tsum < sum[i-1][j]) {
+					sum[i-1][j] = tsum;
+					weights[i-1][j] = tmp;
+					queue.offer(new Pos(i-1, j, tsum));
+				}
+			}
+			// right
+			if (j > 0) {
+				LinkedList<Long> tmp = new LinkedList<>(clist);
+				tmp.add(A[i][j-1]);
+				tmp.sort((e1, e2) -> -Long.compare(e1, e2));
+				long tsum = 0;
+				int k = 0;
+				for (long l : tmp) {
+					tsum += l;
+					k++;
+					if (k >= K) break;
+				}
+				if (tsum < sum[i][j-1]) {
+					sum[i][j-1] = tsum;
+					weights[i][j-1] = tmp;
+					queue.offer(new Pos(i, j-1, tsum));
+				}
+			}
+		}
+		out.println(sum[0][0]);
 	}
 	
-	
+	public static class Pos {
+		public final int i;
+		public final int j;
+		public final long w;
+		public Pos(int x, int y, long w) {
+			this.i = x;
+			this.j = y;
+			this.w = w;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Pos) {
+				Pos other = (Pos) obj; 
+				return this.i == other.i && this.j == other.j;
+			}
+			return false;
+		}
+		@Override public int hashCode() { return Long.hashCode(i) * 31 + Long.hashCode(j); }
+		@Override public String toString() { return "(" + i + "" + j + ")"; }
+	}
 	
 	// ==== Fast Util ====
 	

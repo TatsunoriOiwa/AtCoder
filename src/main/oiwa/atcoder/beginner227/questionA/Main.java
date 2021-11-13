@@ -23,11 +23,12 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
-		
-		
+		final int N = sc.nextInt();
+		final int K = sc.nextInt();
+		final int A = sc.nextInt() - 1;
+		out.println((A+K - 1) % N + 1);
 	}
 	
 	

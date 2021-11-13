@@ -23,11 +23,33 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int K = sc.nextInt();
+		final long[] A = sc.nextLongArray(N);
+		Arrays.sort(A);
 		
-		
+		long cnt = 0;
+		while (A[N - K] > 0) {
+//			long thresh = A[N - K];
+//			int tn = (int) AtMath.binarySearchLowerBound(0, N, thresh-1, i -> A[(int) i]);
+//			int t0 = (int) AtMath.binarySearchLowerBound(0, N, thresh, i -> A[(int) i]);
+//			int t1 = (int) AtMath.binarySearchUpperBound(0, N, thresh, i -> A[(int) i]);
+//			int w = t1 - tn;
+//			int m = t0 - tn;
+//			long d = A[t1] - thresh;
+//			long d2 = A[tn] - (tn == 0 ? 0 : A[tn-1]);
+			
+//			long e = Math.floorDiv(e+m, w);
+//			long e = f + d;
+			
+			for (int i = N - K; i < N; i++) {
+//				A[i] -= at;
+			}
+			Arrays.sort(A);
+		}
+		out.println(cnt);
 	}
 	
 	
