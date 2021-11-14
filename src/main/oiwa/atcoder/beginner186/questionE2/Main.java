@@ -1,4 +1,4 @@
-package oiwa.atcoder.beginner227.questionE;
+package oiwa.atcoder.beginner186.questionE2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +13,11 @@ import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 186 E 2nd, 11 min.
+ * @author T.Oiwa
+ * @date 2021/11/14
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -23,13 +28,37 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
-		
+		final int T = sc.nextInt();
+		for (int i = 0; i < T; i++) {
+			this.test(out, sc);
+		}
 		
 	}
 	
+	private void test(PrintWriter out, FastScanner sc) {
+		final int N = sc.nextInt();
+		final int S = sc.nextInt();
+		final int K = sc.nextInt();
+		
+		long[] xyg = AtMath.bezoutCoeff(N, -K);
+//		long x = xyg[0];
+		long y = xyg[1];
+		long g = xyg[2];
+		
+		if (S % g != 0) {
+			out.println(-1);
+			return;
+		}
+		
+		long s = S / g;
+		long n = N / g;
+		
+		long res = s*y % n;
+		if (res < 0) res += n;
+		out.println(res);
+	}
 	
 	
 	// ==== Fast Util ====
