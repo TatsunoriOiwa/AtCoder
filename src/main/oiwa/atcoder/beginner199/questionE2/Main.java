@@ -42,9 +42,10 @@ public class Main {
 		}
 		
 		long[] cache = new long[1 << N];
-		for (int i = 0; i < N; i++) {
-			cache[1 << i] = 1;
-		}
+//		for (int i = 0; i < N; i++) {
+//			cache[1 << i] = 1;
+//		}
+		cache[0] = predicate(restrictions.get(Integer.bitCount(0)), 0) ? 1 : 0;
 		
 		for (int set = 0; set < (1 << N); set++) {
 			if (cache[set] == 0 || !predicate(restrictions.get(Integer.bitCount(set)), set)) {
@@ -55,10 +56,8 @@ public class Main {
 				if ((set & (1 << i)) == 0) {
 					cache[set | (1 << i)] += cache[set];
 				}
-				
 			}
 		}
-//		debug(cache);
 		out.println(cache[(1 << N) - 1]);
 	}
 	
@@ -82,7 +81,7 @@ public class Main {
 		public boolean equals(Object obj) {
 			if (obj instanceof Tuple2l) {
 				Tuple2l other = (Tuple2l) obj; 
-				return this.z == other.z && this.z == other.z;
+				return this.y == other.y && this.z == other.z;
 			}
 			return false;
 		}
