@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.TreeSet;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.Function;
@@ -25,8 +26,35 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		final int N = 1 << 20;
+		final int Q = sc.nextInt();
+		long[] arr = new long[N];
+		Arrays.fill(arr, -1);
 		
+		TreeSet<Integer> set = new TreeSet<>();
+		for (int i = 0; i < N; i++) {
+			set.add(i);
+		}
 		
+		for (int i = 0; i < Q; i++) {
+			int t = sc.nextInt();
+			long x = sc.nextLong();
+			switch (t) {
+			case 1: {
+				Integer h = set.ceiling((int) (x % N));
+				if (h == null) {
+					h = set.first();
+				}
+				arr[h] = x;
+				set.remove(h);
+			} break;
+			case 2: {
+				out.println(arr[(int) (x % N)]);
+			} break;
+			default: assert(false);
+			}
+			
+		}
 	}
 	
 	

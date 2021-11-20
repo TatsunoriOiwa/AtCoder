@@ -25,7 +25,16 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		final int S = sc.nextInt();
+		int T = sc.nextInt();
+//		if (T <= S) T += 24;
+		int X = sc.nextInt();
 		
+		if (T <= S) {
+			out.println((S <= X || X < T) ? "Yes" : "No");
+		} else {
+			out.println((S <= X && X < T) ? "Yes" : "No");
+		}
 		
 	}
 	

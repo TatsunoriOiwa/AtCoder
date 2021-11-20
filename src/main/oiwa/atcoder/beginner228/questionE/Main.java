@@ -23,14 +23,43 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final long MOD = 998244353;
+		final long N = sc.nextLong();
+		final long K = sc.nextLong();
+		final long M = sc.nextLong();
 		
+		// M^K^N
+		long res;
+//		res = AtMath.power(M, (int) (K % MOD), MOD);
+//		res = AtMath.power(res, (int) (N % MOD), MOD);
+		res = AtMath.power(K, N, MOD);
+		res = AtMath.power(M, (res % MOD), MOD);
+		out.println(res);
 		
+		int[] cache = new int[(int) MOD];
+		int[] list = new int[(int) MOD];
+		Arrays.fill(cache, -1);
+		long begin = AtMath.power(M, K, MOD);
+		long loop = 1;
+//		boolean flag = false;
+		long val = begin;
+		list[0] = (int) val;
+		for (int i = 0; i < N; i++) {
+			if (cache[i] < 0) {
+//				flag = true;
+				break;
+			}
+			int next = (int) AtMath.power(val, K, MOD);
+			cache[(int) val] = next;
+			val = next;
+			list[(int) loop] = next;
+			loop++;
+		}
+		
+		out.println(list[(int) (N % loop)]);
 	}
-	
-	
 	
 	// ==== Fast Util ====
 	
@@ -199,7 +228,7 @@ public class Main {
 		 * @param mod
 		 * @return
 		 */
-		public static long power(long x, int n, long mod) {
+		public static long power(long x, long n, long mod) {
 			assert(n >= 0);
 			if (n == 0) return 1;
 			if (n == 1) return x;

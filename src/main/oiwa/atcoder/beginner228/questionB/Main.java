@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.TreeSet;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.Function;
@@ -25,8 +26,26 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int X = sc.nextInt() - 1;
+		final int[] A = sc.nextIntArray(N, -1);
 		
+		boolean[] know = new boolean[N];
 		
+		TreeSet<Integer> queue = new TreeSet<>();
+		queue.add(X);
+		know[X] = true;
+		int cnt = 1;
+		while (!queue.isEmpty()) {
+			int x = queue.pollFirst();
+			int next = A[x];
+			if (!know[next]) {
+				know[next] = true;
+				cnt++;
+				queue.add(next);
+			}
+		}
+		out.println(cnt);
 	}
 	
 	

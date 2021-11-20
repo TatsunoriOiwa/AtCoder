@@ -25,11 +25,33 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int K = sc.nextInt();
+		long[] cuml = new long[N];
+		for (int i = 0; i < N; i++) {
+			cuml[i] = sum(sc.nextLongArray(3));
+		}
+		long[] sorted = Arrays.copyOf(cuml, N);
+		Arrays.sort(sorted);
 		
-		
+		for (int i = 0; i < N; i++) {
+			long score = cuml[i];
+			if (score >= sorted[N - K]) {
+				out.println("Yes");
+			} else if (score + 300 >= sorted[N - K]) {
+				out.println("Yes");
+			} else {
+				out.println("No");
+			}
+			
+		}
 	}
 	
-	
+	private long sum(long...ls) {
+		long sum = 0;
+		for (long l : ls) sum += l;
+		return sum;
+	}
 	
 	// ==== Fast Util ====
 	
