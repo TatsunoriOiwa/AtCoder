@@ -195,17 +195,17 @@ public class Main {
 		/**
 		 * O(1) or strictly O(31).
 		 * @param x
-		 * @param n
+		 * @param n must be positive value.
 		 * @param mod
 		 * @return
 		 */
-		public static long power(long x, int n, long mod) {
+		public static long power(long x, long n, long mod) {
 			assert(n >= 0);
 			if (n == 0) return 1;
 			if (n == 1) return x;
 			x %= mod;
 			long res = 1;
-			for (int i = 31; i >= 0; i--) { // 31: number of bits of integer.
+			for (int i = 63; i >= 0; i--) { // 63: number of bits of long value. MSB == 0 is asserted.
 				res *= res;
 				res %= mod;
 				if ((n & (1<<i)) != 0) {
