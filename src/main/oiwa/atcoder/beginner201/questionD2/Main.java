@@ -1,4 +1,4 @@
-package oiwa.atcoder.beginner200.questionE3;
+package oiwa.atcoder.beginner201.questionD2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +13,11 @@ import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 201 D, 27 min.
+ * @author T.Oiwa
+ * @date 2021/11/25
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -25,63 +30,55 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
-		final int N = sc.nextInt();
-		final long K = sc.nextLong();
-		
-		long[] first = new long[N+1];
-		for (int i = 1; i <= N; i++) first[i] = 1;
-		
-		long[] second = new long[2*N+1];
-		{
-			long sum = 0;
-			for (int i = 1; i <= 2*N; i++) {
-				if (i-1 <= N) sum += first[i-1];
-				second[i] = sum;
-				if (i - N >= 0) sum -= first[i - N];
+		final int H = sc.nextInt();
+		final int W = sc.nextInt();
+		boolean[][] A = new boolean[H][W];
+		for (int i = 0; i < H; i++) {
+			String l = sc.next();
+			for (int j = 0; j < W; j++) {
+				A[i][j] = l.charAt(j) == '+';
 			}
 		}
-		long[] third = new long[3*N + 1];
-		{
-			long sum = 0;
-			for (int i = 1; i <= 3*N; i++) {
-				if (i-1 <= 2*N) sum += second[i-1];
-				third[i] = sum;
-				if (i - N >= 0) sum -= second[i-N];
-			}
-		}
-//		debug(first);
-//		debug(second);
-//		debug(third);
-		long index = 0;
-		int sum = 3*N;
-		for (int i = 0; i <= 3*N; i++) {
-			long next = index + third[i];
-			if (next >= K) {
-				sum = i;
-				break;
-			}
-			index = next;
-		}
 		
-		int a = Math.max(1, sum - 2*N);
-		for (; a <= N; a++) {
-			int left = sum - a;
-			long next = index + second[left];
-			if (next >= K) {
-				break;
-			}
-			index = next;
-		}
-		debug(sum + " " + a + " " + index);
+		int[][] score = new int[H][W];
+//		score[H-1][W-1] = A[H-1][W-1]^((H+W)%2==0) ? -1 : 1 ;
 		
-		long b = Math.max(1, sum - a - N) + K - index - 1;
-		out.println(a + " " + b + " " + (sum - a - b));
+		int turn = H+W - 3;
+//		if (turn <= 0) {
+//			out.println("Draw");
+//			return;
+//		}
+		
+		// turn % 2 == 1 -> Takahashi
+		while (turn >= 0) {
+			for (int i = Math.min(H-1, turn); turn - i < W && i >= 0; i--) {
+				int j = turn - i;
+				boolean takahashi = turn % 2 == 0;
+				if (takahashi) { // 大きくする
+					score[i][j] = Math.max(
+							(i < H-1) ? score[i+1][j] + (A[i+1][j] ? 1 : -1) : Integer.MIN_VALUE,
+							(j < W-1) ? score[i][j+1] + (A[i][j+1] ? 1 : -1) : Integer.MIN_VALUE);
+				} else {
+					score[i][j] = Math.min(
+							(i < H-1) ? score[i+1][j] + (A[i+1][j] ? -1 : 1) : Integer.MAX_VALUE,
+							(j < W-1) ? score[i][j+1] + (A[i][j+1] ? -1 : 1) : Integer.MAX_VALUE);
+				}
+			}
+			turn--;
+		}
+//		for (int i = 0; i < H; i++) debug(score[i]);
+//		debug(score[0][0]);
+		int res = score[0][0];
+		if (res > 0) {
+			out.println("Takahashi");
+		} else if (res < 0) {
+			out.println("Aoki");
+		} else {
+			out.println("Draw");
+		}
 	}
 	
-//	private long clamp(long val, long min, long max) {
-//		if (val < min) return min;
-//		return val > max ? max : val;
-//	}
+	
 	
 	// ==== Fast Util ====
 	
