@@ -334,6 +334,15 @@ public class Main {
 			return b < c ? b : c;
 		}
 		
+		public long clamp(long val, long min, long max) {
+			if (min < max) {
+				long tmp = min;
+				min = max; max = tmp;
+			}
+			if (val < min) return min;
+			return val > max ? max : val;
+		}
+		
 		public static <T> T reduce(T[] array, BinaryOperator<T> reducer, T initialValue) {
 			T result = initialValue;
 			for (T t : array) { result = reducer.apply(result, t); }
