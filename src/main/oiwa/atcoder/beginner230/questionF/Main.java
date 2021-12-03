@@ -5,7 +5,11 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.Function;
@@ -23,11 +27,42 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		int[] arr = new int[N+1];
+		for (int i = 1; i <= N; i++) { arr[i] = sc.nextInt(); }
+		int[] inv = new int[N+1];
+		for (int i = 1; i <= N; i++) { inv[arr[i]] = i; }
 		
+		Map<Integer, Set<Integer>> prime = new HashMap<>();
+		for (int i = 1; i <= N; i++) prime.put(i, new HashSet<>());
+		Map<Integer, Set<Integer>> primeToNum = new HashMap<>();
 		
+		long cnt = 0;
+		
+		for (int i = 2; i <= N; i++) {
+			if (prime.get(i).isEmpty()) {
+				Set<Integer> num = new HashSet<>();
+				for (int j = i; j <= N; j += i) {
+					num.add(j);
+					prime.get(j).add(i);
+				}
+				primeToNum.put(i, num);
+			}
+		}
+		
+		for (int i = 2; i <= N; i++) {
+			for (int p : prime.get(i)) {
+				for (int j : primeToNum.get(p)) {
+					if (AtMath.bezoutCoeff(arr[i], arr[j])[2] != 1) {
+						cnt++;
+					}
+				}
+			}
+		}
+		
+		out.println(cnt);
 	}
 	
 	

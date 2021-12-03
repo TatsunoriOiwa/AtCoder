@@ -23,11 +23,35 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final String S = sc.next();
 		
+		if (S.length() == 1) {
+			out.println("Yes");
+			return;
+		}
+		if (S.length() == 2) {
+			out.println(!S.equals("oo") ? "Yes" : "No");
+			return;
+		}
+		int shift;
+		switch (S.substring(0, 3)) {
+		case "oxx": shift = 0; break;
+		case "xxo": shift = 1; break;
+		case "xox": shift = 2; break;
+		default:
+			out.println("No");
+			return;
+		}
 		
+		for (int i = 3; i < S.length(); i++) {
+			if (S.charAt(i) != ((shift + i) % 3 == 0 ? 'o' : 'x')) {
+				out.println("No");
+				return;
+			}
+		}
+		out.println("Yes");
 	}
 	
 	

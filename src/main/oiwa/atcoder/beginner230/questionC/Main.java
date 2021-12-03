@@ -23,10 +23,33 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		/*final long N =*/ sc.nextLong();
+		final long A = sc.nextLong();
+		final long B = sc.nextLong();
+		final long P = sc.nextLong();
+		final long Q = sc.nextLong();
+		final long R = sc.nextLong();
+		final long S = sc.nextLong();
 		
+		final int H = (int) (Q - P + 1);
+		final int W = (int) (S - R + 1);
+		
+		final int a = (int) (A - P);
+		final int b = (int) (B - R);
+		
+		for (int i = 0; i < H; i++) {
+			StringBuilder sb = new StringBuilder(W);
+			for (int j = 0; j < W; j++) {
+				if (i - j == a - b || i + j == a + b) {
+					sb.append("#");
+				} else {
+					sb.append(".");
+				}
+			}
+			out.println(sb.toString());
+		}
 		
 	}
 	

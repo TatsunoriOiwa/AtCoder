@@ -23,9 +23,19 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final long N = sc.nextLong();
+		
+		long res = 0;
+		long x = 1;
+		while (x <= N) {
+			long val = N / x;
+			long y = AtMath.binarySearchPredicate(x, N, l -> N / l != val);
+			res += val * (y - x);
+			x = y;
+		}
+		out.println(res);
 		
 		
 	}

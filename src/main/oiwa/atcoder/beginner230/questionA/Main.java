@@ -23,10 +23,13 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		int N = sc.nextInt();
 		
+		if (N >= 42) N++;
+		
+		out.println(String.format("AGC%03d", N));
 		
 	}
 	

@@ -23,14 +23,54 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int D = sc.nextInt();
+		Wall[] walls = sc.nextObjArray(new Wall[N], s -> new Wall(sc.nextInt(), sc.nextInt()));
+		Arrays.sort(walls, (e1, e2) -> {
+			int flag = Integer.compare(e1.r, e2.r);
+			if (flag != 0) return flag;
+			return Integer.compare(e1.l, e2.l);
+		});
 		
+		int cnt = 0;
 		
+		for (int i = 0; i < N; i++) {
+			int next = walls[i].r + D - 1;
+			cnt++;
+			while (i+1 < N && next >= walls[i+1].l) {
+				i++;
+			}
+		}
+		
+		out.println(cnt);
 	}
 	
-	
+	/**
+	 * ========================== ========================== ========================== ==========================
+	 * @author T.Oiwa
+	 * @date 2021/10/28
+	 */
+	public static class Wall {
+		public final int l;
+		/** inclusive */
+		public final int r;
+		public Wall(int x, int y) {
+			this.l = x;
+			this.r = y;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Wall) {
+				Wall other = (Wall) obj; 
+				return this.l == other.l && this.r == other.r;
+			}
+			return false;
+		}
+		@Override public int hashCode() { return Long.hashCode(l) * 31 + Long.hashCode(r); }
+		@Override public String toString() { return "(" + l + "," + r + ")"; }
+	}
 	
 	// ==== Fast Util ====
 	
