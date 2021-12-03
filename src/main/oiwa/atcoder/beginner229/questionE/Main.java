@@ -4,8 +4,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.Function;
@@ -23,11 +29,88 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int M = sc.nextInt();
 		
+		Map<Integer, List<Integer>> outs = new HashMap<>();
+		for (int i = 0; i < N; i++) {
+			outs.put(i, new ArrayList<>());
+		}
+		for (int i = 0; i < M; i++) {
+			int a = sc.nextInt() -1;
+			int b = sc.nextInt() -1;
+			outs.get(a).add(b);
+			outs.get(b).add(a);
+		}
+		for (int i = 0; i < N; i++) {
+			outs.get(i).sort((e1, e2) -> -Integer.compare(e1, e2));
+		}
+		// graph, union-find
 		
+//		Set<Integer> used = new HashSet<>();
+		int[] group = new int[N];
+		Map<Integer, Set<Integer>> member = new HashMap<>();
+		int[] counts = new int[N+1];
+		counts[N] = 0;
+		
+		for (int i = N - 1; i >= 0; i--) {
+			int gn = i;
+//			int cnt = counts[i+1];
+			{
+				Set<Integer> stmp = new HashSet<>();
+				stmp.add(i);
+				member.put(i, stmp);
+				group[i] = gn;
+//				cnt++;
+			}
+			for (int o : outs.get(i)) {
+				if (o <= i) { break; }
+				int go = group[o];
+				if (member.get(go).size() > member.get(gn).size()) {
+					int tmp = go;
+					go = gn;
+					gn = tmp;
+					
+				}
+				
+//				if (gn < go) { // 自分だけのとき
+////					debug("merge" + i + " to " + go);
+//					group[i] = go;
+//					for (int mem : member.get(gn)) {
+//						group[mem] = go;
+//					}
+//					Set<Integer> tmp = member.get(go);
+//					tmp.addAll(member.remove(gn));
+//					member.put(go, tmp);
+//					gn = go;
+//					cnt--;
+////					debug(group);
+//				} else
+				{
+					if (gn != go) {
+//						debug("merge" + gn + " and " + go);
+						for (int mem : member.get(go)) { // 所属先書き換え
+							group[mem] = gn;
+						}
+						Set<Integer> tmp = member.get(gn);
+						tmp.addAll(member.remove(go));
+						member.put(gn, tmp);
+//						cnt--;
+//						debug(group);
+					}
+				}
+			}
+//			counts[i] = cnt;
+			counts[i] = member.size();
+//			debug(group);
+//			debug(counts[i]);
+		}
+		
+		for (int i = 1; i <= N; i++) {
+			out.println(counts[i]);
+		}
 	}
 	
 	

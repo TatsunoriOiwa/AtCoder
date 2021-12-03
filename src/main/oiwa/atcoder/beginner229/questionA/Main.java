@@ -25,8 +25,26 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		boolean[][] mat = new boolean[2][2];
+		int cnt = 0;
+		for (int i = 0; i < 2; i++) {
+			String s = sc.next();
+			mat[i][0] = s.charAt(0) == '#';
+			mat[i][1] = s.charAt(1) == '#';
+			cnt += mat[i][0] ? 1 : 0;
+			cnt += mat[i][1] ? 1 : 0;
+		}
 		
+		if (cnt > 2) {
+			out.println("Yes");
+			return;
+		}
 		
+		if (mat[0][0] != mat[1][1]) {
+			out.println("Yes");
+		} else {
+			out.println("No");
+		}
 	}
 	
 	

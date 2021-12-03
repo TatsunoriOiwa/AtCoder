@@ -7,12 +7,18 @@ public class TestA {
 	public static void main(String[] args) {
 		new TesterV10(Main.class, new Case[] {
 				
-				new Case(false,
-						"",
-						""),
-				new Case(false,
-						"",
-						""),
+				new Case(true,
+						"##\r\n"
+						+ ".#\r\n"
+						+ "",
+						"Yes\r\n"
+						+ ""),
+				new Case(true,
+						".#\r\n"
+						+ "#.\r\n"
+						+ "",
+						"No\r\n"
+						+ ""),
 				new Case(false,
 						"",
 						""),

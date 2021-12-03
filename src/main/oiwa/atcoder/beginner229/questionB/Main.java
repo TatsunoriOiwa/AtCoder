@@ -25,8 +25,23 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		final String A = sc.next();
+		final String B = sc.next();
 		
+		final String EASY = "Easy";
+		final String HARD = "Hard";
 		
+		int al = A.length();
+		int bl = B.length();
+		int len = Math.min(A.length(), B.length());
+		
+		for (int i = 0; i < len; i++) {
+			if ((A.charAt(al - i - 1) - '0') + (B.charAt(bl - i - 1) - '0') >= 10) {
+				out.println(HARD);
+				return;
+			}
+		}
+		out.println(EASY);
 	}
 	
 	

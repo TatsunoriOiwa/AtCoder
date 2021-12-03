@@ -25,8 +25,27 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		final String S = sc.next();
+		final int K = sc.nextInt();
+
+		final int N = S.length();
 		
+		int cnt = 0;
+		int j = -1;
+		int maxlen = 0;
 		
+		for (int i = 0; i < N; i++) {
+			if (S.charAt(i) == '.') {
+				cnt++;
+			}
+			while (cnt > K) {
+				j++;
+				if (S.charAt(j) == '.') { cnt--; }
+			}
+			int len = i - j;
+			if (len > maxlen) maxlen = len;
+		}
+		out.println(maxlen);
 	}
 	
 	

@@ -25,11 +25,47 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int W = sc.nextInt();
 		
+		Cheese[] cheeses = new Cheese[N];
+		for (int i = 0; i < N; i++) {
+			cheeses[i] = new Cheese(sc.nextLong(), sc.nextLong());
+		}
+		Arrays.sort(cheeses, (c1, c2) -> -Long.compare(c1.a, c2.a));
 		
+		long wt = 0;
+		long taste = 0;
+//		debug(cheeses);
+		for (Cheese c : cheeses) {
+			long amount = Math.min(W - wt, c.b);
+			taste += c.a * amount;
+			wt += amount;
+//			debug(taste + " " + wt);
+			if (wt >= W) break;
+		}
+		
+		out.println(taste);
 	}
 	
-	
+	public static class Cheese {
+		public final long a;
+		public final long b;
+		public Cheese(long a, long b) {
+			this.a = a;
+			this.b = b;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Cheese) {
+				Cheese other = (Cheese) obj; 
+				return this.a == other.a && this.b == other.b;
+			}
+			return false;
+		}
+		@Override public int hashCode() { return Long.hashCode(a) * 31 + Long.hashCode(b); }
+		@Override public String toString() { return "(" + a + "," + b + ")"; }
+	}
 	
 	// ==== Fast Util ====
 	
