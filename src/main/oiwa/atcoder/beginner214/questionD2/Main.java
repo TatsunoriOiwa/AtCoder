@@ -1,4 +1,4 @@
-package oiwa.atcoder.util.template;
+package oiwa.atcoder.beginner214.questionD2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +17,7 @@ import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -27,14 +28,51 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
 		
+		Edge[] edges = new Edge[N-1];
+		for (int i = 0; i < N-1; i++) {
+			final int u = sc.nextInt() - 1;
+			final int v = sc.nextInt() - 1;
+			final int w = sc.nextInt();
+			edges[i] = new Edge(u, v, w);
+		}
+		Arrays.sort(edges, (e1, e2) -> Long.compare(e1.weight, e2.weight));
 		
+		AtCollections.UnionFindTree fdt = new AtCollections.UnionFindTree(N);
+		
+		long cnt = 0;
+		for (Edge e : edges) {
+			long gu = fdt.getGroupMemberForVertex(e.from).size();
+			long gv = fdt.getGroupMemberForVertex(e.to).size();
+			cnt += gu*gv*e.weight;
+			fdt.connect(e.from, e.to);
+		}
+		out.println(cnt);
 	}
 	
-	
+	public static class Edge {
+		public final int from;
+		public final int to;
+		public final long weight;
+		public Edge(int v1, int v2, long v3) {
+			this.from = v1;
+			this.to = v2;
+			this.weight = v3;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Edge) {
+				Edge other = (Edge) obj; 
+				return this.from == other.from && this.to == other.to && this.weight == other.weight;
+			}
+			return false;
+		}
+		@Override public int hashCode() { return (Long.hashCode(from) * 31 + Long.hashCode(to))*31 + Long.hashCode(weight); }
+		@Override public String toString() { return "(" + from + "," + to + "," + weight + ")"; }
+	}
 	
 	// ==== Fast Util ====
 	
@@ -475,32 +513,20 @@ public class Main {
 		
 		public static class UnionFindTree {
 			public final int[] nodeGroup; // 各頂点の属するグループ
-			public final Map<Integer, Set<Integer>> member;
-			private UnionFindTree(int capacity) {
-				this.nodeGroup = new int[capacity];
-				this.member = new HashMap<>(capacity);
-			}
-			public static UnionFindTree emptyTree(int capacity) {
-				return new UnionFindTree(capacity);
-			}
-			public static UnionFindTree withNodes(int N) {
-				UnionFindTree uft = new UnionFindTree(N);
-				for (int i = 0; i < N; i++) { uft.addVertex(i); }
-				return uft;
-			}
-			/** Add a unconnected new vertex. asserts that the vertex is not added yet. */
-			public void addVertex(int n) {
-				assert(this.member.get(n) == null);
-				this.nodeGroup[n] = n;
-				Set<Integer> set = new HashSet<>();
-				set.add(n);
-				member.put(n, set);
+			public final Map<Integer, Set<Integer>> member = new HashMap<>();
+			public UnionFindTree(int N) {
+				this.nodeGroup = new int[N];
+				for (int i = 0; i < N; i++) {
+					this.nodeGroup[i] = i;
+					Set<Integer> set = new HashSet<>();
+					set.add(i);
+					this.member.put(i, set);
+				}
 			}
 			/** connect node i and j */
 			public void connect(int i, int j) {
 				int gi = this.nodeGroup[i];
 				int gj = this.nodeGroup[j];
-				if (gi == gj) return;
 				Set<Integer> mi = member.get(gi);
 				Set<Integer> mj = member.get(gj);
 				if (mi.size() < mj.size()) {
@@ -516,13 +542,9 @@ public class Main {
 			public int cardinality() {
 				return this.member.size();
 			}
-			/** retrieves the member of the group to which the given node belongs. */
+			/** retrieves the member of the group in which the given node belongs. */
 			public Set<Integer> getGroupMemberForVertex(int n) {
 				return this.member.get(this.nodeGroup[n]);
-			}
-			/** returns the number of member in the group to which given node belongs. */
-			public int getGroupSizeForVertex(int n) {
-				return this.getGroupMemberForVertex(n).size();
 			}
 		}
 	}

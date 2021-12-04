@@ -1,4 +1,4 @@
-package oiwa.atcoder.util.template;
+package oiwa.atcoder.beginner229.questionE2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,11 +27,33 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int M = sc.nextInt();
+		Map<Integer, Set<Integer>> outs = new HashMap<>();
+		for (int i = 0; i < N; i++) outs.put(i, new HashSet<>());
+		for (int i = 0; i < M; i++) {
+			int u = sc.nextInt() - 1;
+			int v = sc.nextInt() - 1;
+			if (u > v) { int tmp = u; u = v; v = tmp; }
+			outs.get(u).add(v);
+		}
 		
+		AtCollections.UnionFindTree uft = AtCollections.UnionFindTree.emptyTree(N);
 		
+		int[] res = new int[N];
+		for (int i = N - 1; i >= 0; i--) {
+			res[i] = uft.cardinality();
+			uft.addVertex(i);
+			for (int adj : outs.get(i)) {
+				uft.connect(i, adj);
+			}
+		}
+		
+		for (int r : res) {
+			out.println(r);
+		}
 	}
 	
 	
