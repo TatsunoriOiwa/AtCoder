@@ -411,6 +411,77 @@ public class Main {
 	}
 	
 	public static class AtCollections {
+//		/** For dense mapping. ranging from 0 to N-1 */
+//		public static class IntMap<V> {
+//			
+//			private static final Object NULL = new Object() {
+//				@Override public int hashCode() { return 0; }
+//				@Override public String toString() { return "IntMap.NULL"; }
+//			};
+//			private final int capacity;
+//			private Object[] vals;
+//			private Set<Integer> keySet = new HashSet<>();
+//			private int size = 0;
+//			
+//			private Object maskNull(Object value) { return (value == null ? NULL : value); }
+//			@SuppressWarnings("unchecked")
+//			private V unmaskNull(Object value) { return (V)(value == NULL ? null : value); }
+//			
+//			public IntMap(int capacity) {
+//				this.capacity = capacity;
+//				this.vals = new Object[capacity];
+//			}
+//			public IntMap(IntMap<? extends V> m) {
+//				this.capacity = m.capacity;
+//				vals = m.vals.clone();
+//				size = m.size;
+//			}
+//			public int size() { return this.size; }
+//			public boolean containsKey(int key) {
+//				return vals[key] != null;
+//			}
+//
+//			public V get(Object key) {
+//				return (isValidKey(key) ? get((int) key) : null);
+//			}
+//			public V get(int key) { return unmaskNull(vals[key]); }
+//			public V put(int key, V value) {
+//				Object oldValue = vals[key];
+//				vals[key] = maskNull(value);
+//				if (oldValue == null) size++;
+//				this.keySet.add(key);
+//				return unmaskNull(oldValue);
+//			}
+//			public V remove(int key) {
+//				Object oldValue = vals[key];
+//				vals[key] = null;
+//				if (oldValue != null) size--;
+//				this.keySet.remove(key);
+//				return unmaskNull(oldValue);
+//			}
+//			private boolean isValidKey(Object key) {
+//				if (key == null) return false;
+//				return key instanceof Integer;
+//			}
+//			
+//			public void putAll(IntMap<? extends V> m) {
+//				IntMap<?> em = (IntMap<?>) m;
+//				for (int i = 0; i < keyUniverse.length; i++) {
+//					Object emValue = em.vals[i];
+//					if (emValue != null) {
+//						if (vals[i] == null)
+//							size++;
+//						vals[i] = emValue;
+//					}
+//				}
+//			}
+//			
+//			public Set<Entry<Integer, V>> entrySet() {
+//				return null;
+//			}
+//			
+//		}
+		
 		public static class FenwickTree {
 			public long[] array;
 			private long[] value;
