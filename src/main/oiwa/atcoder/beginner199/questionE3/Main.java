@@ -1,4 +1,4 @@
-package oiwa.atcoder.beginner201.questionE2;
+package oiwa.atcoder.beginner199.questionE3;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,7 +7,6 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -30,80 +29,64 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
-		final long MOD = 1000_000_000 + 7;
-		
 		final int N = sc.nextInt();
-		Map<Integer, Set<Edge>> outs = new HashMap<>();
-		for (int i = 0; i < N ; i++) outs.put(i, new HashSet<>());
-		for (int i = 0; i < N - 1; i++) {
-			int u = sc.nextInt() - 1;
-			int v = sc.nextInt() - 1;
-			long w = sc.nextLong();
-			
-			outs.get(u).add(new Edge(u, v, w));
-			outs.get(v).add(new Edge(v, u, w));
+		final int M = sc.nextInt();
+		
+		Map<Integer, Set<Condition>> conditions = new HashMap<>();
+		for (int i = 0; i <= N; i++) conditions.put(i, new HashSet<>());
+		for (int i = 0; i < M; i++) {
+			final int x = sc.nextInt();
+			final int y = sc.nextInt();
+			final int z = sc.nextInt();
+			conditions.get(x).add(new Condition(x, y, z));
 		}
 		
-		long[] distfrom0 = new long[N];
-		Arrays.fill(distfrom0, -1);
-		distfrom0[0] = 0;
-		{
-			LinkedList<Integer> queue = new LinkedList<>();
-			queue.offer(0);
-			while (!queue.isEmpty()) {
-				int current = queue.poll();
-				for (Edge next : outs.get(current)) {
-					if (distfrom0[next.to] >= 0) continue;
-					distfrom0[next.to] = distfrom0[next.from] ^ next.weight;
-					queue.add(next.to);
+		long[] dp = new long[1 << N];
+		dp[0] = 1;
+		for (int set = 0; set < (1 << N); set++) {
+			if (dp[set] <= 0) continue;
+			if (predicate(conditions.get(Integer.bitCount(set)), set)) {
+				for (int i = 0; i < N; i++) {
+					if ((set & (1 << i)) == 0) {
+						dp[set | (1 << i)] += dp[set];
+					}
 				}
+			} else {
+				dp[set] = 0;
 			}
 		}
 		
-//		debug(distfrom0);
-		long res = 0;
-		int[] bitcnt = new int[60];
-		
-		for (int i = 1; i < N; i++) {
-			
-			long dist = distfrom0[i];
-			for (int b = 0; b < 60; b++) {
-				long cnt;
-				if ((dist & (1L << b)) == 0) {
-					cnt = bitcnt[b];
-				} else {
-					cnt = i - bitcnt[b];
-					bitcnt[b]++;
-				}
-//				res += BigInteger.valueOf(cnt).shiftLeft(b).mod(BigInteger.valueOf(MOD)).longValue();
-				res += (((cnt) % MOD) * ((1L << b) % MOD)) % MOD;
-				res %= MOD;
-			}
-//			debug(res);
-//			debug(bitcnt);
-		}
-		out.println(res);
+		out.println(dp[(1 << N) - 1]);
 	}
 	
-	public static class Edge {
-		public final int from;
-		public final int to;
-		public final long weight;
-		public Edge(int x, int y, long weight) {
-			this.from = x;
-			this.to = y;
-			this.weight = weight;
+	private boolean predicate(Set<Condition> conditions, int set) {
+		for (Condition cnd : conditions) {
+			if (Integer.bitCount(set & ((1 << cnd.y) - 1)) > cnd.z) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static class Condition {
+		public final long x;
+		public final long y;
+		public final long z;
+		public Condition(long x, long y, long z) {
+			this.x = x;
+			this.y = y;
+			this.z = z;
 		}
 		@Override
 		public boolean equals(Object obj) {
-			if (obj instanceof Edge) {
-				Edge other = (Edge) obj; 
-				return this.from == other.from && this.to == other.to;
+			if (obj instanceof Condition) {
+				Condition other = (Condition) obj; 
+				return this.x == other.x && this.y == other.y;
 			}
 			return false;
 		}
-		@Override public int hashCode() { return Long.hashCode(from) * 31 + Long.hashCode(to); }
-		@Override public String toString() { return "(" + from + "," + to + ")"; }
+		@Override public int hashCode() { return Long.hashCode(x) * 31 + Long.hashCode(y); }
+		@Override public String toString() { return "(" + x + "," + y + ")"; }
 	}
 	
 	// ==== Fast Util ====
