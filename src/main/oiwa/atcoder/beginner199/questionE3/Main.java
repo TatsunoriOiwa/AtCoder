@@ -42,17 +42,17 @@ public class Main {
 		}
 		
 		long[] dp = new long[1 << N];
-		dp[0] = 1;
+		dp[0] = predicate(conditions.get(Integer.bitCount(0)), 0) ? 1 : 0;
 		for (int set = 0; set < (1 << N); set++) {
 			if (dp[set] <= 0) continue;
-			if (predicate(conditions.get(Integer.bitCount(set)), set)) {
-				for (int i = 0; i < N; i++) {
-					if ((set & (1 << i)) == 0) {
-						dp[set | (1 << i)] += dp[set];
-					}
-				}
-			} else {
+			if (!predicate(conditions.get(Integer.bitCount(set)), set)) {
 				dp[set] = 0;
+				continue;
+			}
+			for (int i = 0; i < N; i++) {
+				if ((set & (1 << i)) == 0) {
+					dp[set | (1 << i)] += dp[set];
+				}
 			}
 		}
 		
@@ -81,11 +81,11 @@ public class Main {
 		public boolean equals(Object obj) {
 			if (obj instanceof Condition) {
 				Condition other = (Condition) obj; 
-				return this.x == other.x && this.y == other.y;
+				return this.x == other.x && this.y == other.y && this.z == other.z;
 			}
 			return false;
 		}
-		@Override public int hashCode() { return Long.hashCode(x) * 31 + Long.hashCode(y); }
+		@Override public int hashCode() { return Long.hashCode(x) * 31 + Long.hashCode(y) + Long.hashCode(z); }
 		@Override public String toString() { return "(" + x + "," + y + ")"; }
 	}
 	
