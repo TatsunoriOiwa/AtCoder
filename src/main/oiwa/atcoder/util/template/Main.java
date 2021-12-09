@@ -411,6 +411,113 @@ public class Main {
 	}
 	
 	public static class AtCollections {
+		
+		public static class IntSet {
+			private final int MIN_SIZE = 32;
+			private final float DEFAULT_LOAD_FACTOR = 0.75f;
+			private int capacity;
+			private int cardinality;
+			private int[] values; // values[i]
+			private int[] nextIndex; // next[i] = the next nonempty index. next[i] <= i indicates that there is no next index.
+			private int[] prevIndex;
+			private int emptyHead = 0;
+			private int filledHead = -1;
+			private int[] hash2Index; // hash2Index[hash(values[i])] = i
+			private int[] hashTable;
+			private boolean containsZero;
+			
+			private int maxFill;
+			private float loadFactor;
+			private int mask;
+			
+			public IntSet(int capacity) {
+				capacity = Math.max(capacity, MIN_SIZE);
+				this.loadFactor = DEFAULT_LOAD_FACTOR;
+				capacity = CMath.arraySize(capacity, loadFactor);
+				this.capacity = capacity;
+				this.cardinality = 0;
+				this.values = new int[capacity];
+				this.nextIndex = new int[capacity];
+				this.prevIndex = new int[capacity];
+				this.emptyHead = 0;
+				this.filledHead = -1;
+				this.hash2Index = new int[capacity];
+				this.hashTable = new int[capacity];
+				
+				this.maxFill = (int) (capacity * this.loadFactor);
+				this.mask = capacity - 1;
+			}
+			
+			public boolean add(int value) {
+				if (value == 0) {
+					if (this.containsZero) return false;
+					this.containsZero = true;
+				} else {
+					int hash = hash(value);
+					if (this.hashTable[hash] == value) return false; // value already exists.
+					while (this.hashTable[hash] != 0) {
+						hash = (hash + 1) & mask;
+						if (this.hashTable[hash] == value) return false;
+					}
+					this.hashTable[hash] = value;
+					int index = this.hash2Index[hash] = this.emptyHead;
+					this.values[this.emptyHead] = value;
+					this.emptyHead = this.nextIndex[index];
+					if (index > 0) {
+						this.nextIndex[index] = this.nextIndex[index - 1];
+						this.nextIndex[index - 1] = index;
+						this.prevIndex[index] = index - 1;
+						if (this.nextIndex[index] > index) this.prevIndex[this.nextIndex[index]] = index;
+					} else { // index == 0, this is the only element.
+						this.filledHead = 0;
+						this.prevIndex[0] = -1;
+					}
+				}
+				if (cardinality++ >= maxFill) rehash(CMath.arraySize(cardinality + 1, loadFactor));
+				return true;
+			}
+			
+			public boolean rem(int value) {
+				if (value == 0) {
+					if (this.containsZero) {
+						this.capacity--;
+						this.containsZero = false;
+						return true;
+					}
+					return false;
+				}
+				final int hash = hash(value);
+				int pos = hash;
+				
+				while (this.hashTable[pos] != value) {
+					if (hash(this.hashTable[pos]) != hash) return false;
+					pos++;
+				}
+				{
+					int index = this.hash2Index[pos];
+				}
+				pos++;
+				while (hash(this.hashTable[pos]) == hash) {
+					this.hashTable[pos-1] = this.hashTable[pos];
+					this.hash2Index[pos-1] = this.hash2Index[pos];
+					pos++;
+				}
+				this.hashTable[pos] = 0;
+				this.hash2Index[pos] = 0;
+				
+				// TODO:
+				
+				return true;
+			}
+			
+			private int hash(int value) {
+				return CMath.mix(value) & mask;
+			}
+			private void rehash(int newN) {
+				throw new UnsupportedOperationException("Please implement me!!"); // TODO:
+			}
+		}
+		
 //		/** For dense mapping. ranging from 0 to N-1 */
 //		public static class IntMap<V> {
 //			
@@ -594,6 +701,30 @@ public class Main {
 			/** returns the number of member in the group to which given node belongs. */
 			public int getGroupSizeForVertex(int n) {
 				return this.getGroupMemberForVertex(n).size();
+			}
+		}
+		
+		private static class CMath {
+			/** 2<sup>32</sup> &middot; &phi;, &phi; = (&#x221A;5 &minus; 1)/2. */
+			private static final int INT_PHI = 0x9E3779B9;
+			public static int arraySize(final int expected, final float f) {
+				final long s = Math.max( 2, nextPowerOfTwo( (long)Math.ceil( expected / f ) ) );
+				if ( s > (1 << 30) ) throw new IllegalArgumentException( "Too large (" + expected + " expected elements with load factor " + f + ")" );
+				return (int)s;
+			}
+			public static long nextPowerOfTwo(long x) {
+				if ( x == 0 ) return 1;
+				x--;
+				x |= x >> 1;
+				x |= x >> 2;
+				x |= x >> 4;
+				x |= x >> 8;
+				x |= x >> 16;
+				return ( x | x >> 32 ) + 1;
+			}
+			public final static int mix( final int x ) {
+				final int h = x * INT_PHI;
+				return h ^ (h >>> 16);
 			}
 		}
 	}
