@@ -425,7 +425,6 @@ public class Main {
 			private int emptyHead = 0;
 			private int[] unusedList;
 			private int unusedCount;
-			private int filledHead = -1;
 			private int[] hash2Index; // hash2Index[hash(values[i])] = i
 			private int[] hashTable;
 			private boolean containsZero;
@@ -448,7 +447,6 @@ public class Main {
 				this.emptyHead = 0;
 				this.unusedList = new int[capacity];
 				this.unusedCount = 0;
-				this.filledHead = capacity;
 				this.hash2Index = new int[capacity];
 				this.hashTable = new int[capacity];
 				
@@ -489,6 +487,7 @@ public class Main {
 				
 				this.nextIndex[index] = -1;
 				if (this.tail >= 0) this.nextIndex[this.tail] = index;
+				else this.head = index;
 				this.prevIndex[index] = this.tail;
 				this.tail = index;
 				
@@ -552,10 +551,6 @@ public class Main {
 			private void rehash(int newN) {
 				throw new UnsupportedOperationException("Please implement me!!"); // TODO:
 			}
-		}
-		
-		private void remove(int index, int value) {
-			
 		}
 		
 //		/** For dense mapping. ranging from 0 to N-1 */
