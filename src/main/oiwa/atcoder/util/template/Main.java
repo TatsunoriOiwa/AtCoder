@@ -420,7 +420,11 @@ public class Main {
 			private int[] values; // values[i]
 			private int[] nextIndex; // next[i] = the next nonempty index. next[i] <= i indicates that there is no next index.
 			private int[] prevIndex;
+			private int head = -1;
+			private int tail = -1;
 			private int emptyHead = 0;
+			private int[] unusedList;
+			private int unusedCount;
 			private int filledHead = -1;
 			private int[] hash2Index; // hash2Index[hash(values[i])] = i
 			private int[] hashTable;
@@ -439,11 +443,11 @@ public class Main {
 				this.values = new int[capacity];
 				this.nextIndex = new int[capacity];
 				this.prevIndex = new int[capacity];
-				for (int i = 0; i < capacity; i++) {
-					nextIndex[i] = i+1;
-					prevIndex[i] = i-1;
-				}
+				this.head = -1;
+				this.tail = -1;
 				this.emptyHead = 0;
+				this.unusedList = new int[capacity];
+				this.unusedCount = 0;
 				this.filledHead = capacity;
 				this.hash2Index = new int[capacity];
 				this.hashTable = new int[capacity];
@@ -464,27 +468,31 @@ public class Main {
 						if (this.hashTable[hash] == value) return false;
 					}
 					this.hashTable[hash] = value;
-					int index = this.hash2Index[hash] = this.emptyHead;
-					this.insert(index, value);
+					this.hash2Index[hash] = this.insert(value);
 				}
 				if (cardinality++ >= maxFill) rehash(CMath.arraySize(cardinality + 1, loadFactor));
 				return true;
 			}
 			
-			private void insert(int index, int value) {
-				this.values[this.emptyHead] = value;
-				this.emptyHead = this.nextIndex[index];
-				this.prevIndex[this.emptyHead] = -1;
-				
-				if (index == 0) { // 自身が先頭
-					this.nextIndex[index] = this.filledHead;
-					this.filledHead = index;
+			private int insert(int value) {
+				int index;
+				if (this.unusedCount > 0) {
+					this.unusedCount--;
+					index = this.unusedList[unusedCount];
+					this.unusedList[unusedCount] = 0;
 				} else {
-					this.nextIndex[index] = this.nextIndex[index - 1];
-					this.nextIndex[index-1] = index;
+					index = this.emptyHead;
+					this.emptyHead++;
 				}
-				this.prevIndex[index] = index - 1;
-				if (this.nextIndex[index] < capacity) this.prevIndex[this.nextIndex[index]] = index;
+				
+				this.values[index] = value;
+				
+				this.nextIndex[index] = -1;
+				if (this.tail >= 0) this.nextIndex[this.tail] = index;
+				this.prevIndex[index] = this.tail;
+				this.tail = index;
+				
+				return index;
 			}
 			
 			public boolean rem(int value) {
@@ -512,34 +520,30 @@ public class Main {
 					this.hash2Index[pos-1] = this.hash2Index[pos];
 					pos++;
 				}
+				pos--;
 				this.hashTable[pos] = 0;
 				this.hash2Index[pos] = 0;
-				
-				// TODO:
 				
 				this.cardinality--;
 				return true;
 			}
 			
 			private void remove(int index, int value) {
-				this.values[index] = 0;
-				if (this.emptyHead > index) this.emptyHead = index;
-				this.nextIndex[index] = 
-				
-				
-				
-				this.prevIndex[this.emptyHead] = -1;
-				
-				if (index == 0) { // 自身が先頭
-					this.nextIndex[index] = this.filledHead;
-					this.filledHead = index;
+				if (index +1 == this.emptyHead) {
+					this.emptyHead--;
 				} else {
-					this.nextIndex[index] = this.nextIndex[index - 1];
-					this.nextIndex[index-1] = index;
+					this.unusedList[this.unusedCount++] = index;
 				}
-				this.prevIndex[index] = index - 1;
-				if (this.nextIndex[index] < capacity) this.prevIndex[this.nextIndex[index]] = index;
-				// TODO:
+				this.values[index] = 0;
+				
+				int next = this.nextIndex[index];
+				int prev = this.prevIndex[index];
+				if (prev >= 0) this.nextIndex[prev] = next;
+				else this.head = next;
+				if (next >= 0) this.prevIndex[next] = prev;
+				else this.tail = prev;
+				this.nextIndex[index] = 0;
+				this.prevIndex[index] = 0;
 			}
 			
 			private int hash(int value) {
