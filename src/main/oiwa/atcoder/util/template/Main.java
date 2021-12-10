@@ -439,8 +439,12 @@ public class Main {
 				this.values = new int[capacity];
 				this.nextIndex = new int[capacity];
 				this.prevIndex = new int[capacity];
+				for (int i = 0; i < capacity; i++) {
+					nextIndex[i] = i+1;
+					prevIndex[i] = i-1;
+				}
 				this.emptyHead = 0;
-				this.filledHead = -1;
+				this.filledHead = capacity;
 				this.hash2Index = new int[capacity];
 				this.hashTable = new int[capacity];
 				
@@ -461,20 +465,26 @@ public class Main {
 					}
 					this.hashTable[hash] = value;
 					int index = this.hash2Index[hash] = this.emptyHead;
-					this.values[this.emptyHead] = value;
-					this.emptyHead = this.nextIndex[index];
-					if (index > 0) {
-						this.nextIndex[index] = this.nextIndex[index - 1];
-						this.nextIndex[index - 1] = index;
-						this.prevIndex[index] = index - 1;
-						if (this.nextIndex[index] > index) this.prevIndex[this.nextIndex[index]] = index;
-					} else { // index == 0, this is the only element.
-						this.filledHead = 0;
-						this.prevIndex[0] = -1;
-					}
+					this.insert(index, value);
 				}
 				if (cardinality++ >= maxFill) rehash(CMath.arraySize(cardinality + 1, loadFactor));
 				return true;
+			}
+			
+			private void insert(int index, int value) {
+				this.values[this.emptyHead] = value;
+				this.emptyHead = this.nextIndex[index];
+				this.prevIndex[this.emptyHead] = -1;
+				
+				if (index == 0) { // 自身が先頭
+					this.nextIndex[index] = this.filledHead;
+					this.filledHead = index;
+				} else {
+					this.nextIndex[index] = this.nextIndex[index - 1];
+					this.nextIndex[index-1] = index;
+				}
+				this.prevIndex[index] = index - 1;
+				if (this.nextIndex[index] < capacity) this.prevIndex[this.nextIndex[index]] = index;
 			}
 			
 			public boolean rem(int value) {
@@ -486,18 +496,18 @@ public class Main {
 					}
 					return false;
 				}
+				
 				final int hash = hash(value);
 				int pos = hash;
-				
 				while (this.hashTable[pos] != value) {
-					if (hash(this.hashTable[pos]) != hash) return false;
+					if (hash(this.hashTable[pos]) != hash) return false; // value does not exist
 					pos++;
 				}
-				{
-					int index = this.hash2Index[pos];
-				}
+				
+				this.remove(this.hash2Index[pos], value);
+				
 				pos++;
-				while (hash(this.hashTable[pos]) == hash) {
+				while (hash(this.hashTable[pos]) == hash) { // shifts other values with the same hash.
 					this.hashTable[pos-1] = this.hashTable[pos];
 					this.hash2Index[pos-1] = this.hash2Index[pos];
 					pos++;
@@ -507,7 +517,29 @@ public class Main {
 				
 				// TODO:
 				
+				this.cardinality--;
 				return true;
+			}
+			
+			private void remove(int index, int value) {
+				this.values[index] = 0;
+				if (this.emptyHead > index) this.emptyHead = index;
+				this.nextIndex[index] = 
+				
+				
+				
+				this.prevIndex[this.emptyHead] = -1;
+				
+				if (index == 0) { // 自身が先頭
+					this.nextIndex[index] = this.filledHead;
+					this.filledHead = index;
+				} else {
+					this.nextIndex[index] = this.nextIndex[index - 1];
+					this.nextIndex[index-1] = index;
+				}
+				this.prevIndex[index] = index - 1;
+				if (this.nextIndex[index] < capacity) this.prevIndex[this.nextIndex[index]] = index;
+				// TODO:
 			}
 			
 			private int hash(int value) {
@@ -516,6 +548,10 @@ public class Main {
 			private void rehash(int newN) {
 				throw new UnsupportedOperationException("Please implement me!!"); // TODO:
 			}
+		}
+		
+		private void remove(int index, int value) {
+			
 		}
 		
 //		/** For dense mapping. ranging from 0 to N-1 */
