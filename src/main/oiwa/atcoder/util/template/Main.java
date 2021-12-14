@@ -5,8 +5,10 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -413,45 +415,45 @@ public class Main {
 	public static class AtCollections {
 		
 		public static class IntSet {
-			private final int MIN_SIZE = 32;
-			private final float DEFAULT_LOAD_FACTOR = 0.75f;
-			private int capacity;
+			private static final int MIN_SIZE = 23;
+			private static final float DEFAULT_LOAD_FACTOR = 0.75f;
+			private final int initialCapacity;
+			private int maxFill;
+			private float loadFactor;
+			private int mask;
+			
 			private int cardinality;
-			private int[] values; // values[i]
+			private boolean containsZero;
+			private int capacity;
+			private int[] hashTable;
+			private int[] overlap;
 			private int[] nextIndex; // next[i] = the next nonempty index. next[i] <= i indicates that there is no next index.
 			private int[] prevIndex;
 			private int head = -1;
 			private int tail = -1;
-			private int emptyHead = 0;
-			private int[] unusedList;
-			private int unusedCount;
-			private int[] hash2Index; // hash2Index[hash(values[i])] = i
-			private int[] hashTable;
-			private boolean containsZero;
 			
-			private int maxFill;
-			private float loadFactor;
-			private int mask;
 			
 			public IntSet(int capacity) {
 				capacity = Math.max(capacity, MIN_SIZE);
 				this.loadFactor = DEFAULT_LOAD_FACTOR;
 				capacity = CMath.arraySize(capacity, loadFactor);
+				this.initialCapacity = capacity;
 				this.capacity = capacity;
+				this.maxFill = (int) (capacity * this.loadFactor);
+				this.mask = capacity - 1;
+				
 				this.cardinality = 0;
-				this.values = new int[capacity];
+				this.containsZero = false;
+				this.hashTable = new int[capacity];
+				this.overlap = new int[capacity];
 				this.nextIndex = new int[capacity];
 				this.prevIndex = new int[capacity];
 				this.head = -1;
 				this.tail = -1;
-				this.emptyHead = 0;
-				this.unusedList = new int[capacity];
-				this.unusedCount = 0;
-				this.hash2Index = new int[capacity];
-				this.hashTable = new int[capacity];
-				
-				this.maxFill = (int) (capacity * this.loadFactor);
-				this.mask = capacity - 1;
+			}
+			
+			public int size() {
+				return this.capacity;
 			}
 			
 			public boolean add(int value) {
@@ -461,89 +463,89 @@ public class Main {
 				} else {
 					int hash = hash(value);
 					if (this.hashTable[hash] == value) return false; // value already exists.
-					while (this.hashTable[hash] != 0) {
+					while (this.hashTable[hash] != 0) { // search for empty hash
 						hash = (hash + 1) & mask;
 						if (this.hashTable[hash] == value) return false;
 					}
 					this.hashTable[hash] = value;
-					this.hash2Index[hash] = this.insert(value);
+					this.overlap[hash]++;
+					if (this.tail >= 0) this.nextIndex[this.tail] = hash;
+					else this.head = hash;
+					if (this.head >= 0) this.prevIndex[this.tail] = hash;
+					else this.tail = hash;
 				}
 				if (cardinality++ >= maxFill) rehash(CMath.arraySize(cardinality + 1, loadFactor));
 				return true;
 			}
 			
-			private int insert(int value) {
-				int index;
-				if (this.unusedCount > 0) {
-					this.unusedCount--;
-					index = this.unusedList[unusedCount];
-					this.unusedList[unusedCount] = 0;
-				} else {
-					index = this.emptyHead;
-					this.emptyHead++;
-				}
-				
-				this.values[index] = value;
-				
-				this.nextIndex[index] = -1;
-				if (this.tail >= 0) this.nextIndex[this.tail] = index;
-				else this.head = index;
-				this.prevIndex[index] = this.tail;
-				this.tail = index;
-				
-				return index;
-			}
-			
 			public boolean rem(int value) {
 				if (value == 0) {
-					if (this.containsZero) {
-						this.capacity--;
-						this.containsZero = false;
-						return true;
+					if (!this.containsZero) return false;
+					this.containsZero = false;
+				} else {
+					final int hash = hash(value);
+					int pos = hash;
+					
+					int count = this.overlap[hash];
+					while (this.hashTable[pos] != value && count > 0) {
+						if (hash(this.hashTable[pos]) == hash) count--;
+						pos = (pos + 1) & mask;
 					}
-					return false;
+					if (count <= 0) return false; // not found
+					
+					int next = this.nextIndex[pos];
+					int prev = this.prevIndex[pos];
+					if (prev >= 0) this.nextIndex[prev] = next;
+					else this.head = next;
+					if (next >= 0) this.prevIndex[next] = prev;
+					else this.tail = prev;
+					count--;
+					
+					int open = pos;
+					while (count > 0) {
+						pos = (pos + 1) & mask;
+						if (hash(this.hashTable[pos]) == hash) {
+							count--;
+							this.hashTable[open] = this.hashTable[pos];
+							this.nextIndex[open] = this.nextIndex[pos];
+							this.prevIndex[open] = this.prevIndex[pos];
+							open = pos;
+						}
+					}
+					
+					this.hashTable[pos] = 0;
+					this.overlap[hash]--;
+					this.nextIndex[pos] = 0;
+					this.prevIndex[pos] = 0;
 				}
-				
-				final int hash = hash(value);
-				int pos = hash;
-				while (this.hashTable[pos] != value) {
-					if (hash(this.hashTable[pos]) != hash) return false; // value does not exist
-					pos++;
-				}
-				
-				this.remove(this.hash2Index[pos], value);
-				
-				pos++;
-				while (hash(this.hashTable[pos]) == hash) { // shifts other values with the same hash.
-					this.hashTable[pos-1] = this.hashTable[pos];
-					this.hash2Index[pos-1] = this.hash2Index[pos];
-					pos++;
-				}
-				pos--;
-				this.hashTable[pos] = 0;
-				this.hash2Index[pos] = 0;
-				
-				this.cardinality--;
+				if (this.cardinality-- < maxFill / 2) rehash(CMath.arraySize(cardinality + 1, loadFactor));
 				return true;
 			}
 			
-			private void remove(int index, int value) {
-				if (index +1 == this.emptyHead) {
-					this.emptyHead--;
-				} else {
-					this.unusedList[this.unusedCount++] = index;
+			public boolean contains(int value) {
+				int hash = hash(value);
+				int index = hash;
+				for (int count = this.overlap[hash]; count > 0; index = (index + 1) & mask) {
+					if (this.hashTable[index] == value) return true;
+					if (hash(this.hashTable[index]) == hash) { count--; }
 				}
-				this.values[index] = 0;
-				
-				int next = this.nextIndex[index];
-				int prev = this.prevIndex[index];
-				if (prev >= 0) this.nextIndex[prev] = next;
-				else this.head = next;
-				if (next >= 0) this.prevIndex[next] = prev;
-				else this.tail = prev;
-				this.nextIndex[index] = 0;
-				this.prevIndex[index] = 0;
+				return false;
 			}
+			
+			public void clear() {
+				this.cardinality = 0;
+				this.containsZero = false;
+				Arrays.fill(this.hashTable, 0);
+				Arrays.fill(this.overlap, 0);
+				Arrays.fill(this.nextIndex, 0);
+				Arrays.fill(this.prevIndex, 0);
+				this.head = -1;
+				this.tail = -1;
+			}
+			
+			public boolean isEmpty() { return this.cardinality == 0; }
+			
+			public IntInterator interator() { return new IntIteratorImpl(); }
 			
 			private int hash(int value) {
 				return CMath.mix(value) & mask;
@@ -551,78 +553,39 @@ public class Main {
 			private void rehash(int newN) {
 				throw new UnsupportedOperationException("Please implement me!!"); // TODO:
 			}
+			
+			private class IntIteratorImpl implements IntInterator {
+				private int next = head;
+				private boolean hasZero = containsZero;
+				private int size = cardinality;
+				private boolean hasCurrent = false;
+				private int current = 0;
+				
+				@Override
+				public boolean hasNext() { return this.next >= 0 && !this.hasZero; }
+				
+				@Override
+				public Integer next() { return this.nextInt(); }
+				
+				@Override
+				public int nextInt() {
+					if (!hasNext()) throw new NoSuchElementException();
+					if (this.size != cardinality) throw new ConcurrentModificationException();
+					
+					int ret;
+					if (this.hasZero) {
+						this.hasZero = false;
+						ret = 0;
+					} else {
+						ret = hashTable[this.next];
+						this.next = nextIndex[this.next];
+					}
+					this.hasCurrent = true;
+					this.current = ret;
+					return ret;
+				}
+			}
 		}
-		
-//		/** For dense mapping. ranging from 0 to N-1 */
-//		public static class IntMap<V> {
-//			
-//			private static final Object NULL = new Object() {
-//				@Override public int hashCode() { return 0; }
-//				@Override public String toString() { return "IntMap.NULL"; }
-//			};
-//			private final int capacity;
-//			private Object[] vals;
-//			private Set<Integer> keySet = new HashSet<>();
-//			private int size = 0;
-//			
-//			private Object maskNull(Object value) { return (value == null ? NULL : value); }
-//			@SuppressWarnings("unchecked")
-//			private V unmaskNull(Object value) { return (V)(value == NULL ? null : value); }
-//			
-//			public IntMap(int capacity) {
-//				this.capacity = capacity;
-//				this.vals = new Object[capacity];
-//			}
-//			public IntMap(IntMap<? extends V> m) {
-//				this.capacity = m.capacity;
-//				vals = m.vals.clone();
-//				size = m.size;
-//			}
-//			public int size() { return this.size; }
-//			public boolean containsKey(int key) {
-//				return vals[key] != null;
-//			}
-//
-//			public V get(Object key) {
-//				return (isValidKey(key) ? get((int) key) : null);
-//			}
-//			public V get(int key) { return unmaskNull(vals[key]); }
-//			public V put(int key, V value) {
-//				Object oldValue = vals[key];
-//				vals[key] = maskNull(value);
-//				if (oldValue == null) size++;
-//				this.keySet.add(key);
-//				return unmaskNull(oldValue);
-//			}
-//			public V remove(int key) {
-//				Object oldValue = vals[key];
-//				vals[key] = null;
-//				if (oldValue != null) size--;
-//				this.keySet.remove(key);
-//				return unmaskNull(oldValue);
-//			}
-//			private boolean isValidKey(Object key) {
-//				if (key == null) return false;
-//				return key instanceof Integer;
-//			}
-//			
-//			public void putAll(IntMap<? extends V> m) {
-//				IntMap<?> em = (IntMap<?>) m;
-//				for (int i = 0; i < keyUniverse.length; i++) {
-//					Object emValue = em.vals[i];
-//					if (emValue != null) {
-//						if (vals[i] == null)
-//							size++;
-//						vals[i] = emValue;
-//					}
-//				}
-//			}
-//			
-//			public Set<Entry<Integer, V>> entrySet() {
-//				return null;
-//			}
-//			
-//		}
 		
 		public static class FenwickTree {
 			public long[] array;
@@ -737,6 +700,10 @@ public class Main {
 			public int getGroupSizeForVertex(int n) {
 				return this.getGroupMemberForVertex(n).size();
 			}
+		}
+		
+		public static interface IntInterator extends Iterator<Integer> {
+			public int nextInt();
 		}
 		
 		private static class CMath {
