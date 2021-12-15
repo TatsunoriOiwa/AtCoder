@@ -34,7 +34,7 @@ public class TesterOld {
 			
 			long timemillis = System.currentTimeMillis();
 			
-			PrintWriter out = new PrintWriter(peeker); // TODO: wrap with System out peeker.
+			PrintWriter out = new PrintWriter(peeker);
 			method.invoke(sbj, out);
 			out.flush();
 			

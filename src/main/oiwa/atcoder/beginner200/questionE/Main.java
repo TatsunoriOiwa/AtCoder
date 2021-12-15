@@ -34,7 +34,6 @@ public class Main {
 						return;
 					}
 				}
-				// TODO:
 			}
 		}
 	}
@@ -50,7 +49,6 @@ public class Main {
 		} else {
 			return nl*(nl+1L)/2L;
 		}
-		// TODO:
 	}
 	
 	

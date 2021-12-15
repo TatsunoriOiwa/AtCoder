@@ -520,7 +520,7 @@ public class Main {
 					this.nextIndex[pos] = 0;
 					this.prevIndex[pos] = 0;
 				}
-				if (this.cardinality-- < maxFill / 2) rehash(CMath.arraySize(cardinality + 1, loadFactor));
+				if (this.cardinality-- < maxFill / 4 && capacity > initialCapacity) rehash(capacity / 2);
 				return true;
 			}
 			
@@ -552,10 +552,42 @@ public class Main {
 			private int hash(int value) {
 				return CMath.mix(value) & mask;
 			}
-			private void rehash(int newN) {
-				if (newN == this.capacity || newN <= this.initialCapacity) return;
+			private void rehash(int capacity) {
+				int mask = capacity - 1;
+				this.mask = mask;
 				
-				throw new UnsupportedOperationException("Please implement me!!"); // TODO:
+				final int[] hashTable = new int[capacity];
+				final int[] overlap = new int[capacity];
+				final int[] nextIndex = new int[capacity];
+				final int[] prevIndex = new int[capacity];
+				
+//				int current = -1;
+				int prev = -1;
+				int next = this.head;
+				while (next >= 0) {
+					int value = this.hashTable[next];
+					int hash = hash(value);
+					int pos = hash;
+					
+					overlap[hash]++;
+					while (hashTable[pos] != 0) pos = (pos + 1) & mask;
+					hashTable[pos] = value;
+					if (prev >= 0) nextIndex[prev] = pos;
+					else this.head = pos;
+					prevIndex[pos] = prev;
+					
+					prev = pos;
+					next = this.nextIndex[next];
+				}
+				if (prev >= 0) nextIndex[prev] = -1;
+				this.tail = prev;
+				
+				this.capacity = capacity;
+				this.maxFill = (int) (capacity * this.loadFactor);
+				this.hashTable = hashTable;
+				this.overlap = overlap;
+				this.nextIndex = nextIndex;
+				this.prevIndex = prevIndex;
 			}
 			
 			private class IntIteratorImpl implements IntInterator {

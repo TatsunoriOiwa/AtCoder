@@ -2,7 +2,6 @@ package oiwa.atcoder.util.template;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -134,4 +133,6 @@ class IntSetTest {
 		}
 		return null;
 	}
+	
+	// TODO: write stronger test, ont only speed test.
 }

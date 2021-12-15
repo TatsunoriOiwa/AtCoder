@@ -72,7 +72,6 @@ public class Main {
 			next.push(0);
 			depth++;
 			if (np == U) effective = true;
-			// TODO: 初めて訪れたときの処理
 			
 		}
 		
