@@ -11,10 +11,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.Function;
+import java.util.function.IntConsumer;
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
@@ -551,21 +553,25 @@ public class Main {
 				return CMath.mix(value) & mask;
 			}
 			private void rehash(int newN) {
+				if (newN == this.capacity || newN <= this.initialCapacity) return;
+				
 				throw new UnsupportedOperationException("Please implement me!!"); // TODO:
 			}
 			
 			private class IntIteratorImpl implements IntInterator {
-				private int next = head;
-				private boolean hasZero = containsZero;
+				/** -1 indicates that there is no next element. next == capacity means zero is to be returned. */
 				private int size = cardinality;
-				private boolean hasCurrent = false;
-				private int current = 0;
+				private int next;
+				private int current = -1;
+				private int currentValue;
 				
-				@Override
-				public boolean hasNext() { return this.next >= 0 && !this.hasZero; }
-				
-				@Override
-				public Integer next() { return this.nextInt(); }
+				private IntIteratorImpl() {
+					this.next = containsZero ? capacity : head;
+					this.current = -1;
+				}
+			
+				@Override public boolean hasNext() { return this.next >= 0; }
+				@Override public Integer next() { return this.nextInt(); }
 				
 				@Override
 				public int nextInt() {
@@ -573,16 +579,25 @@ public class Main {
 					if (this.size != cardinality) throw new ConcurrentModificationException();
 					
 					int ret;
-					if (this.hasZero) {
-						this.hasZero = false;
+					this.current = this.next;
+					if (this.next == capacity) {
 						ret = 0;
+						this.next = head;
 					} else {
 						ret = hashTable[this.next];
 						this.next = nextIndex[this.next];
 					}
-					this.hasCurrent = true;
-					this.current = ret;
+					this.currentValue = ret;
 					return ret;
+				}
+				
+				@Override
+				public void remove() {
+					if (this.current < 0) throw new IllegalStateException();
+					this.size--;
+					rem(this.currentValue);
+					this.current = -1;
+					this.currentValue = 0;
 				}
 			}
 		}
@@ -704,6 +719,11 @@ public class Main {
 		
 		public static interface IntInterator extends Iterator<Integer> {
 			public int nextInt();
+			
+			default public void forEachRemaining(IntConsumer action) {
+				Objects.requireNonNull(action);
+				while (hasNext()) action.accept(nextInt());
+			}
 		}
 		
 		private static class CMath {
