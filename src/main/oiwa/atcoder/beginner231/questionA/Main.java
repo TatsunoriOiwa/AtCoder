@@ -29,7 +29,9 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		double D = sc.nextDouble();
 		
+		out.println(D / 100.0d);
 		
 	}
 	

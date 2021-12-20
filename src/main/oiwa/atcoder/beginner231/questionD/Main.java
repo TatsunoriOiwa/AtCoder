@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -29,8 +30,57 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int M = sc.nextInt();
+		Map<Integer, Set<Integer>> outs = new HashMap<>();
+		Set<Integer> unsearched = new HashSet<>();
+		for (int i = 0; i < N; i++) {
+			outs.put(i, new HashSet<>());
+			unsearched.add(i);
+		}
+		for (int i = 0; i < M; i++) {
+			int ai = sc.nextInt() - 1;
+			int bi = sc.nextInt() - 1;
+			outs.get(ai).add(bi);
+			outs.get(bi).add(ai);
+		}
 		
+		Set<Integer> ends = new HashSet<>();
+		for (int i = 0; i < N; i++) {
+			Set<Integer> set = outs.get(i);
+			if (set.size() > 2) {
+				out.println("No");
+				return;
+			} else if (set.size() <= 1) {
+				ends.add(i);
+			}
+		}
 		
+		Iterator<Integer> enditr = ends.iterator();
+		while (enditr.hasNext()) {
+			int end = enditr.next();
+			enditr.remove();
+			if (!unsearched.contains(end)) continue;
+			unsearched.remove(end);
+			
+			int prev = -1;
+			int current = end;
+			while (!unsearched.isEmpty()) {
+				Set<Integer> next = outs.get(current);
+				next.remove(prev);
+				if (next.isEmpty()) break;
+				int n = next.iterator().next();
+				if (!unsearched.contains(n)) {
+					out.println("No");
+					return;
+				}
+//				debug(n);
+				unsearched.remove(n);
+				prev = current;
+				current = n;
+			}
+		}
+		out.println(unsearched.isEmpty() ? "Yes" : "No");
 	}
 	
 	

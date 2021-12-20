@@ -29,8 +29,24 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		Map<String, Integer> map = new HashMap<>();
+		for (int i = 0; i < N; i++) {
+			String s = sc.next();
+			map.put(s, map.getOrDefault(s, 0)+1);
+		}
 		
+		int maxCount = 0;
+		String name = "";
 		
+		for (Map.Entry<String, Integer> e : map.entrySet()) {
+			if (maxCount < e.getValue()) {
+				maxCount = e.getValue();
+				name = e.getKey();
+			}
+		}
+		
+		out.println(name);
 	}
 	
 	

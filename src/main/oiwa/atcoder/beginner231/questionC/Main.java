@@ -29,8 +29,18 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int Q = sc.nextInt();
 		
+		int[] height = sc.nextIntArray(N);
+		int[] query = sc.nextIntArray(Q);
 		
+		Arrays.sort(height);
+		
+		for (int xi : query) {
+			long index = AtMath.binarySearchLowerBound(0, N-1, xi, i -> height[(int) i]);
+			out.println(N - index);
+		}
 	}
 	
 	
