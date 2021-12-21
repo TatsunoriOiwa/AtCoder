@@ -5,8 +5,10 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -17,6 +19,11 @@ import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 204 C, 8 min.
+ * @author T.Oiwa
+ * @date 2021/12/21
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -27,11 +34,38 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int M = sc.nextInt();
+		Map<Integer, Set<Integer>> outs = new HashMap<>();
+		for (int i = 0; i < N; i++) { outs.put(i,  new HashSet<>()); }
 		
+		for (int i = 0; i < M; i++) {
+			int a = sc.nextInt() - 1;
+			int b = sc.nextInt() - 1;
+			outs.get(a).add(b);
+		}
 		
+		long cnt = 0;
+		for (int start = 0; start < N; start++) {
+			Deque<Integer> queue = new LinkedList<>();
+			queue.add(start);
+			cnt++;
+			Set<Integer> visited = new HashSet<>();
+			visited.add(start);
+			while (!queue.isEmpty()) {
+				int pos = queue.poll();
+				for (int n : outs.get(pos)) {
+					if (!visited.contains(n)) {
+						queue.offer(n);
+						visited.add(n);
+						cnt++;
+					}
+				}
+			}
+		}
+		out.println(cnt);
 	}
 	
 	

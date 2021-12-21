@@ -17,6 +17,11 @@ import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 204 A, 4 min.
+ * @author T.Oiwa
+ * @date 2021/12/21
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -27,11 +32,25 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		int x = sc.nextInt();
+		int y = sc.nextInt();
 		
-		
+		if (x == y) {
+			out.println(x);
+		} else {
+			if (x > y) {
+				int tmp = x;
+				x = y;
+				y = tmp;
+			}
+			if (y == x+1) {
+				out.println((y+1) % 3);
+			} else {
+				out.println(1);
+			}
+		}
 	}
 	
 	

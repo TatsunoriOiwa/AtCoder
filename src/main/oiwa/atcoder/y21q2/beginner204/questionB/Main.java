@@ -17,6 +17,11 @@ import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 204 B, 1 min.
+ * @author T.Oiwa
+ * @date 2021/12/21
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -27,11 +32,18 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int[] A = sc.nextIntArray(N);
 		
-		
+		long sum = 0;
+		for (int a : A) {
+			if (a > 10) {
+				sum += a - 10;
+			}
+		}
+		out.println(sum);
 	}
 	
 	
