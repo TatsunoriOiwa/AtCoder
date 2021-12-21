@@ -426,7 +426,7 @@ public class Main {
 			
 			private int cardinality;
 			private boolean containsZero;
-			private int capacity;
+			int capacity;
 			private int[] hashTable;
 			private int[] overlap;
 			private int[] nextIndex; // next[i] = the next nonempty index. next[i] <= i indicates that there is no next index.
@@ -455,7 +455,7 @@ public class Main {
 			}
 			
 			public int size() {
-				return this.capacity;
+				return this.cardinality;
 			}
 			
 			public boolean add(int value) {
@@ -464,17 +464,23 @@ public class Main {
 					this.containsZero = true;
 				} else {
 					int hash = hash(value);
-					if (this.hashTable[hash] == value) return false; // value already exists.
-					while (this.hashTable[hash] != 0) { // search for empty hash
-						hash = (hash + 1) & mask;
-						if (this.hashTable[hash] == value) return false;
+					int pos = hash;
+					if (this.hashTable[pos] == value) return false; // value already exists.
+					while (this.hashTable[pos] != 0) { // search for empty hash
+						pos = (pos + 1) & mask;
+						if (this.hashTable[pos] == value) return false;
 					}
-					this.hashTable[hash] = value;
 					this.overlap[hash]++;
-					if (this.tail >= 0) this.nextIndex[this.tail] = hash;
-					else this.head = hash;
-					if (this.head >= 0) this.prevIndex[this.tail] = hash;
-					else this.tail = hash;
+					this.hashTable[pos] = value;
+					if (this.tail >= 0) {
+						this.prevIndex[pos] = this.tail;
+						this.nextIndex[this.tail] = pos;
+					} else {
+						this.head = pos;
+						this.prevIndex[pos] = -1;
+					}
+					this.nextIndex[pos] = -1;
+					this.tail = pos;
 				}
 				if (cardinality++ >= maxFill) rehash(CMath.arraySize(cardinality + 1, loadFactor));
 				return true;
@@ -495,13 +501,15 @@ public class Main {
 					}
 					if (count <= 0) return false; // not found
 					
-					int next = this.nextIndex[pos];
-					int prev = this.prevIndex[pos];
-					if (prev >= 0) this.nextIndex[prev] = next;
-					else this.head = next;
-					if (next >= 0) this.prevIndex[next] = prev;
-					else this.tail = prev;
-					count--;
+					{ // remove target value
+						int next = this.nextIndex[pos];
+						int prev = this.prevIndex[pos];
+						if (prev >= 0) this.nextIndex[prev] = next;
+						else this.head = next;
+						if (next >= 0) this.prevIndex[next] = prev;
+						else this.tail = prev;
+						count--;
+					}
 					
 					int open = pos;
 					while (count > 0) {
@@ -509,8 +517,12 @@ public class Main {
 						if (hash(this.hashTable[pos]) == hash) {
 							count--;
 							this.hashTable[open] = this.hashTable[pos];
-							this.nextIndex[open] = this.nextIndex[pos];
-							this.prevIndex[open] = this.prevIndex[pos];
+							int next = this.nextIndex[open] = this.nextIndex[pos];
+							int prev = this.prevIndex[open] = this.prevIndex[pos];
+							if (prev >= 0) this.nextIndex[prev] = open;
+							else this.head = next;
+							if (next >= 0) this.prevIndex[next] = open;
+							else this.tail = open;
 							open = pos;
 						}
 					}
@@ -547,12 +559,13 @@ public class Main {
 			
 			public boolean isEmpty() { return this.cardinality == 0; }
 			
-			public IntInterator interator() { return new IntIteratorImpl(); }
+			public IntIterator iterator() { return new IntIteratorImpl(); }
 			
 			private int hash(int value) {
 				return CMath.mix(value) & mask;
 			}
 			private void rehash(int capacity) {
+				System.out.println("rehash!! " + capacity);
 				int mask = capacity - 1;
 				this.mask = mask;
 				
@@ -590,7 +603,7 @@ public class Main {
 				this.prevIndex = prevIndex;
 			}
 			
-			private class IntIteratorImpl implements IntInterator {
+			private class IntIteratorImpl implements IntIterator {
 				/** -1 indicates that there is no next element. next == capacity means zero is to be returned. */
 				private int size = cardinality;
 				private int next;
@@ -749,7 +762,7 @@ public class Main {
 			}
 		}
 		
-		public static interface IntInterator extends Iterator<Integer> {
+		public static interface IntIterator extends Iterator<Integer> {
 			public int nextInt();
 			
 			default public void forEachRemaining(IntConsumer action) {
@@ -758,7 +771,7 @@ public class Main {
 			}
 		}
 		
-		private static class CMath {
+		/*private*/ public static class CMath {
 			/** 2<sup>32</sup> &middot; &phi;, &phi; = (&#x221A;5 &minus; 1)/2. */
 			private static final int INT_PHI = 0x9E3779B9;
 			public static int arraySize(final int expected, final float f) {
