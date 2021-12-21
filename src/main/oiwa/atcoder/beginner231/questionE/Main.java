@@ -27,8 +27,13 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
+		
+		final int N = sc.nextInt();
+		final long X = sc.nextLong();
+		
+		long[] A = sc.nextLongArray(N);
+		
 		
 		
 		

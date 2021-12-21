@@ -7,9 +7,13 @@ public class TestF {
 	public static void main(String[] args) {
 		new TesterV10(Main.class, new Case[] {
 				
-				new Case(false,
-						"",
-						""),
+				new Case(true,
+						"3\r\n"
+						+ "50 100 150\r\n"
+						+ "1 3 2\r\n"
+						+ "",
+						"4\r\n"
+						+ ""),
 				new Case(false,
 						"",
 						""),

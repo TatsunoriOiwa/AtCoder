@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.Function;
@@ -27,14 +29,68 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		Value[] values = new Value[N];
+		for (int i = 0; i < N; i++) values[i] = new Value(sc.nextLong(), sc.nextLong(), i);
 		
+		Arrays.sort(values, (e1,e2) -> { return Long.compare(e1.b, e2.b); });
+		Arrays.sort(values, (e1,e2) -> { return -Long.compare(e1.a, e2.a); });
 		
+//		PriorityQueue<Integer> sorted = new PriorityQueue<>();
+		
+//		TreeList<Integer> list = new TreeList<Integer>();
+//		TreeSet<Integer> treeset = new TreeSet<>();
+//		PriorityQueue<Integer> priorityqueue
+		TreeSet<Value> treeset = new TreeSet<>((e1,e2) -> {
+//			int flag = -Long.compare(e1.a, e2.a);
+//			if (flag != 0) return flag;
+			int flag = Long.compare(e1.b, e2.b);
+			if (flag != 0) return flag;
+			return Integer.compare(e1.index, e2.index);
+				});
+		
+		long cnt = 0;
+		int same = 0;
+		for (int i = 0; i < N; i++) {
+			same++;
+			Value v = values[i];
+			if (i < N-1 && values[i+1].a == v.a && values[i+1].b == v.b) {
+				break;
+			}
+			cnt += same*same;
+			same = 0;
+			
+//			int head = treeset.headSet(new Value(v.a, v.b, -1)).size();
+//			int tail = treeset.tailSet(new Value(v.a, v.b, -1)).size();
+			cnt += treeset.headSet(new Value(v.a, v.b, Integer.MAX_VALUE)).size();
+			debug(cnt);
+			treeset.add(v);
+		}
+		out.println(cnt);
 	}
 	
-	
+	public static class Value {
+		public final long a;
+		public final long b;
+		public final int index;
+		public Value(long a, long b, int index) {
+			this.a = a;
+			this.b = b;
+			this.index = index;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Value) {
+				Value other = (Value) obj; 
+				return this.a == other.a && this.b == other.b;
+			}
+			return false;
+		}
+//		@Override public int hashCode() { return Long.hashCode(a) * 31 + Long.hashCode(b); }
+		@Override public String toString() { return "(" + a + "," + b + ")"; }
+	}
 	
 	// ==== Fast Util ====
 	
