@@ -27,11 +27,24 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int[] T = sc.nextIntArray(N);
 		
+		int sum = 0;
+		for (int t : T) sum += t;
 		
+		int max = sum / 2;
+		
+		long[] dp = new long[max+1];
+		for (int i = 0; i < N; i++) {
+			int t = T[i];
+			for (int tmax = max - t; tmax >= 0; tmax--) {
+				if (dp[tmax + t] < dp[tmax] + t) dp[tmax + t] = dp[tmax] + t;
+			}
+		}
+		out.println(sum - dp[max]);
 	}
 	
 	
