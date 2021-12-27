@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
@@ -27,14 +28,177 @@ public class Main {
 	
 	
 	public void run(PrintWriter out) {
-		@SuppressWarnings("unused")
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		final int M = sc.nextInt();
+		Map<Integer, Set<Edge>> outs = new HashMap<>();
+		for (int i = 0; i < N; i++) { outs.put(i, new HashSet<>()); }
+		for (int i = 0; i < M; i++) {
+			int a = sc.nextInt() - 1;
+			int b = sc.nextInt() - 1;
+			int c = sc.nextInt();
+			int d = sc.nextInt();
+			outs.get(a).add(new Edge(b, c, d));
+			outs.get(b).add(new Edge(a, c, d));
+		}
 		
+		long[] fastest = new long[N];
+		Arrays.fill(fastest, Long.MAX_VALUE);
+		PriorityQueue<Pos> queue = new PriorityQueue<>((e1, e2) -> Long.compare(e1.time, e2.time));
+		Pos iniPos = new Pos(0, 0);
+		fastest[0] = 0;
+		queue.offer(iniPos);
+		while (!queue.isEmpty()) {
+			Pos pos = queue.poll();
+			if (fastest[pos.pos] < pos.time) continue;
+			if (pos.pos == N - 1) break;
+			for (Edge next : outs.get(pos.pos)) {
+				int npos = next.dest;
+				long time = pos.time;
+				if (next.fastest > time) time = next.fastest;
+				long nt = time + next.cost(time);
+				if (fastest[npos] > nt) {
+					fastest[npos] = nt;
+					queue.offer(new Pos(npos, nt));
+				}
+			}
+		}
 		
+		if (fastest[N-1] == Long.MAX_VALUE) {
+			out.println(-1);
+		} else {
+			out.println(fastest[N-1]);
+		}
 	}
 	
+	public static class Pos {
+		public final int pos;
+		public final long time;
+		public Pos(int x, long y) {
+			this.pos = x;
+			this.time = y;
+		}
+//		@Override
+//		public boolean equals(Object obj) {
+//			if (obj instanceof Pos) {
+//				Pos other = (Pos) obj; 
+//				return this.pos == other.pos && this.time == other.time;
+//			}
+//			return false;
+//		}
+//		@Override public int hashCode() { return Long.hashCode(pos) * 31 + Long.hashCode(time); }
+		@Override public String toString() { return "(" + pos + "," + time + ")"; }
+	}
 	
+	public static class Edge {
+		public final int dest;
+		public final long ci;
+		public final long di;
+		public final long fastest;
+		public Edge(int v1, long v2, long v3) {
+			this.dest = v1;
+			this.ci = v2;
+			this.di = v3;
+			long fastest = Math.round(Math.sqrt(v3)) - 1;
+			
+//			long fastest = (int) Math.sqrt(di) + 5;
+//			long cost = fastest + cost(fastest);
+//			long delta = -1;
+//			while (true) {
+//				if (fastest + delta < 0) {
+//					if (delta == -1) {
+//						break;
+//					} else {
+//						delta = -1;
+//						continue;
+//					}
+//				}
+//				
+//				long nt = fastest + delta;
+//				long nc = nt + cost(nt);
+//				if (nc <= cost && nt + 1 + cost(nt+1) >= nc) {
+//					fastest = nt;
+//					cost = nc;
+//					delta *= 2;
+//				} else if (delta != -1) {
+//					delta = -1;
+//				} else {
+//					break;
+//				}
+//			}
+			
+			//			long fastest = (int) Math.sqrt(di) + 5;
+//			long cost = fastest + cost(fastest);
+//			while (true) {
+//				if (fastest + 1 + cost(fastest+1) < cost) {
+//					fastest += 1;
+//					cost = fastest + 1 + cost(fastest+1);
+//					long delta = 1;
+//					while (true) {
+//						long nc = fastest + delta + cost(fastest+delta);
+//						if (nc < cost) {
+//							cost = nc;
+//							fastest += delta;
+//							delta *= 2;
+//						} else break;
+//					}
+//				} else if (fastest > 0 && fastest - 1 + cost(fastest - 1) <= cost) {
+//					fastest -= 1;
+//					cost = fastest - 1 + cost(fastest - 1);
+//					long delta = -1;
+//					while (true) {
+//						if (fastest + delta < 0) {
+//							if (delta < -1) {
+//								delta = -1;
+//								continue;
+//							} else break;
+//						}
+//						long nc = fastest + delta + cost(fastest+delta);
+//						if (nc <= cost) {
+//							cost = nc;
+//							fastest += delta;
+//							delta *= 2;
+//						} else break;
+//					}
+//				} else {
+//					break;
+//				}
+//			}
+			
+			
+//			long max = (int) Math.sqrt(di) + 5;
+//			long min = 0;
+////			long mid = (max + min) / 2;
+//			
+//			long fastest = AtMath.binarySearchLowerBound(min, max, 0, i -> 1 + cost(i+1) - cost(i));
+			
+//			long fastest = (int) Math.sqrt(di)+2;
+//			long cost = fastest + cost(fastest);
+//			while (fastest > 0) {
+//				long nc = cost(fastest-1) + fastest-1;
+//				if (nc <= cost) {
+//					cost = nc;
+//					fastest--;
+//				} else break;
+//			}
+			
+			this.fastest = fastest;
+		}
+		public long cost(long t) {
+			return ci + di / (t+1);
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Edge) {
+				Edge other = (Edge) obj; 
+				return this.dest == other.dest && this.ci == other.ci && this.di == other.di;
+			}
+			return false;
+		}
+		@Override public int hashCode() { return (Long.hashCode(dest) * 31 + Long.hashCode(ci))*31 + Long.hashCode(di); }
+		@Override public String toString() { return "(" + dest + "," + ci + "," + di + ")"; }
+	}
 	
 	// ==== Fast Util ====
 	
