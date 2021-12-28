@@ -1,7 +1,6 @@
 package oiwa.atcoder.util.template;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ class IntSetTest {
 
 	@Test
 	void test() {
-		
+		System.out.println("******** test ********");
 		IntSet set = new AtCollections.IntSet(8);
 		set.add(2);
 		set.add(8);
@@ -175,11 +174,64 @@ class IntSetTest {
 		long time = System.nanoTime();
 		for (int v : add) correct.add(v);
 		for (int v : rem) correct.remove(v);
-		System.out.print(System.nanoTime() - time);
+		System.out.print(System.nanoTime() - time + " ");
 		time = System.nanoTime();
 		for (int v : add) set.add(v);
 		for (int v : rem) set.rem(v);
 		System.out.println(System.nanoTime() - time);
+	}
+	
+	// COMBAK: ２回ダウンサイズした後要素を追加するとcardinality がおかしくなるっぽい
+	
+	@Test
+	void perfectMatchTest() {
+		System.out.println("******** perfect match ********");
+		final int N = 10000; // number of values
+		final int M = 10000; // range of values
+		
+		Set<Integer> ans = new HashSet<>();
+		AtCollections.IntSet set = new AtCollections.IntSet();
+		Random rand = new Random();
+		
+		for (int i = 0; i < N; i++) { // add phase
+			int next = rand.nextInt(M);
+			ans.add(next);
+			set.add(next);
+			assertTrue(predicateSetEquals(ans, set, next, true));
+		}
+		for (int i = 0; i < N; i++) { // remove phase
+			int next = rand.nextInt(M);
+			ans.remove(next);
+			set.rem(next);
+			assertTrue(predicateSetEquals(ans, set, next, false));
+		}
+		for (int i = 0; i < N; i++) { // add phase
+			int next = rand.nextInt(M);
+			ans.add(next);
+			set.add(next);
+			assertTrue(predicateSetEquals(ans, set, next, true));
+		}
+		for (int i = 0; i < N; i++) { // remove phase
+			int next = rand.nextInt(M);
+			ans.remove(next);
+			set.rem(next);
+			assertTrue(predicateSetEquals(ans, set, next, false));
+		}
+	}
+	
+	
+	
+	private boolean predicateSetEquals(Set<Integer> ans, AtCollections.IntSet set, int val, boolean add) {
+		if (ans.size() != set.size() || ans.isEmpty() != set.isEmpty()) {
+			System.out.println(add +":" + val + "summery! " + ans.size() + "->" + set.size() + ", " + ans.isEmpty() + "->" + set.isEmpty());
+			return false;
+		}
+		Set<Integer> copy = new HashSet<>(ans);
+		for (AtCollections.IntIterator iter = set.iterator(); iter.hasNext();) {
+			int v = iter.nextInt();
+			if (!copy.remove(v)) return false;
+		}
+		return true;
 	}
 	
 	private void printAllProperties(IntSet set) {

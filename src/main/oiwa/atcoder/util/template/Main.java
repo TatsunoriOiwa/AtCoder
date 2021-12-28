@@ -426,7 +426,7 @@ public class Main {
 			
 			private int cardinality;
 			private boolean containsZero;
-			int capacity;
+			private int capacity;
 			private int[] hashTable;
 			private int[] overlap;
 			private int[] nextIndex; // next[i] = the next nonempty index. next[i] <= i indicates that there is no next index.
@@ -434,6 +434,9 @@ public class Main {
 			private int head = -1;
 			private int tail = -1;
 			
+			public IntSet() {
+				this(MIN_SIZE);
+			}
 			
 			public IntSet(int capacity) {
 				capacity = Math.max(capacity, MIN_SIZE);
@@ -619,7 +622,7 @@ public class Main {
 				@Override public Integer next() { return this.nextInt(); }
 				
 				@Override
-				public int nextInt() {
+				public int nextInt() { // FIXME: なんか知らんがNoSuchElementExceptionが出る場合がある
 					if (!hasNext()) throw new NoSuchElementException();
 					if (this.size != cardinality) throw new ConcurrentModificationException();
 					
