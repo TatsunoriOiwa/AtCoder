@@ -1,4 +1,4 @@
-package oiwa.atcoder.beginner206.questionE2;
+package oiwa.atcoder.beginner201.questionE3;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,26 +25,12 @@ public class Main {
 		out.flush();
 	}
 	
+	
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
-		final int L = sc.nextInt();
-		final int R = sc.nextInt();
 		
-		long[] cnt = new long[(int) R + 1];
-		long sum = 0;
 		
-		for (int i = R; i > 1; i--) {
-			long num = R / i - (L-1) / i;
-			cnt[i] = num*num;
-			if (i >= L) sum -= num*2 -1;
-			for (int j = i*2; j <= R; j+= i) {
-				cnt[i] -= cnt[j];
-			}
-			sum += cnt[i];
-		}
-		
-		out.println(sum);
 	}
 	
 	
