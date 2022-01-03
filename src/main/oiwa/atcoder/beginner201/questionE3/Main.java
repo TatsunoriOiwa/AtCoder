@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -17,6 +18,11 @@ import java.util.function.LongBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * ABC 201 E 2nd, 30 min.
+ * @author T.Oiwa
+ * @date 2022/01/03
+ */
 public class Main {
 	public static boolean DEBUG = false;
 	public static void main(String[] args) {
@@ -29,11 +35,75 @@ public class Main {
 	public void run(PrintWriter out) {
 		FastScanner sc = new FastScanner();
 		
+		final int N = sc.nextInt();
+		Map<Integer, Set<Edge>> outs = new HashMap<>();
+		for (int i = 0; i < N; i++) outs.put(i, new HashSet<>());
+		for (int i = 0; i < N-1 ;i++) {
+			int u = sc.nextInt() - 1;
+			int v = sc.nextInt() - 1;
+			long weight = sc.nextLong();
+			outs.get(u).add(new Edge(v, weight));
+			outs.get(v).add(new Edge(u, weight));
+		}
 		
+		long[] dist = new long[N];
+		Arrays.fill(dist, -1);
+		LinkedList<Integer> queue = new LinkedList<>();
+		queue.add(0);
+		dist[0] = 0;
+		while (!queue.isEmpty()) {
+			int current = queue.poll();
+			for (Edge next : outs.get(current)) {
+				if (dist[next.to] < 0) {
+					dist[next.to] = next.weight ^ dist[current];
+					queue.offer(next.to);
+				}
+			}
+		}
+//		debug(dist);
 		
+		final long MOD = 1000_000_000L + 7;
+		
+		long sum = 0;
+		int[] count = new int[60];
+		
+		for (int i = 1; i < N; i++) {
+			long d = dist[i];
+			for (int j = 0; j < 60; j++) {
+				long mask = 1L << (int) j;
+				if ((d & mask) == 0) {
+					mask %= MOD;
+					sum += (mask * count[j]) % MOD;
+					sum %= MOD;
+				} else {
+					mask %= MOD;
+					sum += (mask * (i - count[j])) % MOD;
+					sum %= MOD;
+					count[j]++;
+				}
+			}
+		}
+		out.println(sum);
 	}
 	
-	
+	public static class Edge {
+		public final int to;
+		public final long weight;
+		public Edge(int x, long y) {
+			this.to = x;
+			this.weight = y;
+		}
+//		@Override
+//		public boolean equals(Object obj) {
+//			if (obj instanceof Edge) {
+//				Edge other = (Edge) obj; 
+//				return this.v1 == other.v1 && this.v2 == other.v2;
+//			}
+//			return false;
+//		}
+//		@Override public int hashCode() { return Long.hashCode(v1) * 31 + Long.hashCode(v2); }
+		@Override public String toString() { return "(" + to + "," + weight + ")"; }
+	}
 	
 	// ==== Fast Util ====
 	
